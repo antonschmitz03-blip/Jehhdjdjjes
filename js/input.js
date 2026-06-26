@@ -219,6 +219,12 @@ const Input = (() => {
 
     const tool = Render.T.tool;
 
+    if (e.button === 2) {
+      if (tool === 'room' && Render.T.drawingPoints.length) cancelRoomDraw();
+      else if (tool === 'door' || tool === 'window') UI.setTool('select');
+      return;
+    }
+
     if (tool === 'room') {
       Render.T.lengthInputValue = null;
       const pts = Render.T.drawingPoints;
