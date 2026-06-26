@@ -125,7 +125,7 @@ const Render3D = (() => {
     scene.background = new THREE.Color(0xcfe3f0);
     scene.fog = new THREE.Fog(0xcfe3f0, 22, 55);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.85));
     const sun = new THREE.DirectionalLight(0xffffff, 0.9);
     sun.position.set(6, 12, 4);
     scene.add(sun);
@@ -136,14 +136,10 @@ const Render3D = (() => {
     const state = Store.state;
     let allPts = [];
     for (const r of state.rooms) allPts.push(...r.points);
-    let radiusM = 3;
     if (allPts.length) {
       const xs = allPts.map(p => p.x), ys = allPts.map(p => p.y);
       centerX = (Math.min(...xs) + Math.max(...xs)) / 2;
       centerY = (Math.min(...ys) + Math.max(...ys)) / 2;
-      const halfW = (Math.max(...xs) - Math.min(...xs)) / 100 / 2;
-      const halfH = (Math.max(...ys) - Math.min(...ys)) / 100 / 2;
-      radiusM = Math.max(Math.hypot(halfW, halfH), 1.5);
     } else { centerX = 0; centerY = 0; }
 
     for (const room of state.rooms) buildRoom(room, state.openings.filter(o => o.roomId === room.id));
@@ -157,8 +153,27 @@ const Render3D = (() => {
     ground.position.y = -0.02;
     scene.add(ground);
 
-    camPos = { x: 0, y: Math.max(EYE_HEIGHT / 100, WALL_HEIGHT / 100 * 0.95), z: radiusM * 1.7 + 2.5 };
-    yaw = 0; pitch = -0.32;
+    // Spawn standing at the room's center, eye height, looking toward the
+    // farthest corner — a nose-to-wall view (camera facing the nearest wall
+    // a couple meters away) reads as a near-black/empty screen with dark
+    // wall colors, so aim diagonally across the room instead.
+    let spawn = { x: 0, z: 0 };
+    yaw = 0;
+    if (state.rooms.length) {
+      const r0 = state.rooms[0];
+      const cx = r0.points.reduce((s, p) => s + p.x, 0) / r0.points.length;
+      const cy = r0.points.reduce((s, p) => s + p.y, 0) / r0.points.length;
+      spawn = worldToScene(cx, cy);
+      let farPt = r0.points[0], farDist = -1;
+      for (const p of r0.points) {
+        const dist = Math.hypot(p.x - cx, p.y - cy);
+        if (dist > farDist) { farDist = dist; farPt = p; }
+      }
+      const target = worldToScene(farPt.x, farPt.y);
+      yaw = Math.atan2(-(target.x - spawn.x), -(target.z - spawn.z));
+    }
+    camPos = { x: spawn.x, y: EYE_HEIGHT / 100, z: spawn.z };
+    pitch = 0;
   }
 
   function onMouseMove(e) {
@@ -229,25 +244,34 @@ const Render3D = (() => {
     canvas = qs('canvas3d');
     overlay.classList.remove('hidden');
     ensureThree(() => {
-      if (!renderer) {
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        camera = new THREE.PerspectiveCamera(70, 1, 0.05, 100);
+      try {
+        if (!renderer) {
+          renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+          camera = new THREE.PerspectiveCamera(70, 1, 0.05, 100);
+        }
+        buildScene();
+        resize();
+        active = true;
+        lastT = 0;
+        keys = {};
+        document.addEventListener('keydown', onKeyDown, true);
+        document.addEventListener('keyup', onKeyUp, true);
+        document.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('resize', resize);
+        canvas.addEventListener('click', requestLock);
+        document.addEventListener('pointerlockchange', onLockChange);
+        const hint = qs('view3dHint');
+        if (hint) hint.style.display = '';
+        raf = requestAnimationFrame(tick);
+      } catch (err) {
+        const loading = qs('view3dLoading');
+        if (loading) {
+          loading.textContent = '3D view failed to start: ' + (err && err.message ? err.message : err);
+          loading.classList.remove('hidden');
+        }
+        console.error('Render3D failed to start', err);
       }
-      buildScene();
-      resize();
-      active = true;
-      lastT = 0;
-      keys = {};
-      document.addEventListener('keydown', onKeyDown, true);
-      document.addEventListener('keyup', onKeyUp, true);
-      document.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('resize', resize);
-      canvas.addEventListener('click', requestLock);
-      document.addEventListener('pointerlockchange', onLockChange);
-      const hint = qs('view3dHint');
-      if (hint) hint.style.display = '';
-      raf = requestAnimationFrame(tick);
     });
   }
 
