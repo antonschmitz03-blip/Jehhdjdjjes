@@ -600,6 +600,10 @@ const UI = (() => {
       Store.state.settings.angleSnap = e.target.checked;
       Store.scheduleAutosave();
     });
+    qs('angleStepSelect').addEventListener('change', (e) => {
+      Store.state.settings.angleStep = Number(e.target.value);
+      Store.scheduleAutosave();
+    });
     qs('unitsSelect').addEventListener('change', (e) => {
       Store.state.settings.units = e.target.value;
       Store.scheduleAutosave();

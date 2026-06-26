@@ -50,7 +50,7 @@ const Input = (() => {
       const dx = raw.x - prev.x, dy = raw.y - prev.y;
       const len = Math.hypot(dx, dy);
       if (len > 0.001) {
-        const angle = Geo.snapAngleDeg(Math.atan2(dy, dx) / Geo.DEG, 15) * Geo.DEG;
+        const angle = Geo.snapAngleDeg(Math.atan2(dy, dx) / Geo.DEG, settings().angleStep) * Geo.DEG;
         p = { x: prev.x + Math.cos(angle) * len, y: prev.y + Math.sin(angle) * len };
       }
     }
@@ -461,7 +461,7 @@ const Input = (() => {
       const item = Store.getFurniture(dragData.id);
       const angleToMouse = Math.atan2(wp.y - item.y, wp.x - item.x) / Geo.DEG;
       let rotation = angleToMouse + 90;
-      if (!e.altKey) rotation = Geo.snapAngleDeg(rotation, 15);
+      if (!e.altKey) rotation = Geo.snapAngleDeg(rotation, settings().angleStep);
       item.rotation = Geo.normalizeDeg(rotation);
       requestRender();
       UI.refreshPropsLive();

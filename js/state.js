@@ -11,7 +11,7 @@ const Store = (() => {
       openings: [],
       furniture: [],
       view: { scale: 2.2, panX: 80, panY: 80 }, // scale = px per cm
-      settings: { units: 'cm', gridSnap: true, angleSnap: true, gridSize: 5, showGrid: true },
+      settings: { units: 'cm', gridSnap: true, angleSnap: true, gridSize: 5, angleStep: 15, showGrid: true },
       selection: { type: null, ids: [] },
     };
   }
