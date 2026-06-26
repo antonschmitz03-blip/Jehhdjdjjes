@@ -24,6 +24,10 @@
     </div>
 
     <div class="tool-group">
+      <button id="view3dBtn" class="icon-btn" title="3D walkthrough view">🧊</button>
+    </div>
+
+    <div class="tool-group">
       <div class="dropdown">
         <button id="settingsBtn" class="icon-btn" title="Grid, angle &amp; unit settings" aria-haspopup="true" aria-expanded="false">⚙</button>
         <div id="settingsMenu" class="dropdown-menu" hidden>
@@ -135,10 +139,24 @@
   <div id="modalBox"></div>
 </div>
 
+<div id="view3dOverlay" class="hidden">
+  <canvas id="canvas3d"></canvas>
+  <div id="view3dCrosshair"></div>
+  <div id="view3dHint">Click to look around &amp; fly · WASD move · Space/Shift up &amp; down · Esc to exit</div>
+  <button id="view3dCloseBtn" title="Exit 3D view (Esc)">✕ Exit 3D</button>
+  <div id="view3dLoading" class="hidden">Loading 3D engine…</div>
+</div>
+
+<script type="module">
+  import * as THREE from './js/vendor/three.module.min.js';
+  window.THREE = THREE;
+  window.dispatchEvent(new Event('three-ready'));
+</script>
 <script src="js/geometry.js"></script>
 <script src="js/catalog.js"></script>
 <script src="js/state.js"></script>
 <script src="js/render.js"></script>
+<script src="js/render3d.js"></script>
 <script src="js/input.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>

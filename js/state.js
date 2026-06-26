@@ -100,7 +100,7 @@ const Store = (() => {
 
   // ---- Rooms ----
   function addRoom(points, thickness) {
-    const room = { id: uid('room'), name: 'Room ' + (state.rooms.length + 1), thickness: thickness || 12, points };
+    const room = { id: uid('room'), name: 'Room ' + (state.rooms.length + 1), thickness: thickness || 12, points, wallColor: '#2c2b29' };
     state.rooms.push(room);
     return room;
   }

@@ -128,9 +128,10 @@ const Render = (() => {
     }
 
     const thicknessPx = Math.max(room.thickness * view.scale, 2.5);
+    const wallColor = room.wallColor || COLORS.wall;
     ctx.lineCap = 'butt';
     ctx.lineJoin = 'miter';
-    ctx.strokeStyle = isSelected ? COLORS.wallSelected : COLORS.wall;
+    ctx.strokeStyle = isSelected ? COLORS.wallSelected : wallColor;
     ctx.lineWidth = thicknessPx;
 
     const n = pts.length;
@@ -153,7 +154,7 @@ const Render = (() => {
       }
     }
     // corner joins
-    ctx.fillStyle = isSelected ? COLORS.wallSelected : COLORS.wall;
+    ctx.fillStyle = isSelected ? COLORS.wallSelected : wallColor;
     const cornerCount = n >= 3 ? n : n;
     for (let i = 0; i < cornerCount; i++) {
       if (n < 3 && (i === 0 || i === n - 1) === false) continue;

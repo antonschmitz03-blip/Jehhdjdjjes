@@ -3,6 +3,7 @@
 
 const UI = (() => {
   const PRESET_COLORS = ['#9bb3c9', '#c2a987', '#8d9b87', '#b6a4c9', '#aac4cb', '#a8a39b', '#d8a5a0', '#e0c089', '#7f9b73', '#3a3a3a'];
+  const WALL_PRESET_COLORS = ['#2c2b29', '#ffffff', '#e7e2d8', '#c9c2b3', '#8a8780', '#6b7280', '#9bb3c9', '#c2a987', '#7f9b73', '#3a3a3a'];
   const TOOL_HINTS = {
     select: '',
     room: 'Click to place wall corners · type a number (e.g. 240 or 8ft) for an exact length · Enter/click start to finish · Esc cancel · Backspace undo last point',
@@ -251,6 +252,17 @@ const UI = (() => {
     const thickInput = makeTextInput('propThickness', Geo.formatLength(room.thickness, units));
     bindLengthInput(thickInput, v => { room.thickness = Math.max(2, v); requestRender(); }, () => room.thickness, units);
     root.appendChild(makeField('Wall thickness', thickInput));
+
+    const wallColor = room.wallColor || '#2c2b29';
+    const wallSwatches = document.createElement('div'); wallSwatches.className = 'color-swatches';
+    WALL_PRESET_COLORS.forEach(c => {
+      const sw = document.createElement('div');
+      sw.className = 'color-swatch' + (wallColor === c ? ' selected' : '');
+      sw.style.background = c;
+      sw.addEventListener('click', () => { room.wallColor = c; requestRender(); Store.pushHistory(); renderRoomProps(root, room); });
+      wallSwatches.appendChild(sw);
+    });
+    root.appendChild(makeField('Wall color', wallSwatches));
 
     const wallsTitle = document.createElement('h3'); wallsTitle.textContent = 'Wall lengths'; wallsTitle.style.marginTop = '12px';
     root.appendChild(wallsTitle);
@@ -636,6 +648,9 @@ const UI = (() => {
     qs('clearBtn').addEventListener('click', () => {
       openConfirmModal('This will delete all rooms, doors/windows and furniture.', () => { Store.clearAll(); refreshAll(); });
     });
+
+    qs('view3dBtn').addEventListener('click', () => Render3D.open());
+    qs('view3dCloseBtn').addEventListener('click', () => Render3D.close());
 
     qs('zoomInBtn').addEventListener('click', () => Input.zoomBy(1.25));
     qs('zoomOutBtn').addEventListener('click', () => Input.zoomBy(1 / 1.25));
