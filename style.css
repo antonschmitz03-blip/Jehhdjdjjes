@@ -104,6 +104,44 @@ select, input[type="text"], input[type="number"], input[type="color"] {
 
 .chk { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--text-dim); cursor: pointer; }
 
+/* ---------- Dropdowns ---------- */
+.dropdown { position: relative; }
+#settingsBtn[aria-expanded="true"], #fileMenuBtn[aria-expanded="true"] { background: #f1f0ec; }
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 190px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+}
+.dropdown-menu[hidden] { display: none; }
+.dropdown-menu-right { left: auto; right: 0; }
+.dd-field { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--text-dim); }
+.dd-field select { width: 100%; }
+.dd-item {
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dd-item:hover { background: #f1f0ec; }
+.dd-item.dd-danger { color: var(--danger); }
+.dd-item.dd-danger:hover { background: #fbeceb; }
+.dd-sep { height: 1px; background: var(--border); margin: 2px 0; }
+
 /* ---------- Main layout ---------- */
 #main {
   flex: 1;
@@ -113,13 +151,28 @@ select, input[type="text"], input[type="number"], input[type="color"] {
 
 #catalogPanel {
   width: 230px;
-  border-right: 1px solid var(--border);
   background: var(--panel);
   display: flex;
   flex-direction: column;
   padding: 10px;
   overflow-y: auto;
 }
+#catalogPanel.panel-hidden, #propertiesPanel.panel-hidden { display: none; }
+
+.panel-edge-toggle {
+  flex-shrink: 0;
+  width: 13px;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-dim);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.panel-edge-toggle:hover { background: #f1f0ec; color: var(--text); }
 
 #catalogSearch { width: 100%; margin-bottom: 8px; }
 
@@ -238,7 +291,6 @@ select, input[type="text"], input[type="number"], input[type="color"] {
 
 #propertiesPanel {
   width: 250px;
-  border-left: 1px solid var(--border);
   background: var(--panel);
   overflow-y: auto;
   padding: 10px;

@@ -537,6 +537,48 @@ const UI = (() => {
     qs('confirmOkBtn').onclick = () => { closeModal(); onConfirm(); };
   }
 
+  // ---------------- Dropdown menus ----------------
+  function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-menu').forEach(m => { m.hidden = true; });
+    document.querySelectorAll('.dropdown > button').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  }
+  function setupDropdown(btnId, menuId, opts) {
+    const btn = qs(btnId), menu = qs(menuId);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !menu.hidden;
+      closeAllDropdowns();
+      if (!isOpen) { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+    });
+    if (opts && opts.closeOnItemClick) {
+      menu.addEventListener('click', (e) => { if (e.target.closest('.dd-item')) closeAllDropdowns(); });
+    }
+  }
+  function wireDropdowns() {
+    setupDropdown('settingsBtn', 'settingsMenu');
+    setupDropdown('fileMenuBtn', 'fileMenu', { closeOnItemClick: true });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.dropdown')) closeAllDropdowns(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDropdowns(); });
+  }
+
+  // ---------------- Collapsible side panels ----------------
+  function wirePanelToggles() {
+    const catalogBtn = qs('catalogToggleBtn'), catalogPanel = qs('catalogPanel');
+    const propsBtn = qs('propsToggleBtn'), propsPanel = qs('propertiesPanel');
+    catalogBtn.addEventListener('click', () => {
+      const hidden = catalogPanel.classList.toggle('panel-hidden');
+      catalogBtn.textContent = hidden ? '›' : '‹';
+      catalogBtn.title = hidden ? 'Show furniture catalog' : 'Hide furniture catalog';
+      window.resizeCanvas();
+    });
+    propsBtn.addEventListener('click', () => {
+      const hidden = propsPanel.classList.toggle('panel-hidden');
+      propsBtn.textContent = hidden ? '‹' : '›';
+      propsBtn.title = hidden ? 'Show properties panel' : 'Hide properties panel';
+      window.resizeCanvas();
+    });
+  }
+
   // ---------------- Toolbar wiring ----------------
   function wireToolbar() {
     document.querySelectorAll('.tool-btn').forEach(btn => {
@@ -662,6 +704,8 @@ const UI = (() => {
 
   function init() {
     wireToolbar();
+    wireDropdowns();
+    wirePanelToggles();
     renderCatalog('');
     Store.subscribe(() => refreshAll());
     refreshAll();

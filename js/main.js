@@ -14,6 +14,7 @@
     });
   }
   window.requestRender = requestRender;
+  window.resizeCanvas = resizeCanvas;
 
   function resizeCanvas() {
     const wrap = canvas.parentElement;
