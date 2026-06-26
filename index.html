@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room Layout Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="toolbar">
+    <div class="brand">Room&nbsp;Planner</div>
+
+    <div class="tool-group" role="group" aria-label="Tools">
+      <button class="tool-btn" data-tool="select" title="Select &amp; move (V)">Select</button>
+      <button class="tool-btn" data-tool="room" title="Draw room (B)">Room</button>
+      <button class="tool-btn" data-tool="door" title="Add door (D)">Door</button>
+      <button class="tool-btn" data-tool="window" title="Add window (W)">Window</button>
+    </div>
+
+    <div class="tool-group">
+      <button id="undoBtn" class="icon-btn" title="Undo (Ctrl+Z)">↶</button>
+      <button id="redoBtn" class="icon-btn" title="Redo (Ctrl+Shift+Z)">↷</button>
+    </div>
+
+    <div class="tool-group">
+      <button id="view3dBtn" class="icon-btn" title="3D walkthrough view">🧊</button>
+    </div>
+
+    <div class="tool-group">
+      <div class="dropdown">
+        <button id="settingsBtn" class="icon-btn" title="Grid, angle &amp; unit settings" aria-haspopup="true" aria-expanded="false">⚙</button>
+        <div id="settingsMenu" class="dropdown-menu" hidden>
+          <label class="chk"><input type="checkbox" id="gridSnapToggle" checked> Snap to grid</label>
+          <label class="dd-field">Grid size
+            <select id="gridSizeSelect" title="Grid size">
+              <option value="1">1 cm</option>
+              <option value="5" selected>5 cm</option>
+              <option value="10">10 cm</option>
+              <option value="20">20 cm</option>
+              <option value="50">50 cm</option>
+            </select>
+          </label>
+          <label class="chk"><input type="checkbox" id="angleSnapToggle" checked> Snap angles</label>
+          <label class="dd-field">Angle step
+            <select id="angleStepSelect" title="Angle snap increment">
+              <option value="5">5°</option>
+              <option value="15" selected>15°</option>
+              <option value="30">30°</option>
+              <option value="45">45°</option>
+              <option value="90">90°</option>
+            </select>
+          </label>
+          <label class="dd-field">Units
+            <select id="unitsSelect" title="Units">
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+              <option value="ft">ft / in</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-group spacer-group">
+      <div class="dropdown">
+        <button id="fileMenuBtn" class="text-btn" aria-haspopup="true" aria-expanded="false">File ▾</button>
+        <div id="fileMenu" class="dropdown-menu dropdown-menu-right" hidden>
+          <button class="dd-item" id="saveBtn">Save layout…</button>
+          <button class="dd-item" id="loadBtn">Load layout…</button>
+          <div class="dd-sep"></div>
+          <button class="dd-item" id="exportJsonBtn">Export JSON</button>
+          <button class="dd-item" id="importJsonBtn">Import JSON…</button>
+          <button class="dd-item" id="exportPngBtn">Export PNG</button>
+          <div class="dd-sep"></div>
+          <button class="dd-item dd-danger" id="clearBtn">Clear canvas…</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="main">
+    <aside id="catalogPanel">
+      <input id="catalogSearch" type="text" placeholder="Search furniture…">
+      <div id="catalogList"></div>
+      <details id="customItemDetails">
+        <summary>+ Add custom item</summary>
+        <div class="custom-form">
+          <label>Name <input type="text" id="customLabel" placeholder="e.g. Piano"></label>
+          <div class="row">
+            <label>Width <input type="text" id="customWidth" placeholder="cm"></label>
+            <label>Depth <input type="text" id="customDepth" placeholder="cm"></label>
+          </div>
+          <label>Shape
+            <select id="customShape">
+              <option value="rect-plain">Rectangle</option>
+              <option value="round">Round</option>
+            </select>
+          </label>
+          <label>Color <input type="color" id="customColor" value="#9bb3c9"></label>
+          <button id="customAddBtn" class="text-btn primary">Add to catalog</button>
+        </div>
+      </details>
+    </aside>
+    <button id="catalogToggleBtn" class="panel-edge-toggle" title="Hide furniture catalog">‹</button>
+
+    <div id="canvasWrap">
+      <canvas id="canvas"></canvas>
+      <div id="hint"></div>
+      <div id="zoomControls">
+        <button id="zoomOutBtn" title="Zoom out (-)">−</button>
+        <button id="zoomResetBtn" title="Reset zoom (0)">100%</button>
+        <button id="zoomInBtn" title="Zoom in (+)">+</button>
+        <button id="zoomFitBtn" title="Zoom to fit">Fit</button>
+      </div>
+      <div id="statusBar">
+        <span id="statusCoords">0, 0 cm</span>
+        <span id="statusTool">Select</span>
+      </div>
+    </div>
+
+    <button id="propsToggleBtn" class="panel-edge-toggle" title="Hide properties panel">›</button>
+    <aside id="propertiesPanel">
+      <div id="roomStats" class="panel-section"></div>
+      <div id="propsContent" class="panel-section">
+        <p class="muted">Select a room, wall, door/window or furniture item to edit its properties.</p>
+      </div>
+      <div class="panel-section">
+        <h3>Rooms</h3>
+        <div id="roomList"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<input type="file" id="importFileInput" accept="application/json" hidden>
+
+<div id="modalOverlay" class="hidden">
+  <div id="modalBox"></div>
+</div>
+
+<div id="view3dOverlay" class="hidden">
+  <canvas id="canvas3d"></canvas>
+  <div id="view3dCrosshair"></div>
+  <div id="view3dHint">Click to look around &amp; fly · WASD move · Space/Shift up &amp; down · Esc to exit</div>
+  <button id="view3dCloseBtn" title="Exit 3D view (Esc)">✕ Exit 3D</button>
+  <div id="view3dLoading" class="hidden">Loading 3D engine…</div>
+</div>
+
+<script type="module">
+  import * as THREE from './js/vendor/three.module.min.js';
+  window.THREE = THREE;
+  window.dispatchEvent(new Event('three-ready'));
+</script>
+<script src="js/geometry.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/state.js"></script>
+<script src="js/render.js"></script>
+<script src="js/render3d.js"></script>
+<script src="js/input.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
