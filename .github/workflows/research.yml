@@ -1,0 +1,29 @@
+name: Research (temporary)
+on:
+  push:
+    paths: ['.github/workflows/research.yml']
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew compileJava -q
+      - run: |
+          MC=$(find ~/.gradle .gradle -name 'minecraft-merged*.jar' -o -name 'minecraft-common*.jar' 2>/dev/null | grep -v sources | head -1)
+          echo "MC jar: $MC"; find ~/.gradle .gradle -name '*.jar' -path '*minecraft*' 2>/dev/null | grep -v sources | head -20
+          curl -sSLo vf.jar https://repo1.maven.org/maven2/org/vineflower/vineflower/1.11.1/vineflower-1.11.1.jar
+          mkdir cls out
+          cd cls && unzip -q "$MC" 'net/minecraft/world/item/component/ItemContainerContents*' 'net/minecraft/world/item/ItemStack.class' 'net/minecraft/world/item/ItemStackTemplate*' 'net/minecraft/world/inventory/Slot.class' 'net/minecraft/world/inventory/AbstractContainerMenu.class' 'net/minecraft/world/ItemStackWithSlot*' 'net/minecraft/util/ExtraCodecs.class' || true; cd ..
+          java -jar vf.jar -log=ERROR cls out
+          for f in $(find out -name '*.java'); do echo "=================== $f"; cat "$f"; done > dump.txt
+          grep -n "CODEC\|intRange\|99\|MAX_STACK\|STREAM_CODEC" out/net/minecraft/world/item/ItemStack.java | head -60
+          echo "############ ItemContainerContents"; cat out/net/minecraft/world/item/component/ItemContainerContents.java | head -150
+          echo "############ ItemStackTemplate"; cat out/net/minecraft/world/item/ItemStackTemplate.java 2>/dev/null | head -80
+          echo "############ ItemStackWithSlot"; cat out/net/minecraft/world/ItemStackWithSlot.java
+          echo "############ Slot"; cat out/net/minecraft/world/inventory/Slot.java
+          echo "############ ACM"; grep -n "getMaxStackSize\|tryRemove\|safeInsert\|moveItemStackTo\|private void doClick\|getCarried\|getQuickCraftPlaceCount" out/net/minecraft/world/inventory/AbstractContainerMenu.java | head -60
+      - uses: actions/upload-artifact@v4
+        with: { name: dump, path: dump.txt }
