@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.Identifier;
@@ -31,6 +32,7 @@ public class BackpackLink implements ModInitializer {
 
         if (Boolean.getBoolean("backpacklink.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(SelfTest::run);
+            ServerTickEvents.END_SERVER_TICK.register(SelfTest::tick);
         }
     }
 

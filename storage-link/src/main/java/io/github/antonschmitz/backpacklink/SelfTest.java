@@ -31,53 +31,68 @@ final class SelfTest {
     private SelfTest() {
     }
 
+    private static ServerLevel level;
+    private static BlockPos pos;
+    private static BlockPos chestPos;
+    private static int ticks = -1;
+
+    /** Places the blocks; the checks run a few ticks later, once Tom's terminal has connected to the chest. */
     static void run(MinecraftServer server) {
         try {
             check(TerminalMenuDuck.class.isAssignableFrom(StorageTerminalMenu.class), "terminal menu mixin not applied");
             BackpackLink.LOGGER.info("backpacklink self test: terminal mixin loaded");
-            pull(server.overworld());
+            level = server.overworld();
+            level.getChunk(0, 0);
+            pos = new BlockPos(4, level.getHeight(Heightmap.Types.MOTION_BLOCKING, 4, 4), 4);
+            BlockState terminalState = Content.terminal.get().defaultBlockState();
+            chestPos = pos.relative((Direction) terminalState.getValue(AbstractStorageTerminalBlock.FACING));
+            level.setBlockAndUpdate(chestPos, Blocks.CHEST.defaultBlockState());
+            ((ChestBlockEntity) level.getBlockEntity(chestPos)).setItem(0, new ItemStack(Items.DIAMOND, 3));
+            level.setBlockAndUpdate(pos, terminalState);
+            ticks = 0;
+        } catch (Exception | AssertionError e) {
+            BackpackLink.LOGGER.error("backpacklink self test FAILED", e);
+        }
+    }
+
+    static void tick(MinecraftServer server) {
+        if (ticks < 0 || ++ticks < 3) {
+            return;
+        }
+        ticks = -1;
+        try {
+            pull();
         } catch (Exception | AssertionError e) {
             BackpackLink.LOGGER.error("backpacklink self test FAILED", e);
             return;
-        }
-        BackpackLink.LOGGER.info("backpacklink self test passed");
-    }
-
-    private static void pull(ServerLevel level) {
-        level.getChunk(0, 0);
-        BlockPos pos = new BlockPos(4, level.getHeight(Heightmap.Types.MOTION_BLOCKING, 4, 4), 4);
-        BlockState terminalState = Content.terminal.get().defaultBlockState();
-        Direction facing = (Direction) terminalState.getValue(AbstractStorageTerminalBlock.FACING);
-        BlockPos chestPos = pos.relative(facing);
-        level.setBlockAndUpdate(chestPos, Blocks.CHEST.defaultBlockState());
-        level.setBlockAndUpdate(pos, terminalState);
-        try {
-            ChestBlockEntity chest = (ChestBlockEntity) level.getBlockEntity(chestPos);
-            chest.setItem(0, new ItemStack(Items.DIAMOND, 3));
-            StorageTerminalBlockEntity terminal = (StorageTerminalBlockEntity) level.getBlockEntity(pos);
-            terminal.onLoad();
-
-            FakePlayer player = FakePlayer.get(level);
-            ItemStack backpack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
-            new BackpackWrapper(backpack, 1, player, level, AttachmentUtils.STORAGE_ONLY.get())
-                    .getStorage().insertItem(0, new ItemStack(Items.DIAMOND, 10), false);
-            player.getInventory().setItem(5, backpack);
-            check(diamonds(BackpackContents.snapshot(player)) == 10, "backpack snapshot: " + BackpackContents.snapshot(player));
-            check(diamonds(BackpackContents.merge(Map.of(), BackpackContents.snapshot(player))) == 10, "merged list has no diamonds");
-
-            StoredItemStack pulled = PullContext.with(player, () -> terminal.pullStack(new StoredItemStack(new ItemStack(Items.DIAMOND)), 5));
-            check(pulled != null && pulled.getQuantity() == 5, "pulled " + (pulled == null ? 0 : pulled.getQuantity()) + " instead of 5");
-            check(chest.getItem(0).isEmpty(), "network was not used first, chest still has " + chest.getItem(0));
-            check(diamonds(BackpackContents.snapshot(player)) == 8, "backpack should have 8 diamonds left: " + BackpackContents.snapshot(player));
-            BackpackLink.LOGGER.info("backpacklink self test: pull from network then backpack ok");
-
-            check(terminal.pullStack(new StoredItemStack(new ItemStack(Items.DIAMOND)), 5) == null, "pull without a player used the backpack");
-            check(diamonds(BackpackContents.snapshot(player)) == 8, "backpack changed by a pull without a player");
-            player.getInventory().clearContent();
         } finally {
             level.removeBlock(pos, false);
             level.removeBlock(chestPos, false);
         }
+        BackpackLink.LOGGER.info("backpacklink self test passed");
+    }
+
+    private static void pull() {
+        ChestBlockEntity chest = (ChestBlockEntity) level.getBlockEntity(chestPos);
+        StorageTerminalBlockEntity terminal = (StorageTerminalBlockEntity) level.getBlockEntity(pos);
+
+        FakePlayer player = FakePlayer.get(level);
+        ItemStack backpack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
+        new BackpackWrapper(backpack, 1, player, level, AttachmentUtils.STORAGE_ONLY.get())
+                .getStorage().insertItem(0, new ItemStack(Items.DIAMOND, 10), false);
+        player.getInventory().setItem(5, backpack);
+        check(diamonds(BackpackContents.snapshot(player)) == 10, "backpack snapshot: " + BackpackContents.snapshot(player));
+        check(diamonds(BackpackContents.merge(Map.of(), BackpackContents.snapshot(player))) == 10, "merged list has no diamonds");
+
+        StoredItemStack pulled = PullContext.with(player, () -> terminal.pullStack(new StoredItemStack(new ItemStack(Items.DIAMOND)), 5));
+        check(pulled != null && pulled.getQuantity() == 5, "pulled " + (pulled == null ? 0 : pulled.getQuantity()) + " instead of 5");
+        check(chest.getItem(0).isEmpty(), "network was not used first, chest still has " + chest.getItem(0));
+        check(diamonds(BackpackContents.snapshot(player)) == 8, "backpack should have 8 diamonds left: " + BackpackContents.snapshot(player));
+        BackpackLink.LOGGER.info("backpacklink self test: pull from network then backpack ok");
+
+        check(terminal.pullStack(new StoredItemStack(new ItemStack(Items.DIAMOND)), 5) == null, "pull without a player used the backpack");
+        check(diamonds(BackpackContents.snapshot(player)) == 8, "backpack changed by a pull without a player");
+        player.getInventory().clearContent();
     }
 
     private static long diamonds(Map<? extends StoredItemStack, ?> map) {
