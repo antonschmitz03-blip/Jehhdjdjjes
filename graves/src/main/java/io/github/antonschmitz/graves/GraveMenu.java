@@ -19,7 +19,8 @@ public class GraveMenu extends ChestMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return !grave.isRemoved() && player.distanceToSqr(grave.getBlockPos().getCenter()) <= 64.0;
+        var pos = grave.getBlockPos();
+        return !grave.isRemoved() && player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64.0;
     }
 
     @Override
