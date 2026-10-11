@@ -1,7 +1,7 @@
 {
   "type": "minecraft:ore",
   "discard_chance_on_air_exposure": 0.7,
-  "size": 36,
+  "size": 20,
   "targets": [
     {
       "state": "minecraft:diamond_ore",

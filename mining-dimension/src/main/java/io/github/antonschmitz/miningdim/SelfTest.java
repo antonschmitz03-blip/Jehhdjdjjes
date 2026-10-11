@@ -26,6 +26,7 @@ final class SelfTest {
 
         Map<String, Integer> counts = new TreeMap<>();
         int air = 0;
+        int[] airByBand = new int[8];
         int fluids = 0;
         int total = 0;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -39,6 +40,7 @@ final class SelfTest {
                             total++;
                             if (state.isAir()) {
                                 air++;
+                                airByBand[(y - mining.getMinY()) / 32]++;
                             } else if (!state.getFluidState().isEmpty()) {
                                 fluids++;
                             } else {
@@ -56,7 +58,13 @@ final class SelfTest {
         boolean bedrockRoof = mining.getBlockState(new BlockPos(0, mining.getMaxY(), 0)).is(Blocks.BEDROCK);
         MiningDimension.LOGGER.info("miningdim self test: 16 chunks, y {}..{}, air {}%, fluid blocks {}, bedrock floor {}, roof {}",
                 mining.getMinY(), mining.getMaxY(), Math.round(100.0 * air / total), fluids, bedrockFloor, bedrockRoof);
-        MiningDimension.LOGGER.info("miningdim self test: ores {}", counts);
+        StringBuilder bands = new StringBuilder();
+        for (int band = 0; band < airByBand.length; band++) {
+            bands.append(" y").append(mining.getMinY() + band * 32).append('=').append(Math.round(100.0 * airByBand[band] / (16 * 256 * 32))).append('%');
+        }
+        MiningDimension.LOGGER.info("miningdim self test: air by height{}", bands);
+        counts.replaceAll((name, count) -> count / 16);
+        MiningDimension.LOGGER.info("miningdim self test: ore blocks per chunk {}", counts);
         if (fluids > 0 || !bedrockFloor || !bedrockRoof || counts.isEmpty()) {
             throw new IllegalStateException("miningdim self test: unexpected terrain");
         }
