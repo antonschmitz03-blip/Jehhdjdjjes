@@ -18,7 +18,9 @@ Xaero waypoint).
 
 ## Getting your items back
 
-- **Right-click your grave.** Every item goes back into the slot it came from (hotbar, armor, offhand,
+- **Right-click your grave** to open it like a chest and take what you want. You get the XP when you open it.
+  Whatever you leave stays in the grave; once it's empty, the grave and its waypoint disappear.
+- **Sneak + right-click** (with empty hands) to get everything back at once: every item goes back into the slot it came from (hotbar, armor, offhand,
   Trinkets slots, Traveler's Backpack's back slot). If a slot is taken, the item goes into your inventory;
   what doesn't fit drops at your feet. You also get the XP back. The grave and its waypoint disappear.
 - Only the owner can open a grave. It can't be broken in survival, blown up, pushed by pistons or destroyed

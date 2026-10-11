@@ -51,13 +51,7 @@ final class SelfTest {
 
         player.die(level.damageSources().generic());
 
-        GraveBlockEntity grave = null;
-        for (BlockPos pos : BlockPos.betweenClosed(-4, y - 4, -4, 4, y + 4, 4)) {
-            if (level.getBlockEntity(pos) instanceof GraveBlockEntity found) {
-                grave = found;
-                break;
-            }
-        }
+        GraveBlockEntity grave = findGrave(level, y);
         check(grave != null, "no grave placed");
         check(grave.entries().size() == 4, "expected 4 stacks in the grave, got " + grave.entries());
         check(grave.xp() == 35, "expected 35 xp in the grave, got " + grave.xp());
@@ -75,6 +69,48 @@ final class SelfTest {
         check(!(level.getBlockEntity(gravePos) instanceof GraveBlockEntity), "grave still there after restoring");
         player.getInventory().clearContent();
         SimpleGraves.LOGGER.info("simplegraves self test: death grave ok at {}", gravePos);
+
+        chestScreen(level, player, y);
+    }
+
+    /** Sneak + right-click path: take part of the items through the chest screen, then the rest. */
+    private static void chestScreen(ServerLevel level, FakePlayer player, int y) {
+        player.setPos(0.5, y, 0.5);
+        player.getInventory().setItem(0, new ItemStack(Items.DIAMOND, 5));
+        player.getInventory().setItem(1, new ItemStack(Items.COBBLESTONE, 64));
+        player.die(level.damageSources().generic());
+
+        GraveBlockEntity grave = findGrave(level, y);
+        check(grave != null, "no grave placed for the chest screen test");
+        BlockPos gravePos = grave.getBlockPos();
+
+        grave.openMenu(player);
+        check(player.containerMenu instanceof GraveMenu, "chest screen did not open: " + player.containerMenu);
+        GraveMenu menu = (GraveMenu) player.containerMenu;
+        int diamondSlot = menu.getSlot(0).getItem().is(Items.DIAMOND) ? 0 : 1;
+        ItemStack taken = menu.getSlot(diamondSlot).remove(64);
+        check(taken.is(Items.DIAMOND) && taken.getCount() == 5, "could not take the diamonds: " + taken);
+        player.closeContainer();
+        check(grave.entries().size() == 1 && !grave.isRemoved(), "grave should keep the cobblestone: " + grave.entries());
+
+        grave.openMenu(player);
+        menu = (GraveMenu) player.containerMenu;
+        for (int i = 0; i < 54; i++) {
+            menu.getSlot(i).remove(64);
+        }
+        player.closeContainer();
+        check(!(level.getBlockEntity(gravePos) instanceof GraveBlockEntity), "grave still there after emptying the chest screen");
+        player.getInventory().clearContent();
+        SimpleGraves.LOGGER.info("simplegraves self test: chest screen ok");
+    }
+
+    private static GraveBlockEntity findGrave(ServerLevel level, int y) {
+        for (BlockPos pos : BlockPos.betweenClosed(-4, y - 4, -4, 4, y + 4, 4)) {
+            if (level.getBlockEntity(pos) instanceof GraveBlockEntity found) {
+                return found;
+            }
+        }
+        return null;
     }
 
     private static void check(boolean condition, String message) {

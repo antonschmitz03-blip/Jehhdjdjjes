@@ -62,5 +62,6 @@ jobs:
           grep -q 'vplustweaks self test: enchanting infuser mixin loaded' server.log
           grep -q 'simplegraves self test: travelers backpack mixin loaded' server.log
           grep -q 'simplegraves self test: death grave ok' server.log
+          grep -q 'simplegraves self test: chest screen ok' server.log
           grep -q 'simplegraves self test passed' server.log
           if grep -iE 'tbaddons:|vplustweaks:|simplegraves:' server.log | grep -iqE 'error|parsing|couldn.t'; then echo "tbaddons data failed to load"; exit 1; fi

@@ -75,7 +75,12 @@ public class GraveBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
         if (grave.isOwner(serverPlayer)) {
-            grave.restoreTo(serverPlayer);
+            // Right-click: chest screen. Sneak + right-click (empty hands): everything straight back into its slots.
+            if (serverPlayer.isShiftKeyDown()) {
+                grave.restoreTo(serverPlayer);
+            } else {
+                grave.openMenu(serverPlayer);
+            }
         } else {
             serverPlayer.sendSystemMessage(Component.translatable("simplegraves.message.not_yours", grave.ownerName())
                     .withStyle(ChatFormatting.GRAY), true);

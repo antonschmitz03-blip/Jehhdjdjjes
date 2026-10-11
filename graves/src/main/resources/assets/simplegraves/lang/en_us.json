@@ -3,5 +3,6 @@
   "simplegraves.message.placed": "Your items are in a grave at %s %s %s (%s).",
   "simplegraves.message.not_yours": "This is %s's grave.",
   "simplegraves.message.restored": "You got your items back.",
-  "simplegraves.waypoint": "Grave"
+  "simplegraves.waypoint": "Grave",
+  "simplegraves.container.grave": "%s's Grave"
 }
