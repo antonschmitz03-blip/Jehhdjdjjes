@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.antonschmitz.backpacklink.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CraftingTerminalBlockEntityMixin",
+    "CraftingTerminalMenuMixin",
+    "StorageTerminalBlockEntityMixin",
+    "StorageTerminalMenuMixin"
+  ],
+  "client": [
+    "client.AbstractStorageTerminalScreenMixin",
+    "client.CraftingTerminalScreenMixin",
+    "client.ScreenInvoker"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

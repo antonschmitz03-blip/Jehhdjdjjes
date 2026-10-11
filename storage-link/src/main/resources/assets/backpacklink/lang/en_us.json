@@ -1,0 +1,6 @@
+{
+  "tooltip.backpacklink.in_backpack": "%s in your backpack",
+  "tooltip.backpacklink.toggle_on": "Backpack items: shown",
+  "tooltip.backpacklink.toggle_off": "Backpack items: hidden",
+  "narrator.backpacklink.toggle": "Show backpack items"
+}
