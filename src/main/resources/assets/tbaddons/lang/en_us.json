@@ -1,0 +1,5 @@
+{
+  "item.tbaddons.tool_swapper_upgrade": "Tool Swapper Upgrade",
+  "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Swaps the tool in your hand for the best one in the backpack when you start breaking a block",
+  "screen.tbaddons.tool_swapper_upgrade": "Tool Swapper"
+}
