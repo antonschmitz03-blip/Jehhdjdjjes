@@ -48,3 +48,4 @@ jobs:
           OB=$(find ~/.gradle -name 'fabric-object-builder-api-v1*.jar' | grep -v sources | head -1); unzip -l "$OB" | grep -i 'BlockEntityType' 
           javap -p -cp "$OB" net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder 2>&1 | head -20
           javap -p -cp "$MC" 'net.minecraft.world.level.block.entity.BlockEntityType$BlockEntitySupplier' | head
+          echo "##### modrinth xaero"; curl -sS "https://api.modrinth.com/v2/project/xaeros-minimap/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%2226.3%22%5D" | jq -r '.[] | .version_number + "  " + .id + "  " + (.files[0].filename)' | head
