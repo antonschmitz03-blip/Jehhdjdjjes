@@ -47,6 +47,14 @@ Multiply the stack size of every stackable item in the backpack's main storage (
 while backpacks still contain stacks above 99, Minecraft will drop those stacks when loading. Empty the
 oversized slots (or remove the stack upgrade and take items out) before uninstalling.
 
+### Reverting backpack variants
+
+Put any special backpack (spider, bat, dragon, iron, ...) alone into a crafting grid to turn it back
+into a standard Traveler's Backpack. Contents, upgrades, tier, tanks and the sleeping bag are kept;
+the items used to craft the variant are **not** returned. The list of variants is the item tag
+`tbaddons:revertible_backpacks`. This uses Traveler's Backpack's own `backpack_shaped` recipe type,
+which copies all backpack data onto the result.
+
 ## Building
 
 Requires JDK 25.

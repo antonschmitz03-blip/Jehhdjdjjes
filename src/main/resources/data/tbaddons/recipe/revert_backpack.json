@@ -1,0 +1,13 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#tbaddons:revertible_backpacks"
+  },
+  "pattern": [
+    "A"
+  ],
+  "result": {
+    "id": "travelersbackpack:standard"
+  }
+}

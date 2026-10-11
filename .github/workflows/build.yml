@@ -44,3 +44,4 @@ jobs:
           exec 3>&-
           grep -iE 'tbaddons|mixin|error|exception|Done \(' server.log | head -100
           grep -q 'tbaddons self test passed' server.log
+          if grep -iE 'tbaddons:' server.log | grep -iqE 'error|parsing|couldn.t'; then echo "tbaddons data failed to load"; exit 1; fi
