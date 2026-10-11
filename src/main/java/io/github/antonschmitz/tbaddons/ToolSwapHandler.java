@@ -16,9 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Swaps the held tool for the best one stored in the worn backpack as soon as the player starts
- * breaking a block. Runs on the server only; the client picks up the new hand item through the
- * normal inventory sync and restarts mining with it.
+ * Swaps the held tool for a suitable one stored in the worn backpack when the player starts breaking a
+ * block the held tool is unsuitable for. Runs on the server only; the client picks up the new hand item
+ * through the normal inventory sync and restarts mining with it.
  */
 public final class ToolSwapHandler {
     /** Items that may be swapped out of the hand and into it. Weapons (swords, maces, ...) are deliberately not in it. */
@@ -42,7 +42,7 @@ public final class ToolSwapHandler {
         }
 
         ItemStack held = player.getMainHandItem();
-        if (!isSwappableTool(held)) {
+        if (!isSwappableTool(held) || isSuitable(held, state)) {
             return;
         }
 
@@ -59,21 +59,20 @@ public final class ToolSwapHandler {
         wrapper.loadAdditionally(0);
         wrapper.loadAdditionally(2);
 
-        // Tool slots first, so they win ties against the main storage.
-        ItemStack best = held;
+        // First suitable tool wins, tool slots before the main storage.
         ItemStackHandler bestHandler = null;
         int bestSlot = -1;
+        search:
         for (ItemStackHandler handler : new ItemStackHandler[]{wrapper.getTools(), wrapper.getStorage()}) {
             if (handler == null) {
                 continue;
             }
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack candidate = handler.getStackInSlot(slot);
-                if (isSwappableTool(candidate) && !isAboutToBreak(candidate)
-                        && isBetter(candidate, best, state) && handler.isItemValid(slot, held)) {
-                    best = candidate;
+                if (isSwappableTool(candidate) && isSuitable(candidate, state) && handler.isItemValid(slot, held)) {
                     bestHandler = handler;
                     bestSlot = slot;
+                    break search;
                 }
             }
         }
@@ -82,26 +81,24 @@ public final class ToolSwapHandler {
             return;
         }
 
-        ItemStack newTool = best.copy();
+        ItemStack newTool = bestHandler.getStackInSlot(bestSlot).copy();
         bestHandler.setStackInSlot(bestSlot, held.copy());
         player.setItemInHand(InteractionHand.MAIN_HAND, newTool);
     }
 
-    private static boolean isBetter(ItemStack candidate, ItemStack current, BlockState state) {
+    /**
+     * A tool is suitable if it can harvest the block (for blocks that need a specific tool) or if it is an
+     * effective tool for it. Mining speed and enchantments are deliberately ignored, so e.g. a silk touch
+     * iron pickaxe is never swapped for a diamond one.
+     */
+    private static boolean isSuitable(ItemStack stack, BlockState state) {
         if (state.requiresCorrectToolForDrops()) {
-            boolean candidateDrops = candidate.isCorrectToolForDrops(state);
-            if (candidateDrops != current.isCorrectToolForDrops(state)) {
-                return candidateDrops;
-            }
+            return stack.isCorrectToolForDrops(state);
         }
-        return candidate.getDestroySpeed(state) > current.getDestroySpeed(state);
+        return stack.isCorrectToolForDrops(state) || stack.getDestroySpeed(state) > 1.0F;
     }
 
     private static boolean isSwappableTool(ItemStack stack) {
         return !stack.isEmpty() && stack.is(SWAPPABLE_TOOLS);
-    }
-
-    private static boolean isAboutToBreak(ItemStack stack) {
-        return stack.isDamageableItem() && stack.getMaxDamage() - stack.getDamageValue() <= 1;
     }
 }

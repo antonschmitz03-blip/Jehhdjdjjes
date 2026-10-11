@@ -1,6 +1,6 @@
 {
   "item.tbaddons.tool_swapper_upgrade": "Tool Swapper Upgrade",
-  "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Swaps the tool in your hand for the best one in the backpack when you start breaking a block",
+  "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Swaps the tool in your hand for a suitable one from the backpack when it can't mine the block",
   "screen.tbaddons.tool_swapper_upgrade": "Tool Swapper",
   "item.tbaddons.iron_stack_upgrade": "Iron Stack Upgrade",
   "item.travelersbackpack.iron_stack_upgrade_tooltip": "Multiplies the stack size in the backpack storage by 2 (up to 128 per slot)",

@@ -1,6 +1,6 @@
 {
   "item.tbaddons.tool_swapper_upgrade": "Werkzeugwechsel-Upgrade",
-  "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Tauscht das Werkzeug in deiner Hand gegen das beste aus dem Rucksack, sobald du anfängst, einen Block abzubauen",
+  "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Tauscht das Werkzeug in deiner Hand gegen ein passendes aus dem Rucksack, wenn es für den Block ungeeignet ist",
   "screen.tbaddons.tool_swapper_upgrade": "Werkzeugwechsel",
   "item.tbaddons.iron_stack_upgrade": "Eisen-Stapel-Upgrade",
   "item.travelersbackpack.iron_stack_upgrade_tooltip": "Vervielfacht die Stapelgröße im Rucksack-Speicher um 2 (bis zu 128 pro Slot)",

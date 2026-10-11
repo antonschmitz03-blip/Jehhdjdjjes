@@ -6,15 +6,16 @@ Fabric addon for [Traveler's Backpack](https://github.com/Tiviacz1337/Travelers-
 
 ### Tool Swapper Upgrade
 
-When you start breaking a block while holding a tool, the upgrade swaps it for the best matching tool
-from your worn backpack (tool slots first, then storage). The tool you were holding goes into the slot
-the new one came from.
+When you start breaking a block while holding a tool that is unsuitable for it, the upgrade swaps it
+for the first suitable tool in your worn backpack (tool slots first, then storage). The tool you were
+holding goes into the slot the new one came from.
 
 - Only tools are swapped: pickaxes, axes, shovels, hoes and shears (item tag `tbaddons:swappable_tools`,
   can be changed with a datapack). Swords and other weapons are never touched, and nothing happens
   when you hold a non-tool item or nothing at all.
-- "Best" means: able to harvest the block (if the block needs a specific tool), then fastest mining speed.
-- Tools with 1 durability left are skipped.
+- "Suitable" means: can harvest the block (for blocks that need a specific tool, e.g. ores), otherwise
+  an effective tool for it (e.g. a shovel for dirt). Mining speed and enchantments are ignored, so a
+  silk touch iron pickaxe is never swapped for a diamond pickaxe on stone.
 - The backpack must be worn. The upgrade has the usual on/off toggle in the backpack screen.
 - Disabled in creative mode.
 
