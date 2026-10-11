@@ -36,7 +36,7 @@ final class SelfTest {
     private static BlockPos chestPos;
     private static int ticks = -1;
 
-    /** Places the blocks; the checks run a few ticks later, once Tom's terminal has connected to the chest. */
+    /** Places the blocks; the checks run a few ticks later. */
     static void run(MinecraftServer server) {
         try {
             check(TerminalMenuDuck.class.isAssignableFrom(StorageTerminalMenu.class), "terminal menu mixin not applied");
@@ -75,6 +75,8 @@ final class SelfTest {
     private static void pull() {
         ChestBlockEntity chest = (ChestBlockEntity) level.getBlockEntity(chestPos);
         StorageTerminalBlockEntity terminal = (StorageTerminalBlockEntity) level.getBlockEntity(pos);
+        // Tom's queues this as a server task; run it now (not at game time 0, where its lookup caches "nothing").
+        terminal.onLoad();
 
         FakePlayer player = FakePlayer.get(level);
         ItemStack backpack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
