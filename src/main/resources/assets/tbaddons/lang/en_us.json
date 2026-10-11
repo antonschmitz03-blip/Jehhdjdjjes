@@ -10,5 +10,8 @@
   "screen.tbaddons.gold_stack_upgrade": "Gold Stack Upgrade (x4)",
   "item.tbaddons.diamond_stack_upgrade": "Diamond Stack Upgrade",
   "item.travelersbackpack.diamond_stack_upgrade_tooltip": "Multiplies the stack size in the backpack storage by 8 (up to 512 per slot)",
-  "screen.tbaddons.diamond_stack_upgrade": "Diamond Stack Upgrade (x8)"
+  "screen.tbaddons.diamond_stack_upgrade": "Diamond Stack Upgrade (x8)",
+  "item.tbaddons.soulbound_upgrade": "Soulbound Upgrade",
+  "item.travelersbackpack.soulbound_upgrade_tooltip": "You keep the worn backpack when you die",
+  "screen.tbaddons.soulbound_upgrade": "Soulbound"
 }

@@ -1,6 +1,7 @@
 package io.github.antonschmitz.tbaddons;
 
 import com.tiviacz.travelersbackpack.init.ModItemGroups;
+import io.github.antonschmitz.tbaddons.item.SoulboundUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.StackUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.ToolSwapperUpgradeItem;
 import io.github.antonschmitz.tbaddons.upgrade.StackUpgrade;
@@ -8,6 +9,7 @@ import java.util.function.Function;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +27,7 @@ public class TBAddons implements ModInitializer {
     public static Item IRON_STACK_UPGRADE;
     public static Item GOLD_STACK_UPGRADE;
     public static Item DIAMOND_STACK_UPGRADE;
+    public static Item SOULBOUND_UPGRADE;
 
     @Override
     public void onInitialize() {
@@ -35,12 +38,14 @@ public class TBAddons implements ModInitializer {
                 properties -> new StackUpgradeItem(properties, "gold_stack_upgrade", 4, StackUpgrade.Gold.class, StackUpgrade.Gold::new));
         DIAMOND_STACK_UPGRADE = register("diamond_stack_upgrade",
                 properties -> new StackUpgradeItem(properties, "diamond_stack_upgrade", 8, StackUpgrade.Diamond.class, StackUpgrade.Diamond::new));
+        SOULBOUND_UPGRADE = register("soulbound_upgrade", properties -> new SoulboundUpgradeItem(properties));
 
         CreativeModeTabEvents.modifyOutputEvent(ModItemGroups.TRAVELERS_BACKPACK).register(output -> {
             output.accept(TOOL_SWAPPER_UPGRADE);
             output.accept(IRON_STACK_UPGRADE);
             output.accept(GOLD_STACK_UPGRADE);
             output.accept(DIAMOND_STACK_UPGRADE);
+            output.accept(SOULBOUND_UPGRADE);
         });
 
         ToolSwapHandler.register();
@@ -55,11 +60,16 @@ public class TBAddons implements ModInitializer {
         try {
             for (String target : new String[]{
                     "com.tiviacz.travelersbackpack.inventory.BackpackWrapper$1",
+                    "com.tiviacz.travelersbackpack.util.BackpackDeathHelper",
                     "com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler",
                     "net.minecraft.world.inventory.AbstractContainerMenu",
                     "net.minecraft.world.item.ItemStackTemplate",
                     "net.minecraft.world.item.ItemStack"}) {
                 Class.forName(target);
+            }
+            if (FabricLoader.getInstance().isModLoaded("trinkets_updated")) {
+                Class.forName("eu.pb4.trinkets.api.TrinketsApi");
+                LOGGER.info("tbaddons self test: trinkets mixin loaded");
             }
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);

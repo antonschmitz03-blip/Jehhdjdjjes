@@ -16,6 +16,7 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     compileOnly files("libs/${project.travelersbackpack_jar}")
+    compileOnly files("libs/${project.trinkets_jar}")
 }
 
 processResources {

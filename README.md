@@ -49,6 +49,23 @@ Multiply the stack size of every stackable item in the backpack's main storage (
 while backpacks still contain stacks above 99, Minecraft will drop those stacks when loading. Empty the
 oversized slots (or remove the stack upgrade and take items out) before uninstalling.
 
+### Soulbound Upgrade
+
+You keep the backpack you are wearing when you die: it is neither dropped nor placed as a block at the
+spot where you died, and you are wearing it again after respawning. The upgrade has the usual on/off toggle.
+
+- Works with Traveler's Backpack's own backpack slot and with the Trinkets back slot (the default when
+  Trinkets is installed). The Accessories back slot is not supported yet.
+- Grave mods are bypassed for a soulbound backpack, since it never leaves you.
+
+Recipe (shaped):
+
+```
+Ender Pearl | Soul Sand/Soil   | Ender Pearl
+Soul Sand   | Blank Upgrade    | Soul Sand
+Ender Pearl | Totem of Undying | Ender Pearl
+```
+
 ### Reverting backpack variants
 
 Put any special backpack (spider, bat, dragon, iron, ...) alone into a crafting grid to turn it back
@@ -68,5 +85,6 @@ Requires JDK 25.
 The jars end up in `build/libs/` (backpack addon) and `vanilla-tweaks/build/libs/` (tweaks). GitHub Actions builds it on every push as well (artifact
 `travelers-backpack-addons`). Install it next to Traveler's Backpack, Fabric API and Forge Config API Port.
 
-`libs/` contains the Traveler's Backpack jar (LGPL-3.0, by Tiviacz1337) used only for compiling.
+`libs/` contains the Traveler's Backpack jar (LGPL-3.0, by Tiviacz1337) and the Trinkets Updated jar (MIT),
+used only for compiling and the CI smoke test.
 The upgrade texture is derived from Traveler's Backpack's blank upgrade texture.

@@ -10,5 +10,8 @@
   "screen.tbaddons.gold_stack_upgrade": "Gold-Stapel-Upgrade (x4)",
   "item.tbaddons.diamond_stack_upgrade": "Diamant-Stapel-Upgrade",
   "item.travelersbackpack.diamond_stack_upgrade_tooltip": "Vervielfacht die Stapelgröße im Rucksack-Speicher um 8 (bis zu 512 pro Slot)",
-  "screen.tbaddons.diamond_stack_upgrade": "Diamant-Stapel-Upgrade (x8)"
+  "screen.tbaddons.diamond_stack_upgrade": "Diamant-Stapel-Upgrade (x8)",
+  "item.tbaddons.soulbound_upgrade": "Seelenbindungs-Upgrade",
+  "item.travelersbackpack.soulbound_upgrade_tooltip": "Du behältst den getragenen Rucksack, wenn du stirbst",
+  "screen.tbaddons.soulbound_upgrade": "Seelenbindung"
 }
