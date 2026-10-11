@@ -29,17 +29,19 @@ jobs:
       - name: Client mixin target check
         run: |
           MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
+          check() { if grep -qF -- "$2" "$1"; then echo "ok: $2"; else echo "MISSING in $1: $2"; grep -n "$3" "$1" | head -5; exit 1; fi; }
           for cls in ContainerScreen ShulkerBoxScreen; do
             javap -c -p -cp "$MC" net.minecraft.client.gui.screens.inventory.$cls > $cls.txt
-            grep -q 'extractBackground(net.minecraft.client.gui.GuiGraphicsExtractor, int, int, float)' $cls.txt
-            grep -q 'GuiGraphicsExtractor.blit:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V' $cls.txt
+            check $cls.txt 'extractBackground(net.minecraft.client.gui.GuiGraphicsExtractor, int, int, float)' extractBackground
+            check $cls.txt 'GuiGraphicsExtractor.blit:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V' blit
           done
           javap -p -cp "$MC" net.minecraft.client.gui.screens.inventory.AbstractContainerScreen > acs.txt
-          grep -q 'boolean hasClickedOutside(double, double, int, int)' acs.txt
-          grep -q 'void extractLabels(net.minecraft.client.gui.GuiGraphicsExtractor, int, int)' acs.txt
-          grep -qE 'final int imageWidth;' acs.txt
-          grep -qE 'int leftPos;' acs.txt && grep -qE 'int topPos;' acs.txt && grep -qE ' T menu;' acs.txt
-          echo "client mixin targets ok"
+          check acs.txt 'boolean hasClickedOutside(double, double, int, int)' hasClickedOutside
+          check acs.txt 'void extractLabels(net.minecraft.client.gui.GuiGraphicsExtractor, int, int)' extractLabels
+          check acs.txt 'final int imageWidth;' imageWidth
+          check acs.txt 'int leftPos;' leftPos
+          check acs.txt 'int topPos;' topPos
+          check acs.txt ' menu;' menu
 
       # Boots a dedicated server with Traveler's Backpack + Trinkets + this addon and force-loads all mixin targets.
       - name: Server smoke test
