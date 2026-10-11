@@ -1,5 +1,14 @@
 {
   "item.tbaddons.tool_swapper_upgrade": "Tool Swapper Upgrade",
   "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Swaps the tool in your hand for the best one in the backpack when you start breaking a block",
-  "screen.tbaddons.tool_swapper_upgrade": "Tool Swapper"
+  "screen.tbaddons.tool_swapper_upgrade": "Tool Swapper",
+  "item.tbaddons.iron_stack_upgrade": "Iron Stack Upgrade",
+  "item.travelersbackpack.iron_stack_upgrade_tooltip": "Multiplies the stack size in the backpack storage by 2 (up to 128 per slot)",
+  "screen.tbaddons.iron_stack_upgrade": "Iron Stack Upgrade (x2)",
+  "item.tbaddons.gold_stack_upgrade": "Gold Stack Upgrade",
+  "item.travelersbackpack.gold_stack_upgrade_tooltip": "Multiplies the stack size in the backpack storage by 4 (up to 256 per slot)",
+  "screen.tbaddons.gold_stack_upgrade": "Gold Stack Upgrade (x4)",
+  "item.tbaddons.diamond_stack_upgrade": "Diamond Stack Upgrade",
+  "item.travelersbackpack.diamond_stack_upgrade_tooltip": "Multiplies the stack size in the backpack storage by 8 (up to 512 per slot)",
+  "screen.tbaddons.diamond_stack_upgrade": "Diamond Stack Upgrade (x8)"
 }

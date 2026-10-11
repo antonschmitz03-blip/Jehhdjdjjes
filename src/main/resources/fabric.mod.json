@@ -3,13 +3,17 @@
   "id": "tbaddons",
   "version": "${version}",
   "name": "Traveler's Backpack Addons",
-  "description": "Extra upgrades for Traveler's Backpack. Adds the Tool Swapper Upgrade, which switches your held tool to the best one in your backpack when you start breaking a block.",
-  "authors": ["antonschmitz03-blip"],
+  "description": "Extra upgrades for Traveler's Backpack: Tool Swapper and Stack Upgrades (x2 / x4 / x8 stack size).",
+  "authors": [
+    "antonschmitz03-blip"
+  ],
   "license": "CC0-1.0",
   "icon": "assets/tbaddons/textures/item/tool_swapper_upgrade.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["io.github.antonschmitz.tbaddons.TBAddons"]
+    "main": [
+      "io.github.antonschmitz.tbaddons.TBAddons"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.19.5",
@@ -17,5 +21,8 @@
     "minecraft": "~26.3",
     "java": ">=25",
     "travelersbackpack": ">=11.4.1"
-  }
+  },
+  "mixins": [
+    "tbaddons.mixins.json"
+  ]
 }

@@ -1,5 +1,14 @@
 {
   "item.tbaddons.tool_swapper_upgrade": "Werkzeugwechsel-Upgrade",
   "item.travelersbackpack.tool_swapper_upgrade_tooltip": "Tauscht das Werkzeug in deiner Hand gegen das beste aus dem Rucksack, sobald du anfängst, einen Block abzubauen",
-  "screen.tbaddons.tool_swapper_upgrade": "Werkzeugwechsel"
+  "screen.tbaddons.tool_swapper_upgrade": "Werkzeugwechsel",
+  "item.tbaddons.iron_stack_upgrade": "Eisen-Stapel-Upgrade",
+  "item.travelersbackpack.iron_stack_upgrade_tooltip": "Vervielfacht die Stapelgröße im Rucksack-Speicher um 2 (bis zu 128 pro Slot)",
+  "screen.tbaddons.iron_stack_upgrade": "Eisen-Stapel-Upgrade (x2)",
+  "item.tbaddons.gold_stack_upgrade": "Gold-Stapel-Upgrade",
+  "item.travelersbackpack.gold_stack_upgrade_tooltip": "Vervielfacht die Stapelgröße im Rucksack-Speicher um 4 (bis zu 256 pro Slot)",
+  "screen.tbaddons.gold_stack_upgrade": "Gold-Stapel-Upgrade (x4)",
+  "item.tbaddons.diamond_stack_upgrade": "Diamant-Stapel-Upgrade",
+  "item.travelersbackpack.diamond_stack_upgrade_tooltip": "Vervielfacht die Stapelgröße im Rucksack-Speicher um 8 (bis zu 512 pro Slot)",
+  "screen.tbaddons.diamond_stack_upgrade": "Diamant-Stapel-Upgrade (x8)"
 }

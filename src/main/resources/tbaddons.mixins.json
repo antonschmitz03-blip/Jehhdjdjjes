@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.antonschmitz.tbaddons.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AbstractContainerMenuMixin",
+    "BackpackStorageHandlerMixin",
+    "ItemStackMixin",
+    "ItemStackTemplateMixin",
+    "SlotItemHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -9,7 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import io.github.antonschmitz.tbaddons.client.ToolSwapperWidget;
+import io.github.antonschmitz.tbaddons.client.SimpleUpgradeWidget;
 import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,7 +27,7 @@ public class ToolSwapperUpgrade extends UpgradeBase<ToolSwapperUpgrade> implemen
     @Environment(EnvType.CLIENT)
     @Override
     public WidgetBase<?> createWidget(BackpackScreen screen, int x, int y) {
-        return new ToolSwapperWidget(
+        return new SimpleUpgradeWidget<>(
                 screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.tbaddons.tool_swapper_upgrade"
         );
     }
