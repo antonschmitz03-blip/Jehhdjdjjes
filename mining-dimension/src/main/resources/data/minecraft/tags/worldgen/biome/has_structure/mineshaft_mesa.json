@@ -1,0 +1,9 @@
+{
+  "values": [
+    "miningdim:mining_caves",
+    "miningdim:lush_caverns",
+    "miningdim:dripstone_caverns",
+    "miningdim:crystal_caverns",
+    "miningdim:basalt_caverns"
+  ]
+}

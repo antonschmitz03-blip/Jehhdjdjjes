@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -13,13 +15,18 @@ import net.minecraft.util.BlockUtil.FoundRectangle;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 
 /** CI smoke test: generates a few mining dimension chunks, logs what they contain and builds portals. */
 final class SelfTest {
     private static final int CHUNKS = 6;
     private static final Set<String> DECOR = Set.of("shroomlight", "glow_lichen", "cave_vines", "cave_vines_plant", "moss_block",
-            "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "clay", "big_dripleaf", "small_dripleaf");
+            "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "basalt", "blackstone", "smooth_basalt", "magma_block", "clay", "big_dripleaf", "small_dripleaf");
 
     private SelfTest() {
     }
@@ -102,8 +109,52 @@ final class SelfTest {
         // Each sample line is 512 blocks long; the average run between biome changes shows how big biomes are.
         MiningDimension.LOGGER.info("miningdim self test: biome samples {}, a new biome every ~{} blocks", biomeCounts,
                 changes == 0 ? "inf" : String.valueOf(3 * 32 * 512 / changes));
-        if (biomeCounts.size() < 4) {
-            throw new IllegalStateException("miningdim self test: expected all four biomes in a 512 block area");
+        if (biomeCounts.size() < 5) {
+            throw new IllegalStateException("miningdim self test: expected all five biomes in a 512 block area");
+        }
+
+        // Mineshafts: look for structure starts in a 50x50 chunk area (cheap, no terrain), then generate one fully.
+        Registry<Structure> structures = mining.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        Map<String, Integer> startCounts = new TreeMap<>();
+        StructureStart firstMineshaft = null;
+        for (int cx = -25; cx < 25; cx++) {
+            for (int cz = -25; cz < 25; cz++) {
+                ChunkAccess chunk = mining.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
+                for (Map.Entry<Structure, StructureStart> entry : chunk.getAllStarts().entrySet()) {
+                    if (entry.getValue().isValid()) {
+                        String name = structures.getKey(entry.getKey()).getPath();
+                        startCounts.merge(name, 1, Integer::sum);
+                        if (name.startsWith("mineshaft") && firstMineshaft == null) {
+                            firstMineshaft = entry.getValue();
+                        }
+                    }
+                }
+            }
+        }
+        MiningDimension.LOGGER.info("miningdim self test: structure starts in 2500 chunks {}", startCounts);
+        if (firstMineshaft == null) {
+            throw new IllegalStateException("miningdim self test: no mineshaft starts");
+        }
+        BoundingBox box = firstMineshaft.getBoundingBox();
+        for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++) {
+            for (int cz = box.minZ() >> 4; cz <= box.maxZ() >> 4; cz++) {
+                mining.getChunk(cx, cz);
+            }
+        }
+        Map<String, Integer> shaftBlocks = new TreeMap<>();
+        for (int x = box.minX(); x <= box.maxX(); x++) {
+            for (int z = box.minZ(); z <= box.maxZ(); z++) {
+                for (int y = box.minY(); y <= box.maxY(); y++) {
+                    String name = BuiltInRegistries.BLOCK.getKey(mining.getBlockState(pos.set(x, y, z)).getBlock()).getPath();
+                    if (name.endsWith("planks") || name.endsWith("fence") || name.equals("rail") || name.equals("spawner")) {
+                        shaftBlocks.merge(name, 1, Integer::sum);
+                    }
+                }
+            }
+        }
+        MiningDimension.LOGGER.info("miningdim self test: mineshaft at {} y {}..{} has {}", box.getCenter(), box.minY(), box.maxY(), shaftBlocks);
+        if (shaftBlocks.isEmpty()) {
+            throw new IllegalStateException("miningdim self test: mineshaft has no blocks");
         }
 
         // An exit portal built inside solid rock must be a complete portal.
