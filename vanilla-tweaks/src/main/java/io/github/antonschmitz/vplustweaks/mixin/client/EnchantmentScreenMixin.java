@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class EnchantmentScreenMixin {
     @ModifyExpressionValue(
             method = {"extractBackground", "extractRenderState"},
-            at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/EnchantmentMenu;costs:[I", opcode = Opcodes.GETFIELD)
+            at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/EnchantmentMenu;costs:[I", opcode = Opcodes.GETFIELD),
+            require = 0 // display only: never crash the client over it
     )
     private int[] vplustweaks$showHalvedLevels(int[] costs) {
         return EnchantingCosts.halve(costs);

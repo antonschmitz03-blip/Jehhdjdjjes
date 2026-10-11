@@ -9,6 +9,7 @@
     "FarmlandBlockMixin"
   ],
   "client": [
+    "client.AnvilScreenMixin",
     "client.EnchantmentScreenMixin"
   ],
   "injectors": {

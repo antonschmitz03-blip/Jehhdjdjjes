@@ -1,5 +1,7 @@
 # Traveler's Backpack Addons
 
+> This repo also contains a second, independent mod: [Vanilla+ Tweaks](vanilla-tweaks/README.md).
+
 Fabric addon for [Traveler's Backpack](https://github.com/Tiviacz1337/Travelers-Backpack) (Minecraft 26.3, Traveler's Backpack 11.4.1).
 
 ## Upgrades
@@ -63,7 +65,7 @@ Requires JDK 25.
 ./gradlew build
 ```
 
-The jar ends up in `build/libs/`. GitHub Actions builds it on every push as well (artifact
+The jars end up in `build/libs/` (backpack addon) and `vanilla-tweaks/build/libs/` (tweaks). GitHub Actions builds it on every push as well (artifact
 `travelers-backpack-addons`). Install it next to Traveler's Backpack, Fabric API and Forge Config API Port.
 
 `libs/` contains the Traveler's Backpack jar (LGPL-3.0, by Tiviacz1337) used only for compiling.
