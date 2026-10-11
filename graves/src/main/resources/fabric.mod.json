@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "simplegraves",
+  "version": "${version}",
+  "name": "Simple Graves",
+  "description": "When you die, your items and XP go into a grave that only you can open. Right-click it to get everything back into the slots it came from, Trinkets slots included. Works with Traveler's Backpack (incl. soulbound backpacks) and adds a waypoint in Xaero's Minimap.",
+  "authors": ["antonschmitz03-blip"],
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.antonschmitz.graves.SimpleGraves"],
+    "client": ["io.github.antonschmitz.graves.client.SimpleGravesClient"]
+  },
+  "mixins": ["simplegraves.mixins.json", "simplegraves.compat.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  },
+  "suggests": {
+    "trinkets": "*",
+    "travelersbackpack": "*",
+    "xaerominimap": "*"
+  }
+}

@@ -1,0 +1,60 @@
+plugins {
+    id 'net.fabricmc.fabric-loom'
+}
+
+version = project.graves_version
+group = project.maven_group
+
+base {
+    archivesName = 'simple-graves'
+}
+
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    // All optional at runtime: only used when the mod is installed.
+    compileOnly rootProject.files("libs/${project.travelersbackpack_jar}")
+    compileOnly rootProject.files("libs/${project.trinkets_jar}")
+    compileOnly "maven.modrinth:xaeros-minimap:${project.xaero_minimap_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+loom {
+    runs {
+        server {
+            vmArg "-Dsimplegraves.selfTest=true"
+        }
+    }
+}

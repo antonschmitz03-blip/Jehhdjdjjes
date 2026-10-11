@@ -1,6 +1,7 @@
 # Traveler's Backpack Addons
 
-> This repo also contains a second, independent mod: [Vanilla+ Tweaks](vanilla-tweaks/README.md).
+> This repo also contains two independent mods: [Vanilla+ Tweaks](vanilla-tweaks/README.md) and
+> [Simple Graves](graves/README.md).
 
 Fabric addon for [Traveler's Backpack](https://github.com/Tiviacz1337/Travelers-Backpack) (Minecraft 26.3, Traveler's Backpack 11.4.1).
 

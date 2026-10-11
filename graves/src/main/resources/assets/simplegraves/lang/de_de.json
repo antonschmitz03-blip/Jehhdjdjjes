@@ -1,0 +1,7 @@
+{
+  "block.simplegraves.grave": "Grab",
+  "simplegraves.message.placed": "Deine Items liegen in einem Grab bei %s %s %s (%s).",
+  "simplegraves.message.not_yours": "Das ist das Grab von %s.",
+  "simplegraves.message.restored": "Du hast deine Items zurückbekommen.",
+  "simplegraves.waypoint": "Grab"
+}
