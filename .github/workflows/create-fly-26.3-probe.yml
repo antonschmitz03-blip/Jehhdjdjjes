@@ -1,0 +1,82 @@
+# Throwaway probe: how much of Create Fly (unofficial Fabric port of Create) breaks on 26.3.
+name: Create Fly 26.3 probe
+on:
+  push:
+    branches: [claude/project-thread-ld1uhj]
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Clone Create Fly 26.2
+        run: git clone --depth 1 -b 26.2 https://github.com/ZurrTum/Create-Fly cf && git -C cf log -1 --format='%H %ad %s'
+      - name: Raise javac error limit
+        working-directory: cf
+        run: sed -i 's/it.options.release = 25/it.options.release = 25\n    it.options.compilerArgs += ["-Xmaxerrs", "100000", "-Xmaxwarns", "0"]/' build.gradle
+      - name: Baseline compile on 26.2
+        working-directory: cf
+        shell: bash {0}
+        run: |
+          ./gradlew compileJava compileClientJava --console=plain > ../baseline.log 2>&1; echo "baseline exit $?" | tee -a ../baseline.log
+          tail -30 ../baseline.log
+          find ~/.gradle .gradle -name 'minecraft-*.jar' 2>/dev/null | grep -v sources | tee ../jars-262.txt
+      - name: Switch to 26.3
+        working-directory: cf
+        run: |
+          sed -i -E 's/^(minecraft_version *= *).*/\126.3/; s/^(fabric_version *= *).*/\10.162.0+26.3/; s/^(loader_version *= *).*/\10.19.5/' gradle.properties
+          grep -E '^(minecraft|fabric|loader|loom)_version' gradle.properties
+      - name: Compile main on 26.3
+        working-directory: cf
+        shell: bash {0}
+        run: |
+          ./gradlew compileJava --console=plain > ../main-263.log 2>&1; echo "main exit $?" | tee -a ../main-263.log
+          grep -E '^[0-9]+ errors?$|error:' ../main-263.log | tail -3
+          find ~/.gradle .gradle -name 'minecraft-*.jar' 2>/dev/null | grep -v sources | tee ../jars-263.txt
+      # compileClientJava needs main to compile, so check client code against the 26.3 API via signatures instead.
+      - name: API diff of referenced Minecraft classes
+        shell: bash {0}
+        run: |
+          cp262=$(grep -E '26\.2' jars-262.txt | sort -u | paste -sd:); cp263=$(grep -E '26\.3' jars-263.txt | sort -u | paste -sd:)
+          echo "cp262=$cp262"; echo "cp263=$cp263"
+          grep -rhoE '^import (static )?net\.minecraft\.[A-Za-z0-9_.]+' cf/src | sed -E 's/^import (static )?//' | sort -u > imports.txt
+          # reduce to class names (drop static member suffix / inner names handled by javap '$')
+          : > classes.txt
+          while read -r c; do
+            while [ -n "$c" ]; do
+              if javap -cp "$cp262" "$c" >/dev/null 2>&1; then echo "$c" >> classes.txt; break; fi
+              n=$(echo "$c" | sed -E 's/\.([A-Z][A-Za-z0-9_]*)$/$\1/'); [ "$n" != "$c" ] && javap -cp "$cp262" "$n" >/dev/null 2>&1 && { echo "$n" >> classes.txt; break; }
+              c=${c%.*}; case "$c" in *.*) ;; *) break;; esac
+            done
+          done < imports.txt
+          sort -u classes.txt -o classes.txt
+          echo "referenced MC classes: $(wc -l < classes.txt)"
+          missing=0; changed=0; : > apidiff.txt
+          while read -r c; do
+            a=$(javap -p -cp "$cp262" "$c" 2>/dev/null | sort); b=$(javap -p -cp "$cp263" "$c" 2>/dev/null | sort)
+            if [ -z "$b" ]; then echo "MISSING $c" >> apidiff.txt; missing=$((missing+1)); continue; fi
+            d=$(diff <(echo "$a") <(echo "$b") | grep -E '^[<>]')
+            if [ -n "$d" ]; then changed=$((changed+1)); echo "CHANGED $c" >> apidiff.txt; echo "$d" >> apidiff.txt; fi
+          done < classes.txt
+          echo "missing=$missing changed=$changed" | tee -a apidiff.txt
+          grep -E '^MISSING' apidiff.txt | head -100
+      - name: Summaries
+        if: always()
+        shell: bash {0}
+        run: |
+          echo "## errors by file (main, 26.3)"; grep -oE 'src/[^:]+\.java:[0-9]+: error' main-263.log | cut -d: -f1 | sort | uniq -c | sort -rn | head -60
+          echo "## distinct error kinds"; grep -oE 'error: .*' main-263.log | sed -E 's/symbol: .*//' | sort | uniq -c | sort -rn | head -40
+          echo "## missing symbols"; grep -A2 'cannot find symbol' main-263.log | grep -oE 'symbol: +.*' | sort | uniq -c | sort -rn | head -80
+          grep -iE 'classtweaker|access ?widener|FAILURE|What went wrong' -A5 main-263.log | head -40
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: probe-logs
+          path: |
+            baseline.log
+            main-263.log
+            apidiff.txt
+            classes.txt
