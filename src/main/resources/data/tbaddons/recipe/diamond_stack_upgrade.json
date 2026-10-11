@@ -5,9 +5,9 @@
     "B": "travelersbackpack:blank_upgrade"
   },
   "pattern": [
-    "XXX",
+    " X ",
     "XBX",
-    "XXX"
+    " X "
   ],
   "result": {
     "id": "tbaddons:diamond_stack_upgrade"

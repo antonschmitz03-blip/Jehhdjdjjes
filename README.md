@@ -36,7 +36,7 @@ Multiply the stack size of every stackable item in the backpack's main storage (
 |---|---|---|---|
 | Iron Stack Upgrade | x2 | 128 | Blank Upgrade surrounded by 8 Iron Blocks |
 | Gold Stack Upgrade | x4 | 256 | Blank Upgrade surrounded by 8 Gold Blocks |
-| Diamond Stack Upgrade | x8 | 512 | Blank Upgrade surrounded by 8 Diamond Blocks |
+| Diamond Stack Upgrade | x8 | 512 | Blank Upgrade with 4 Diamond Blocks around it (plus shape) |
 
 - Unstackable items (tools, armor, ...) stay at 1. 16-stack items become 32 / 64 / 128.
 - If several are installed, the highest one counts. Works while the backpack is worn, held or placed.
