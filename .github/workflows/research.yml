@@ -14,31 +14,20 @@ jobs:
       - shell: bash {0}
         run: |
           MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
-          echo "MC=$MC"
           unzip -l "$MC" | awk '{print $4}' > files.txt
-          echo "##### worldgen dirs"; grep -E '^data/minecraft/worldgen/' files.txt | cut -d/ -f1-4 | sort | uniq -c
-          echo "##### ore_diamond_small hits"; grep -E 'ore_diamond|ore_iron\b|ore_vein|overworld_caves|material' files.txt | head -40
-          for f in $(grep -E 'ore_diamond_small\.json|ore_diamond_large\.json|/ore_iron\.json|/ore_copper_large\.json|/ore_coal\.json' files.txt | grep -v placed_feature); do echo "##### $f"; unzip -p "$MC" "$f"; echo; done
-          for f in $(grep -E 'overworld_caves\.json' files.txt | grep -v dimension_type | grep -v noise_settings); do echo "##### $f"; unzip -p "$MC" "$f"; echo; done
-          for f in $(grep -E 'density_function/overworld/(final_density|base_3d_noise|sloped_cheese|caves/.*|ore_vein/.*)\.json' files.txt); do echo "##### $f"; unzip -p "$MC" "$f" | jq -c .; echo; done
-          echo "##### the_end dim type"; unzip -p "$MC" data/minecraft/dimension_type/the_end.json
-          for f in assets/minecraft/blockstates/nether_portal.json assets/minecraft/models/block/nether_portal_ns.json assets/minecraft/models/block/nether_portal_ew.json assets/minecraft/textures/block/nether_portal.png.mcmeta; do echo "##### $f"; unzip -p "$MC" "$f"; echo; done
-          grep -E 'textures/block/(nether_portal|chiseled_deepslate)' files.txt
-          echo "##### noise_settings list"; grep -E 'worldgen/noise_settings/' files.txt
+          for f in $(grep -E 'worldgen/(material_rule|material_condition)/.+\.json' files.txt | sort); do echo "##### $f"; unzip -p "$MC" "$f" | jq -c .; done
+          for f in $(grep -E 'worldgen/feature/ore_.+\.json' files.txt | sort); do echo "##### $f"; unzip -p "$MC" "$f" | jq -c '{size, discard_chance_on_air_exposure, states: [.targets[].state]}'; done
+          for f in $(grep -E 'worldgen/placed_feature/ore_.+\.json' files.txt | sort); do echo "##### $f"; unzip -p "$MC" "$f" | jq -c .; done
+          for f in $(grep -E 'worldgen/carver/.+\.json' files.txt | sort); do echo "##### $f"; unzip -p "$MC" "$f" | jq -c .; done
+          for f in $(grep -E 'worldgen/(placed_)?feature/(spring_lava|lake_lava_underground|amethyst_geode|monster_room|glow_lichen)\.json' files.txt | sort); do echo "##### $f"; unzip -p "$MC" "$f" | jq -c .; done
+          echo "##### tags with ore_replaceables"; grep -E 'tags/block/.*replaceables' files.txt
+          unzip -p "$MC" data/minecraft/tags/block/height_specific_ore_replaceables.json
+          echo "##### biome deep_dark"; unzip -p "$MC" data/minecraft/worldgen/biome/deep_dark.json | jq -c .
           curl -sSLo vf.jar https://github.com/Vineflower/vineflower/releases/download/1.11.1/vineflower-1.11.1.jar
           mkdir cls out
-          cd cls && unzip -q "$MC" 'net/minecraft/world/level/levelgen/NoiseGeneratorSettings*.class' 'net/minecraft/world/level/levelgen/NoiseRouter*.class' 'net/minecraft/world/level/dimension/DimensionType.class' 'net/minecraft/world/level/levelgen/feature/configurations/OreConfiguration*.class' 'net/minecraft/world/item/FlintAndSteelItem.class' 'net/minecraft/world/level/levelgen/OreVeinifier*.class' ; cd ..
-          unzip -l "$MC" | grep -iE 'levelgen/.*(Aquifer|Material|OreVein).*class' | awk '{print $4}' | head -30
+          cd cls && unzip -q "$MC" 'net/minecraft/world/level/levelgen/NoiseBasedChunkGenerator.class' 'net/minecraft/world/level/levelgen/material/MaterialRules.class' 'net/minecraft/world/level/levelgen/material/MaterialSystem.class' 'net/minecraft/world/level/biome/Biome.class' 'net/minecraft/world/level/biome/BiomeGenerationSettings.class'; cd ..
           java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
-          for f in $(find out -name '*.java' | sort); do echo "##### $f"; cat "$f"; done
-          echo "##### javap"
-          for c in net.minecraft.world.level.block.Blocks net.minecraft.world.level.block.state.BlockBehaviour\$Properties net.minecraft.core.Registry net.minecraft.resources.ResourceKey net.minecraft.client.renderer.ItemBlockRenderTypes net.minecraft.world.level.block.state.BlockBehaviour net.minecraft.world.item.ItemStack net.minecraft.world.level.gameevent.GameEvent net.minecraft.world.level.block.state.properties.BlockStateProperties; do echo "##### javap $c"; javap -cp "$MC" "$c" 2>&1 | grep -E 'register|setId|noCollision|noCollission|strength|lightLevel|sound|pushReaction|noLootTable|noDrops|forceSolid|replaceable|BLOCK_PLACE|hurtAndBreak|Properties of|ofFullCopy|getChunkRenderType|ResourceKey<T> create|public static .* create|HORIZONTAL_AXIS|identifier|location\(|setBlockId|interface|class|class .* createKey|TRANSLUCENT|registerForHolder|updateShape|entityInside|getShape' | head -60; done
-          javap -cp "$MC" net.minecraft.resources.Identifier 2>&1 | head -30
-          javap -cp "$MC" net.minecraft.resources.ResourceLocation 2>&1 | head -5
-          javap -cp "$MC" net.minecraft.world.level.levelgen.Heightmap\$Types | head
-          javap -cp "$MC" net.minecraft.world.level.block.FireBlock | head -5
-          javap -cp "$MC" net.minecraft.client.renderer.chunk.ChunkSectionLayer 2>&1 | head
-          for J in $(find ~/.gradle -name 'fabric-*.jar' | grep -v sources); do unzip -l "$J" | awk '{print $4}' | grep -E 'BlockRenderLayerMap|PoiHelper|ChunkSectionLayerMap' | sed "s|^|$(basename $J): |"; done
-          J=$(find ~/.gradle -name 'fabric-object-builder-api-v1*.jar' | grep -v sources | head -1); javap -cp "$J:$MC" net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper
-          for J in $(find ~/.gradle -name 'fabric-*render*.jar' -o -name 'fabric-*block*view*.jar' -o -name 'fabric-model*.jar' | grep -v sources); do for c in $(unzip -l "$J" | awk '{print $4}' | grep -E 'BlockRenderLayerMap.*class$' | sed 's/\.class$//; s|/|.|g'); do echo "##### $c"; javap -cp "$J:$MC" "$c"; done; done
-          echo "##### deepslate tags"; for f in $(grep -E 'tags/block/(deepslate_ore_replaceables|stone_ore_replaceables)\.json' files.txt); do unzip -p "$MC" "$f"; done
+          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f"; done
+          javap -cp "$MC" net.minecraft.core.registries.BuiltInRegistries | grep -E ' BLOCK;| POINT_OF_INTEREST_TYPE;'
+          javap -cp "$MC" net.minecraft.world.level.block.Blocks | head -5
+          javap -p -cp "$MC" net.minecraft.world.level.block.Blocks | grep -E 'static .* register' | head
