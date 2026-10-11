@@ -5,14 +5,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.BlockUtil.FoundRectangle;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -81,17 +78,14 @@ final class SelfTest {
             throw new IllegalStateException("miningdim self test: unexpected terrain");
         }
 
-        // Biomes should be small: sample a 512x512 area every 16 blocks at three depths without generating it.
-        Climate.Sampler sampler = mining.getChunkSource().randomState().sampler();
-        BiomeSource biomes = mining.getChunkSource().getGenerator().getBiomeSource();
+        // Biomes should be small: sample a 512x512 area every 16 blocks at three depths (only biomes get computed).
         Map<String, Integer> biomeCounts = new TreeMap<>();
         int changes = 0;
         for (int y : new int[] {-40, 40, 120}) {
             String previous = null;
             for (int x = 0; x < 512; x += 16) {
                 for (int z = 0; z < 512; z += 16) {
-                    String biome = biomes.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), sampler)
-                            .unwrapKey().map(key -> key.identifier().getPath()).orElse("?");
+                    String biome = mining.getBiome(pos.set(x, y, z)).unwrapKey().map(key -> key.identifier().getPath()).orElse("?");
                     biomeCounts.merge(biome, 1, Integer::sum);
                     if (z > 0 && !biome.equals(previous)) {
                         changes++;
