@@ -21,12 +21,12 @@ public class BackpackLinkClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(BackpackViewPayload.TYPE, (payload, context) -> {
             enabled = payload.enabled();
             entries = payload.entries();
-            if (Minecraft.getInstance().screen instanceof BackpackButtonHolder holder && holder.backpacklink$button() != null) {
+            if (Minecraft.getInstance().gui.screen() instanceof BackpackButtonHolder holder && holder.backpacklink$button() != null) {
                 holder.backpacklink$button().setState(enabled);
             }
         });
         ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
-            if (!enabled || !(Minecraft.getInstance().screen instanceof AbstractStorageTerminalScreen<?>)) {
+            if (!enabled || !(Minecraft.getInstance().gui.screen() instanceof AbstractStorageTerminalScreen<?>)) {
                 return;
             }
             for (BackpackViewPayload.Entry entry : entries) {
