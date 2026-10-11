@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.PushReaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,6 @@ public class MiningDimension implements ModInitializer {
             .strength(-1.0F)
             .sound(SoundType.GLASS)
             .lightLevel(state -> 11)
-            .pushReaction(PushReaction.BLOCK)
             .noLootTable()));
 
     public static Identifier id(String path) {

@@ -7,7 +7,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.BlockUtil.FoundRectangle;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -42,10 +41,11 @@ final class SelfTest {
                                 air++;
                             } else if (!state.getFluidState().isEmpty()) {
                                 fluids++;
-                            } else if (state.is(BlockTags.COAL_ORES) || state.is(BlockTags.IRON_ORES) || state.is(BlockTags.COPPER_ORES)
-                                    || state.is(BlockTags.GOLD_ORES) || state.is(BlockTags.REDSTONE_ORES) || state.is(BlockTags.LAPIS_ORES)
-                                    || state.is(BlockTags.DIAMOND_ORES)) {
-                                counts.merge(BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath(), 1, Integer::sum);
+                            } else {
+                                String name = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+                                if (name.endsWith("_ore")) {
+                                    counts.merge(name, 1, Integer::sum);
+                                }
                             }
                         }
                     }
