@@ -43,6 +43,7 @@ Multiply the stack size of every stackable item in the backpack's main storage (
 - Taking items out always gives at most one normal stack (64) at a time, so the player inventory never
   gets oversized stacks. Number-key swaps move one normal stack; swapping a different item onto an
   oversized stack is blocked.
+- The backpack's sort button merges stacks up to the upgraded size (e.g. 128 with the Iron Stack Upgrade).
 - Removing the upgrade keeps oversized stacks as they are (nothing is deleted); they just can't grow.
 
 **Important:** Stacks above 99 are saved through mixins in this addon. If you remove the addon from a world

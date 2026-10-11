@@ -62,6 +62,7 @@ public class TBAddons implements ModInitializer {
                     "com.tiviacz.travelersbackpack.inventory.BackpackWrapper$1",
                     "com.tiviacz.travelersbackpack.util.BackpackDeathHelper",
                     "com.tiviacz.travelersbackpack.inventory.BackpackWrapper",
+                    "com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter",
                     "net.minecraft.world.inventory.ChestMenu",
                     "net.minecraft.world.inventory.ShulkerBoxMenu",
                     "com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler",

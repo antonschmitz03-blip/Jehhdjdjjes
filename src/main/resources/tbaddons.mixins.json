@@ -10,6 +10,7 @@
     "BackpackStorageHandlerMixin",
     "BackpackWrapperMixin",
     "ChestMenuMixin",
+    "ContainerSorterMixin",
     "ItemStackMixin",
     "ItemStackTemplateMixin",
     "ShulkerBoxMenuMixin",

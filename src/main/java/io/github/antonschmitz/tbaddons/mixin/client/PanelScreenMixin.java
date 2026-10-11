@@ -30,7 +30,7 @@ public abstract class PanelScreenMixin {
     }
 
     @ModifyArg(method = "extractBackground",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V"),
             index = 6)
     private int tbaddons$vanillaWidth(int width) {
         return this.tbaddons$panel() != null ? BackpackPanel.CONTAINER_WIDTH : width;

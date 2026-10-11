@@ -33,7 +33,7 @@ jobs:
           for cls in ContainerScreen ShulkerBoxScreen; do
             javap -c -p -cp "$MC" net.minecraft.client.gui.screens.inventory.$cls > $cls.txt
             check $cls.txt 'extractBackground(net.minecraft.client.gui.GuiGraphicsExtractor, int, int, float)' extractBackground
-            check $cls.txt 'GuiGraphicsExtractor.blit:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V' blit
+            check $cls.txt 'GuiGraphicsExtractor.blit:(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V' blit
           done
           javap -p -cp "$MC" net.minecraft.client.gui.screens.inventory.AbstractContainerScreen > acs.txt
           check acs.txt 'boolean hasClickedOutside(double, double, int, int)' hasClickedOutside
