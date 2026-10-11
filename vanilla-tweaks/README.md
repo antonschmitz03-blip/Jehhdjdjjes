@@ -17,6 +17,9 @@ Install on the server too when playing multiplayer.
 - **Pets are safe from you:** you (and your arrows) can't damage your own tamed wolves, cats, horses and
   other pets.
 - **Best horses:** every horse spawns and loads with maximum health (30), speed and jump strength.
+- **Fast ladders:** right-click a ladder with a ladder to add one at the bottom of the column (or the top
+  while sneaking), no matter how long it is.
+- **Floating ladders:** ladders can be placed anywhere, with no block behind them.
 
 ## Recipes
 

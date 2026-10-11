@@ -6,7 +6,8 @@
   "mixins": [
     "AnvilMenuMixin",
     "EnchantmentMenuMixin",
-    "FarmlandBlockMixin"
+    "FarmlandBlockMixin",
+    "LadderBlockMixin"
   ],
   "client": [
     "client.AnvilScreenMixin",
