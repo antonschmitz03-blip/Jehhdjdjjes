@@ -14,6 +14,9 @@ Install on the server too when playing multiplayer.
     in vanilla, and the levels/lapis spent (1–3) are unchanged.
   - Enchanting Infuser: its level cost is halved (rounded up). Refunds for removing enchantments are
     unchanged.
+- **Pets are safe from you:** you (and your arrows) can't damage your own tamed wolves, cats, horses and
+  other pets.
+- **Best horses:** every horse spawns and loads with maximum health (30), speed and jump strength.
 
 ## Recipes
 

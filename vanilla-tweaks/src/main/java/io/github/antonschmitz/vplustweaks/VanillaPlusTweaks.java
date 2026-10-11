@@ -13,6 +13,8 @@ public class VanillaPlusTweaks implements ModInitializer {
     @Override
     public void onInitialize() {
         DoubleDoors.register();
+        PetProtection.register();
+        HorseStats.register();
 
         if (Boolean.getBoolean("vplustweaks.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(server -> selfTest());
@@ -25,6 +27,8 @@ public class VanillaPlusTweaks implements ModInitializer {
             Class.forName("net.minecraft.world.inventory.AnvilMenu");
             Class.forName("net.minecraft.world.inventory.EnchantmentMenu");
             Class.forName("net.minecraft.world.level.block.FarmlandBlock");
+            Class.forName("net.minecraft.world.entity.animal.equine.Horse");
+            Class.forName("net.minecraft.world.entity.OwnableEntity");
             if (FabricLoader.getInstance().isModLoaded("enchantinginfuser")) {
                 Class.forName("fuzs.enchantinginfuser.common.world.inventory.InfuserMenu");
                 LOGGER.info("vplustweaks self test: enchanting infuser mixin loaded");
