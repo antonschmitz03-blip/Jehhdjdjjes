@@ -1,4 +1,8 @@
 {
   "block.miningdim.mining_portal": "Mining Portal",
-  "dimension.miningdim.mining": "Mining Dimension"
+  "dimension.miningdim.mining": "Mining Dimension",
+  "biome.miningdim.mining_caves": "Mining Caves",
+  "biome.miningdim.lush_caverns": "Lush Caverns",
+  "biome.miningdim.dripstone_caverns": "Dripstone Caverns",
+  "biome.miningdim.crystal_caverns": "Crystal Caverns"
 }

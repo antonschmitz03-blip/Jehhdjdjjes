@@ -12,7 +12,13 @@ A Fabric mod for Minecraft 26.3 that adds a sealed cave dimension made for minin
   with **3x the ore per vein** and **2x as many veins**, so about 6x the ore of the overworld. The mountain-only
   coal and iron layers are left out because the whole dimension is solid rock. Large copper and iron veins generate
   like in the overworld.
-  Amethyst geodes and glow lichen are included.
+- **Biomes:** four small cave biomes (roughly 50-100 blocks across, and they change with depth too):
+  - *Mining Caves*: plain stone caves.
+  - *Lush Caverns*: moss, azaleas, spore blossoms and lots of glow berry vines (no water or clay pools).
+  - *Dripstone Caverns*: dripstone clusters, large stalactites and stalagmites.
+  - *Crystal Caverns*: amethyst geodes about 8x as often and more shroomlight.
+- **Light:** rare shroomlight clusters hang from cave ceilings (more of them in Crystal Caverns), plus glow berry
+  vines everywhere and about twice the vanilla glow lichen.
 - **Mobs:** vanilla cave spawning (zombies, skeletons, spiders, creepers, slimes, endermen, witches, bats).
 - Beds set your spawn but can't be slept in.
 

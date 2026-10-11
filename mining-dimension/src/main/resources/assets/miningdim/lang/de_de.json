@@ -1,4 +1,8 @@
 {
   "block.miningdim.mining_portal": "Bergbauportal",
-  "dimension.miningdim.mining": "Bergbaudimension"
+  "dimension.miningdim.mining": "Bergbaudimension",
+  "biome.miningdim.mining_caves": "Bergbauhöhlen",
+  "biome.miningdim.lush_caverns": "Üppige Kavernen",
+  "biome.miningdim.dripstone_caverns": "Tropfsteinkavernen",
+  "biome.miningdim.crystal_caverns": "Kristallkavernen"
 }
