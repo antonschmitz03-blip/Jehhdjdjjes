@@ -71,7 +71,7 @@
     "minecraft:audio/ambient_sounds": {
       "additions": {
         "sound": "minecraft:ambient.basalt_deltas.additions",
-        "tick_chance": 0.002
+        "tick_chance": 0.0004
       },
       "mood": {
         "block_search_extent": 8,
@@ -131,7 +131,8 @@
       "minecraft:glow_lichen",
       "miningdim:glow_lichen_extra",
       "miningdim:shroomlight",
-      "miningdim:cave_vines_sparse"
+      "miningdim:cave_vines_sparse",
+      "miningdim:clay_pools_sparse"
     ],
     []
   ],

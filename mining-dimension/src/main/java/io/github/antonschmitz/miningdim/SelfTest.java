@@ -8,6 +8,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.BlockUtil.FoundRectangle;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 final class SelfTest {
     private static final int CHUNKS = 6;
     private static final Set<String> DECOR = Set.of("shroomlight", "glow_lichen", "cave_vines", "cave_vines_plant", "moss_block",
-            "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster");
+            "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "clay", "big_dripleaf", "small_dripleaf");
 
     private SelfTest() {
     }
@@ -33,7 +34,8 @@ final class SelfTest {
         Map<String, Integer> decor = new TreeMap<>();
         int air = 0;
         int[] airByBand = new int[8];
-        int fluids = 0;
+        int water = 0;
+        int lava = 0;
         int total = 0;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int cx = 0; cx < CHUNKS; cx++) {
@@ -47,9 +49,12 @@ final class SelfTest {
                             if (state.isAir()) {
                                 air++;
                                 airByBand[(y - mining.getMinY()) / 32]++;
-                            } else if (!state.getFluidState().isEmpty()) {
-                                fluids++;
+                            } else if (state.getFluidState().is(FluidTags.LAVA)) {
+                                lava++;
                             } else {
+                                if (state.getFluidState().is(FluidTags.WATER)) {
+                                    water++;
+                                }
                                 String name = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
                                 if (name.endsWith("_ore")) {
                                     counts.merge(name, 1, Integer::sum);
@@ -64,8 +69,8 @@ final class SelfTest {
         }
         boolean bedrockFloor = mining.getBlockState(new BlockPos(0, mining.getMinY(), 0)).is(Blocks.BEDROCK);
         boolean bedrockRoof = mining.getBlockState(new BlockPos(0, mining.getMaxY(), 0)).is(Blocks.BEDROCK);
-        MiningDimension.LOGGER.info("miningdim self test: {} chunks, y {}..{}, air {}%, fluid blocks {}, bedrock floor {}, roof {}",
-                CHUNKS * CHUNKS, mining.getMinY(), mining.getMaxY(), Math.round(100.0 * air / total), fluids, bedrockFloor, bedrockRoof);
+        MiningDimension.LOGGER.info("miningdim self test: {} chunks, y {}..{}, air {}%, water blocks {}, lava blocks {}, bedrock floor {}, roof {}",
+                CHUNKS * CHUNKS, mining.getMinY(), mining.getMaxY(), Math.round(100.0 * air / total), water, lava, bedrockFloor, bedrockRoof);
         StringBuilder bands = new StringBuilder();
         for (int band = 0; band < airByBand.length; band++) {
             bands.append(" y").append(mining.getMinY() + band * 32).append('=').append(Math.round(100.0 * airByBand[band] / (CHUNKS * CHUNKS * 256 * 32))).append('%');
@@ -74,7 +79,7 @@ final class SelfTest {
         counts.replaceAll((name, count) -> count / (CHUNKS * CHUNKS));
         MiningDimension.LOGGER.info("miningdim self test: ore blocks per chunk {}", counts);
         MiningDimension.LOGGER.info("miningdim self test: decoration blocks in {} chunks {}", CHUNKS * CHUNKS, decor);
-        if (fluids > 0 || !bedrockFloor || !bedrockRoof || counts.isEmpty()) {
+        if (lava > 0 || !bedrockFloor || !bedrockRoof || counts.isEmpty()) {
             throw new IllegalStateException("miningdim self test: unexpected terrain");
         }
 

@@ -71,7 +71,7 @@
     "minecraft:audio/ambient_sounds": {
       "additions": {
         "sound": "minecraft:block.azalea_leaves.step",
-        "tick_chance": 0.004
+        "tick_chance": 0.0008
       },
       "mood": {
         "block_search_extent": 8,
@@ -134,6 +134,7 @@
       "miningdim:shroomlight",
       "minecraft:lush_caves_ceiling_vegetation",
       "minecraft:cave_vines",
+      "minecraft:lush_caves_clay",
       "minecraft:lush_caves_vegetation",
       "minecraft:rooted_azalea_tree",
       "minecraft:spore_blossom"

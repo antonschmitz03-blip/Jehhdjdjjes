@@ -71,7 +71,7 @@
     "minecraft:audio/ambient_sounds": {
       "additions": {
         "sound": "minecraft:block.pointed_dripstone.drip_water",
-        "tick_chance": 0.01
+        "tick_chance": 0.002
       },
       "mood": {
         "block_search_extent": 8,
