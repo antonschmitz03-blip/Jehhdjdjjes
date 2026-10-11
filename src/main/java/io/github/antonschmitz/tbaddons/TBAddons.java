@@ -7,15 +7,19 @@ import io.github.antonschmitz.tbaddons.upgrade.StackUpgrade;
 import java.util.function.Function;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TBAddons implements ModInitializer {
     public static final String MOD_ID = "tbaddons";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static Item TOOL_SWAPPER_UPGRADE;
     public static Item IRON_STACK_UPGRADE;
@@ -40,6 +44,27 @@ public class TBAddons implements ModInitializer {
         });
 
         ToolSwapHandler.register();
+
+        if (Boolean.getBoolean("tbaddons.selfTest")) {
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> selfTest());
+        }
+    }
+
+    /** CI smoke test: force-load every mixin target so a broken injection fails the run. */
+    private static void selfTest() {
+        try {
+            for (String target : new String[]{
+                    "com.tiviacz.travelersbackpack.inventory.BackpackWrapper$1",
+                    "com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler",
+                    "net.minecraft.world.inventory.AbstractContainerMenu",
+                    "net.minecraft.world.item.ItemStackTemplate",
+                    "net.minecraft.world.item.ItemStack"}) {
+                Class.forName(target);
+            }
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        LOGGER.info("tbaddons self test passed");
     }
 
     private static Item register(String name, Function<Item.Properties, Item> factory) {
