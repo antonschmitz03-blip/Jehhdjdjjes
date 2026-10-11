@@ -1,6 +1,6 @@
 package io.github.antonschmitz.vplustweaks;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
