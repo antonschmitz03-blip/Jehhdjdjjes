@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:gold_ingot",
+    "W": "#minecraft:wool"
+  },
+  "pattern": [
+    "X X",
+    "XWX",
+    "X X"
+  ],
+  "result": {
+    "id": "minecraft:golden_horse_armor"
+  }
+}
