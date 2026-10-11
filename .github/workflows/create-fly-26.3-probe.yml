@@ -13,7 +13,7 @@ jobs:
         with: { distribution: temurin, java-version: '25' }
       - uses: gradle/actions/setup-gradle@v4
       - name: Clone Create Fly 26.2
-        run: git clone --depth 1 -b 26.2 https://github.com/ZurrTum/Create-Fly cf && git -C cf log -1 --format='%H %ad %s'
+        run: git clone --depth 1 -b 26.2 https://github.com/ZurrTum/Create-Fly cf && chmod +x cf/gradlew && git -C cf log -1 --format='%H %ad %s'
       - name: Raise javac error limit
         working-directory: cf
         run: sed -i 's/it.options.release = 25/it.options.release = 25\n    it.options.compilerArgs += ["-Xmaxerrs", "100000", "-Xmaxwarns", "0"]/' build.gradle
@@ -42,6 +42,7 @@ jobs:
         run: |
           cp262=$(grep -E '26\.2' jars-262.txt | sort -u | paste -sd:); cp263=$(grep -E '26\.3' jars-263.txt | sort -u | paste -sd:)
           echo "cp262=$cp262"; echo "cp263=$cp263"
+          if [ -z "$cp262" ] || [ -z "$cp263" ]; then echo "no minecraft jars found"; exit 1; fi
           grep -rhoE '^import (static )?net\.minecraft\.[A-Za-z0-9_.]+' cf/src | sed -E 's/^import (static )?//' | sort -u > imports.txt
           # reduce to class names (drop static member suffix / inner names handled by javap '$')
           : > classes.txt
