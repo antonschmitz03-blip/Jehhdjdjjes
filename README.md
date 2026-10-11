@@ -25,6 +25,27 @@ Iron Pickaxe | Blank Upgrade | Iron Axe
 Redstone     | Iron Shovel   | Redstone
 ```
 
+### Stack Upgrades
+
+Multiply the stack size of every stackable item in the backpack's main storage (not the tool slots):
+
+| Upgrade | Multiplier | 64-stack items | Recipe |
+|---|---|---|---|
+| Iron Stack Upgrade | x2 | 128 | Blank Upgrade surrounded by 8 Iron Blocks |
+| Gold Stack Upgrade | x4 | 256 | Blank Upgrade surrounded by 8 Gold Blocks |
+| Diamond Stack Upgrade | x8 | 512 | Blank Upgrade surrounded by 8 Diamond Blocks |
+
+- Unstackable items (tools, armor, ...) stay at 1. 16-stack items become 32 / 64 / 128.
+- If several are installed, the highest one counts. Works while the backpack is worn, held or placed.
+- Taking items out always gives at most one normal stack (64) at a time, so the player inventory never
+  gets oversized stacks. Number-key swaps move one normal stack; swapping a different item onto an
+  oversized stack is blocked.
+- Removing the upgrade keeps oversized stacks as they are (nothing is deleted); they just can't grow.
+
+**Important:** Stacks above 99 are saved through mixins in this addon. If you remove the addon from a world
+while backpacks still contain stacks above 99, Minecraft will drop those stacks when loading. Empty the
+oversized slots (or remove the stack upgrade and take items out) before uninstalling.
+
 ## Building
 
 Requires JDK 25.
