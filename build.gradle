@@ -39,6 +39,7 @@ loom {
     runs {
         server {
             vmArg "-Dtbaddons.selfTest=true"
+            vmArg "-Dvplustweaks.selfTest=true"
         }
     }
 }

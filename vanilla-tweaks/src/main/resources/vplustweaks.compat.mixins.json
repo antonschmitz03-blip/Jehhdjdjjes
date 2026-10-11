@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.antonschmitz.vplustweaks.mixin.compat",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "io.github.antonschmitz.vplustweaks.mixin.compat.CompatMixinPlugin",
+  "mixins": [
+    "InfuserMenuMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

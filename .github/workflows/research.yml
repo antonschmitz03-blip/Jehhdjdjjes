@@ -18,13 +18,6 @@ jobs:
           mkdir cls out
           cd cls && unzip -q "$MC" 'net/minecraft/world/inventory/EnchantmentMenu*' 'net/minecraft/client/gui/screens/inventory/EnchantmentScreen*' 'net/minecraft/world/inventory/AnvilMenu.class' 'net/minecraft/client/gui/screens/inventory/AnvilScreen.class' 'net/minecraft/world/level/block/Farm*' 'net/minecraft/world/level/block/DoorBlock.class' 'net/minecraft/world/item/Items.class' || true; unzip -l "$MC" | grep -i 'farm\|trampl' | head; cd ..
           java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
-          echo "##### EnchantmentMenu clickMenuButton"; awk '/public boolean clickMenuButton/,/^   }$/' out/net/minecraft/world/inventory/EnchantmentMenu.java
-          echo "##### EnchantmentMenu costs decl"; grep -n "costs" out/net/minecraft/world/inventory/EnchantmentMenu.java | head -20
-          echo "##### EnchantmentScreen costs usages"; grep -n "costs\|experienceLevel\|class EnchantmentScreen\|public void render\|protected void extract\|void .*(" out/net/minecraft/client/gui/screens/inventory/EnchantmentScreen.java | head -60
-          echo "##### EnchantmentScreen full"; cat out/net/minecraft/client/gui/screens/inventory/EnchantmentScreen.java | sed -n 1,400p
-          echo "##### Anvil"; grep -n "40\|cost\b\|TOO_EXPENSIVE\|too_expensive\|void createResult" out/net/minecraft/world/inventory/AnvilMenu.java | head -30; grep -n "40\|too_expensive\|TOO_EXPENSIVE\|cost" out/net/minecraft/client/gui/screens/inventory/AnvilScreen.java | head
-          javap -c -p -cp "$MC" net.minecraft.world.inventory.AnvilMenu | grep -n "bipush        40\|createResult" | head
-          javap -c -p -cp "$MC" net.minecraft.client.gui.screens.inventory.AnvilScreen | grep -n "bipush        40\|void " | head
-          echo "##### Farm"; grep -n "fallOn\|turnToDirt\|public \|protected " out/net/minecraft/world/level/block/Farm*.java | head -30; awk '/void fallOn/,/^   }$/' out/net/minecraft/world/level/block/Farm*.java
-          echo "##### Door"; grep -n "public \|protected " out/net/minecraft/world/level/block/DoorBlock.java | head -50
-          echo "##### Items chain/saddle"; grep -n "CHAIN\|SADDLE\|NAME_TAG\|HORSE_ARMOR\|CHAINMAIL" out/net/minecraft/world/item/Items.java | head -30
+          sed -n 80,120p out/net/minecraft/client/gui/screens/inventory/AnvilScreen.java
+          grep -n "canOpenByHand\|record BlockSetType" -r out || true
+          unzip -p "$MC" net/minecraft/world/level/block/state/properties/BlockSetType.class > bst.class; javap -p bst.class | grep -i "hand\|record" | head
