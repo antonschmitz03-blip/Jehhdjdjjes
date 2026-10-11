@@ -3,7 +3,7 @@
   "id": "tbaddons",
   "version": "${version}",
   "name": "Traveler's Backpack Addons",
-  "description": "Extra upgrades for Traveler's Backpack: Tool Swapper, Stack Upgrades (x2 / x4 / x8 stack size) and Soulbound.",
+  "description": "Extra upgrades for Traveler's Backpack: Tool Swapper, Stack Upgrades (x2 / x4 / x8 stack size) and Soulbound, plus the worn backpack shown next to chests.",
   "authors": [
     "antonschmitz03-blip"
   ],

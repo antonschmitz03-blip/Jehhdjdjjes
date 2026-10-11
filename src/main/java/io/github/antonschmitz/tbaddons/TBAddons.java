@@ -61,6 +61,9 @@ public class TBAddons implements ModInitializer {
             for (String target : new String[]{
                     "com.tiviacz.travelersbackpack.inventory.BackpackWrapper$1",
                     "com.tiviacz.travelersbackpack.util.BackpackDeathHelper",
+                    "com.tiviacz.travelersbackpack.inventory.BackpackWrapper",
+                    "net.minecraft.world.inventory.ChestMenu",
+                    "net.minecraft.world.inventory.ShulkerBoxMenu",
                     "com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler",
                     "net.minecraft.world.inventory.AbstractContainerMenu",
                     "net.minecraft.world.item.ItemStackTemplate",

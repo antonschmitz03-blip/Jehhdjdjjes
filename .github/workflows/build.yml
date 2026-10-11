@@ -25,6 +25,22 @@ jobs:
           name: vanilla-plus-tweaks
           path: vanilla-tweaks/build/libs/*.jar
 
+      # Client mixins don't load on the test server; check their targets against the Minecraft jar instead.
+      - name: Client mixin target check
+        run: |
+          MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
+          for cls in ContainerScreen ShulkerBoxScreen; do
+            javap -c -p -cp "$MC" net.minecraft.client.gui.screens.inventory.$cls > $cls.txt
+            grep -q 'extractBackground(net.minecraft.client.gui.GuiGraphicsExtractor, int, int, float)' $cls.txt
+            grep -q 'GuiGraphicsExtractor.blit:(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIII)V' $cls.txt
+          done
+          javap -p -cp "$MC" net.minecraft.client.gui.screens.inventory.AbstractContainerScreen > acs.txt
+          grep -q 'boolean hasClickedOutside(double, double, int, int)' acs.txt
+          grep -q 'void extractLabels(net.minecraft.client.gui.GuiGraphicsExtractor, int, int)' acs.txt
+          grep -qE 'final int imageWidth;' acs.txt
+          grep -qE 'int leftPos;' acs.txt && grep -qE 'int topPos;' acs.txt && grep -qE ' T menu;' acs.txt
+          echo "client mixin targets ok"
+
       # Boots a dedicated server with Traveler's Backpack + Trinkets + this addon and force-loads all mixin targets.
       - name: Server smoke test
         run: |

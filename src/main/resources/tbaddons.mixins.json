@@ -6,10 +6,19 @@
   "mixins": [
     "AbstractContainerMenuMixin",
     "BackpackDeathHelperMixin",
+    "BackpackPanelMenuMixin",
     "BackpackStorageHandlerMixin",
+    "BackpackWrapperMixin",
+    "ChestMenuMixin",
     "ItemStackMixin",
     "ItemStackTemplateMixin",
+    "ShulkerBoxMenuMixin",
     "SlotItemHandlerMixin"
+  ],
+  "client": [
+    "client.AbstractContainerScreenAccessor",
+    "client.AbstractContainerScreenMixin",
+    "client.PanelScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
