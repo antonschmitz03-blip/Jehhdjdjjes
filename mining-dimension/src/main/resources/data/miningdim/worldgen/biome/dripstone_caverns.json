@@ -103,7 +103,7 @@
       "miningdim:ore_diamond_buried"
     ],
     [
-      "minecraft:dripstone_cluster",
+      "miningdim:dripstone_cluster",
       "minecraft:large_dripstone",
       "minecraft:pointed_dripstone"
     ],
