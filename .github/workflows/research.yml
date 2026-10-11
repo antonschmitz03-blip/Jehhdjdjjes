@@ -12,6 +12,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: chmod +x gradlew && ./gradlew compileJava -q
       - shell: bash {0}
+        run: |
           MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
           unzip -l "$MC" | awk '{print $4}' > files.txt
           j() { for f in "$@"; do echo "##### $f"; unzip -p "$MC" "data/minecraft/$f" | jq -c .; done; }
