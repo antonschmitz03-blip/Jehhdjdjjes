@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +37,8 @@ public class SimpleGraves implements ModInitializer {
         GRAVE = Registry.register(BuiltInRegistries.BLOCK, key, new GraveBlock(BlockBehaviour.Properties.of()
                 .mapColor(MapColor.STONE)
                 .sound(SoundType.STONE)
-                // Unbreakable in survival, explosion-proof and immovable; only the owner can empty it.
+                // Unbreakable in survival and explosion-proof; pistons never move blocks with a block entity.
                 .strength(-1.0F, 3600000.0F)
-                .pushReaction(PushReaction.BLOCK)
                 .noLootTable()
                 .noOcclusion()
                 .setId(key)));
