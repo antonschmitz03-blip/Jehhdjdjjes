@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/nether_portal_ns",
+  "textures": {
+    "particle": "miningdim:block/mining_portal",
+    "portal": "miningdim:block/mining_portal"
+  }
+}

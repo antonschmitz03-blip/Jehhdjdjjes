@@ -41,6 +41,7 @@ loom {
         server {
             vmArg "-Dtbaddons.selfTest=true"
             vmArg "-Dvplustweaks.selfTest=true"
+            vmArg "-Dminingdim.selfTest=true"
         }
     }
 }

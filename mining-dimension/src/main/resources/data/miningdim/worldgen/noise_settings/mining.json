@@ -1,0 +1,59 @@
+{
+  "default_block": "minecraft:stone",
+  "default_fluid": "minecraft:air",
+  "disable_mob_generation": false,
+  "legacy_random_source": false,
+  "material_rule": "miningdim:mining",
+  "noise": {
+    "min_y": -64,
+    "height": 256
+  },
+  "noise_router": {
+    "temperature": 0.0,
+    "vegetation": 0.0,
+    "continents": 0.0,
+    "erosion": 0.0,
+    "depth": 0.0,
+    "ridges": 0.0,
+    "chunk_surface_level": 0.0,
+    "final_density": {
+      "type": "minecraft:squeeze",
+      "input": {
+        "type": "minecraft:interpolated",
+        "cell_size_xz": 4,
+        "cell_size_y": 8,
+        "input": {
+          "type": "minecraft:mul",
+          "left": {
+            "type": "minecraft:lerp",
+            "alpha": {
+              "type": "minecraft:gradient",
+              "axis": "y",
+              "from_coordinate": -64,
+              "from_value": 0.0,
+              "to_coordinate": -52,
+              "to_value": 1.0
+            },
+            "first": 0.5,
+            "second": {
+              "type": "minecraft:lerp",
+              "alpha": {
+                "type": "minecraft:gradient",
+                "axis": "y",
+                "from_coordinate": 172,
+                "from_value": 1.0,
+                "to_coordinate": 188,
+                "to_value": 0.0
+              },
+              "first": 0.5,
+              "second": "miningdim:caves"
+            }
+          },
+          "right": 0.64
+        }
+      }
+    }
+  },
+  "sea_level": -64,
+  "spawn_target": []
+}

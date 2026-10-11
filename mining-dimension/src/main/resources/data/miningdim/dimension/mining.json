@@ -1,0 +1,11 @@
+{
+  "type": "miningdim:mining",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "miningdim:mining_caves"
+    },
+    "settings": "miningdim:mining"
+  }
+}

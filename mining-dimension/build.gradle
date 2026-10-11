@@ -1,0 +1,41 @@
+plugins {
+    id 'net.fabricmc.fabric-loom'
+}
+
+version = project.miningdim_version
+group = project.maven_group
+
+base {
+    archivesName = 'mining-dimension'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+loom {
+    runs {
+        server {
+            vmArg "-Dminingdim.selfTest=true"
+        }
+    }
+}
