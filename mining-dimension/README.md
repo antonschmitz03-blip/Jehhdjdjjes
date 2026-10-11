@@ -19,6 +19,9 @@ A Fabric mod for Minecraft 26.3 that adds a sealed cave dimension made for minin
   - *Crystal Caverns*: amethyst geodes about 8x as often and more shroomlight.
 - **Light:** rare shroomlight clusters hang from cave ceilings (more of them in Crystal Caverns), plus glow berry
   vines everywhere and about twice the vanilla glow lichen.
+- **Atmosphere:** each biome has a few drifting particles (dust motes, spore specks, water drips, purple sparkles),
+  a faint fog tint (fog distance is unchanged) and occasional ambient sounds (distant rumbles, rustling leaves,
+  drips, amethyst chimes) on top of the normal cave sounds.
 - **Mobs:** vanilla cave spawning (zombies, skeletons, spiders, creepers, slimes, endermen, witches, bats).
 - Beds set your spawn but can't be slept in.
 

@@ -67,7 +67,31 @@
         }
       },
       "modifier": "overlay"
-    }
+    },
+    "minecraft:audio/ambient_sounds": {
+      "additions": {
+        "sound": "minecraft:block.pointed_dripstone.drip_water",
+        "tick_chance": 0.01
+      },
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000
+      }
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:falling_dripstone_water"
+          },
+          "probability": 0.002
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#15110c"
   },
   "carvers": [],
   "downfall": 0.0,

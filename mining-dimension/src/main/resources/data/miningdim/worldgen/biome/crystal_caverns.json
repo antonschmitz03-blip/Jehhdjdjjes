@@ -67,7 +67,31 @@
         }
       },
       "modifier": "overlay"
-    }
+    },
+    "minecraft:audio/ambient_sounds": {
+      "additions": {
+        "sound": "minecraft:block.amethyst_block.chime",
+        "tick_chance": 0.004
+      },
+      "mood": {
+        "block_search_extent": 8,
+        "offset": 2.0,
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000
+      }
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:witch"
+          },
+          "probability": 0.003
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:visual/fog_color": "#120c17"
   },
   "carvers": [],
   "downfall": 0.0,
