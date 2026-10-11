@@ -84,21 +84,19 @@ final class SelfTest {
         check(grave != null, "no grave placed for the chest screen test");
         BlockPos gravePos = grave.getBlockPos();
 
-        grave.openMenu(player);
-        check(player.containerMenu instanceof GraveMenu, "chest screen did not open: " + player.containerMenu);
-        GraveMenu menu = (GraveMenu) player.containerMenu;
+        // Fabric's FakePlayer ignores openMenu, so build the menu directly and close it via removed().
+        GraveMenu menu = grave.fillMenu(1, player.getInventory(), player);
         int diamondSlot = menu.getSlot(0).getItem().is(Items.DIAMOND) ? 0 : 1;
         ItemStack taken = menu.getSlot(diamondSlot).remove(64);
         check(taken.is(Items.DIAMOND) && taken.getCount() == 5, "could not take the diamonds: " + taken);
-        player.closeContainer();
+        menu.removed(player);
         check(grave.entries().size() == 1 && !grave.isRemoved(), "grave should keep the cobblestone: " + grave.entries());
 
-        grave.openMenu(player);
-        menu = (GraveMenu) player.containerMenu;
+        menu = grave.fillMenu(2, player.getInventory(), player);
         for (int i = 0; i < 54; i++) {
             menu.getSlot(i).remove(64);
         }
-        player.closeContainer();
+        menu.removed(player);
         check(!(level.getBlockEntity(gravePos) instanceof GraveBlockEntity), "grave still there after emptying the chest screen");
         player.getInventory().clearContent();
         SimpleGraves.LOGGER.info("simplegraves self test: chest screen ok");

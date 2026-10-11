@@ -121,6 +121,13 @@ public class GraveBlockEntity extends BlockEntity {
         if (openContainer != null) {
             return;
         }
+        // The grave is only emptied into the menu once the player's screen actually opens.
+        player.openMenu(new SimpleMenuProvider((containerId, inventory, p) -> fillMenu(containerId, inventory, player),
+                Component.translatable("simplegraves.container.grave", ownerName)));
+    }
+
+    /** Moves up to 54 stacks into a chest container and gives the XP. Package-private for {@link SelfTest}. */
+    GraveMenu fillMenu(int containerId, net.minecraft.world.entity.player.Inventory inventory, ServerPlayer player) {
         int size = 54;
         SimpleContainer container = new SimpleContainer(size);
         List<String> slots = new ArrayList<>();
@@ -137,11 +144,9 @@ public class GraveBlockEntity extends BlockEntity {
             xp = 0;
         }
         setChanged();
-        player.openMenu(new SimpleMenuProvider((containerId, inventory, p) -> new GraveMenu(containerId, inventory, container, this),
-                Component.translatable("simplegraves.container.grave", ownerName)));
+        return new GraveMenu(containerId, inventory, container, this);
     }
 
-    /** Puts whatever is left in the chest screen back into the grave; removes the grave if nothing is left. */
     void closeMenu(net.minecraft.world.Container container) {
         if (container != openContainer) {
             return;
