@@ -19,9 +19,7 @@ jobs:
           cd cls && unzip -q "$MC" 'net/minecraft/world/item/component/ItemContainerContents*' 'net/minecraft/world/item/ItemStack.class' 'net/minecraft/world/item/ItemStackTemplate*' 'net/minecraft/world/inventory/Slot.class' 'net/minecraft/world/inventory/AbstractContainerMenu.class' 'net/minecraft/world/ItemStackWithSlot*' 'net/minecraft/util/ExtraCodecs.class' 'net/minecraft/world/inventory/ContainerInput*' || true; cd ..
           java -jar vf.jar -log=ERROR cls out
           for f in $(find out -name '*.java'); do echo "=================== $f"; cat "$f"; done > dump.txt
-          I=out/net/minecraft/world/item/ItemStack.java
-          sed -n 100,140p $I
-          awk '/validateContainedItemSizes|validateComponents|validateStrict/{p=1} p{print; n++} n>40{p=0;n=0}' $I | head -150
-          grep -rn "validateContainedItemSizes\|validateComponents\|validateStrict" out | head
+          sed -n 75,140p out/net/minecraft/world/item/ItemStackTemplate.java
+          javap -c -p -cp "$MC" net.minecraft.world.item.ItemStackTemplate | grep -n "public net.minecraft.world.item.ItemStack create\|validateStrict\|Method .*ItemStack\.\|^  [a-z].*(" | head -60
       - uses: actions/upload-artifact@v4
         with: { name: dump, path: dump.txt }
