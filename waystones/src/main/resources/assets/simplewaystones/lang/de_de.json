@@ -1,0 +1,22 @@
+{
+  "block.simplewaystones.waystone": "Wegstein",
+  "item.simplewaystones.warp_scroll": "Teleportrolle",
+  "simplewaystones.default_name": "Wegstein (%s)",
+  "simplewaystones.message.placed": "Wegstein platziert: %s",
+  "simplewaystones.message.discovered": "Wegstein entdeckt: %s",
+  "simplewaystones.message.renamed": "Wegstein umbenannt in %s",
+  "simplewaystones.message.not_yours": "Dieser Wegstein gehört %s",
+  "simplewaystones.message.gone": "%s existiert nicht mehr",
+  "simplewaystones.message.not_enough_xp": "Dafür brauchst du %s Level",
+  "simplewaystones.message.none_discovered": "Du hast noch keine anderen Wegsteine entdeckt",
+  "simplewaystones.menu.position": "X %s, Y %s, Z %s",
+  "simplewaystones.menu.dimension": "Dimension: %s",
+  "simplewaystones.menu.free": "Kostenlos",
+  "simplewaystones.menu.cost": "Kostet %s Level",
+  "simplewaystones.menu.uses_scroll": "Verbraucht die Teleportrolle",
+  "simplewaystones.menu.previous": "Vorherige Seite",
+  "simplewaystones.menu.next": "Nächste Seite",
+  "simplewaystones.dimension.overworld": "Oberwelt",
+  "simplewaystones.dimension.the_nether": "Nether",
+  "simplewaystones.dimension.the_end": "Ende"
+}

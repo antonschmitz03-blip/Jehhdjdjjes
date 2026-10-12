@@ -1,0 +1,22 @@
+{
+  "block.simplewaystones.waystone": "Waystone",
+  "item.simplewaystones.warp_scroll": "Warp Scroll",
+  "simplewaystones.default_name": "%s Waystone",
+  "simplewaystones.message.placed": "Waystone placed: %s",
+  "simplewaystones.message.discovered": "Waystone discovered: %s",
+  "simplewaystones.message.renamed": "Waystone renamed to %s",
+  "simplewaystones.message.not_yours": "This waystone belongs to %s",
+  "simplewaystones.message.gone": "%s is gone",
+  "simplewaystones.message.not_enough_xp": "You need %s levels for this",
+  "simplewaystones.message.none_discovered": "You haven't discovered any other waystones yet",
+  "simplewaystones.menu.position": "X %s, Y %s, Z %s",
+  "simplewaystones.menu.dimension": "In the %s",
+  "simplewaystones.menu.free": "Free",
+  "simplewaystones.menu.cost": "Costs %s levels",
+  "simplewaystones.menu.uses_scroll": "Uses up the warp scroll",
+  "simplewaystones.menu.previous": "Previous page",
+  "simplewaystones.menu.next": "Next page",
+  "simplewaystones.dimension.overworld": "Overworld",
+  "simplewaystones.dimension.the_nether": "Nether",
+  "simplewaystones.dimension.the_end": "End"
+}

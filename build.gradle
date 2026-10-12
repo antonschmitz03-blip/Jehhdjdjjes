@@ -42,6 +42,7 @@ loom {
             vmArg "-Dtbaddons.selfTest=true"
             vmArg "-Dvplustweaks.selfTest=true"
             vmArg "-Dsimplegraves.selfTest=true"
+            vmArg "-Dsimplewaystones.selfTest=true"
         }
     }
 }
