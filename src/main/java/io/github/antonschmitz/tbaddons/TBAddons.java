@@ -1,6 +1,7 @@
 package io.github.antonschmitz.tbaddons;
 
 import com.tiviacz.travelersbackpack.init.ModItemGroups;
+import io.github.antonschmitz.backpacklink.BackpackLink;
 import io.github.antonschmitz.tbaddons.item.SoulboundUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.StackUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.ToolSwapperUpgradeItem;
@@ -50,6 +51,11 @@ public class TBAddons implements ModInitializer {
 
         ToolSwapHandler.register();
 
+        // Backpack Storage Link: Tom's Simple Storage terminals also use backpack items. Optional dependency.
+        if (isStorageLinkEnabled()) {
+            new BackpackLink().onInitialize();
+        }
+
         if (Boolean.getBoolean("tbaddons.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(server -> selfTest());
         }
@@ -84,6 +90,11 @@ public class TBAddons implements ModInitializer {
     private static Item register(String name, Function<Item.Properties, Item> factory) {
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id(name));
         return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().stacksTo(16).setId(key)));
+    }
+
+    /** The Tom's Simple Storage integration (package {@code backpacklink}) only loads when that mod is installed. */
+    public static boolean isStorageLinkEnabled() {
+        return FabricLoader.getInstance().isModLoaded("toms_storage");
     }
 
     public static Identifier id(String path) {

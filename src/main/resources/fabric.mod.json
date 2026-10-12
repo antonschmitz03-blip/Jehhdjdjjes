@@ -2,8 +2,11 @@
   "schemaVersion": 1,
   "id": "tbaddons",
   "version": "${version}",
+  "provides": [
+    "backpacklink"
+  ],
   "name": "Traveler's Backpack Addons",
-  "description": "Extra upgrades for Traveler's Backpack: Tool Swapper, Stack Upgrades (x2 / x4 / x8 stack size) and Soulbound, plus the worn backpack shown next to chests.",
+  "description": "Extra upgrades for Traveler's Backpack: Tool Swapper, Stack Upgrades (x2 / x4 / x8 stack size) and Soulbound, plus the worn backpack shown next to chests. With Tom's Simple Storage installed, its terminals also show and use the items in your backpacks.",
   "authors": [
     "antonschmitz03-blip"
   ],
@@ -13,6 +16,9 @@
   "entrypoints": {
     "main": [
       "io.github.antonschmitz.tbaddons.TBAddons"
+    ],
+    "client": [
+      "io.github.antonschmitz.tbaddons.client.TBAddonsClient"
     ]
   },
   "depends": {
@@ -24,6 +30,10 @@
   },
   "mixins": [
     "tbaddons.mixins.json",
-    "tbaddons.compat.mixins.json"
-  ]
+    "tbaddons.compat.mixins.json",
+    "backpacklink.mixins.json"
+  ],
+  "suggests": {
+    "toms_storage": "*"
+  }
 }

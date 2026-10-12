@@ -1,0 +1,6 @@
+{
+  "tooltip.backpacklink.in_backpack": "%s in deinem Rucksack",
+  "tooltip.backpacklink.toggle_on": "Rucksack-Items: angezeigt",
+  "tooltip.backpacklink.toggle_off": "Rucksack-Items: ausgeblendet",
+  "narrator.backpacklink.toggle": "Rucksack-Items anzeigen"
+}

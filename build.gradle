@@ -17,6 +17,7 @@ dependencies {
 
     compileOnly files("libs/${project.travelersbackpack_jar}")
     compileOnly files("libs/${project.trinkets_jar}")
+    compileOnly files("libs/${project.toms_storage_jar}")
 }
 
 processResources {
@@ -41,6 +42,7 @@ loom {
         server {
             vmArg "-Dtbaddons.selfTest=true"
             vmArg "-Dvplustweaks.selfTest=true"
+            vmArg "-Dbackpacklink.selfTest=true"
         }
     }
 }
