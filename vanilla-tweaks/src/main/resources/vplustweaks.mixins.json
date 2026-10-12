@@ -11,8 +11,7 @@
   ],
   "client": [
     "client.AnvilScreenMixin",
-    "client.EnchantmentScreenMixin",
-    "client.HappyGhastRendererMixin"
+    "client.EnchantmentScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/ladder",
+  "textures": {
+    "particle": "happyghastplus:block/rope_ladder",
+    "texture": "happyghastplus:block/rope_ladder"
+  }
+}

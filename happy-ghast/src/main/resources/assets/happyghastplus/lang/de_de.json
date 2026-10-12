@@ -1,0 +1,7 @@
+{
+  "item.happyghastplus.ghast_speed_upgrade": "Ghast-Geschwindigkeits-Upgrade",
+  "item.happyghastplus.ghast_whistle": "Ghast-Pfeife",
+  "message.happyghastplus.ghast_whistle.called": "%s Glücklicher Ghast unterwegs",
+  "message.happyghastplus.ghast_whistle.none": "Kein von dir gerittener Glücklicher Ghast innerhalb von %s Blöcken",
+  "block.happyghastplus.rope_ladder": "Strickleiter"
+}

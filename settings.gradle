@@ -11,3 +11,4 @@ pluginManagement {
 
 rootProject.name = 'travelers-backpack-addons'
 include 'vanilla-tweaks'
+include 'happy-ghast'

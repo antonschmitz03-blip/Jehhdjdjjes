@@ -1,0 +1,89 @@
+package io.github.antonschmitz.happyghastplus;
+
+import io.github.antonschmitz.happyghastplus.item.GhastWhistleItem;
+import java.util.function.Function;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HappyGhastPlus implements ModInitializer {
+    public static final String MOD_ID = "happyghastplus";
+    /**
+     * These features started out in Vanilla+ Tweaks. The saved data they leave on ghasts (chest contents, owner, upgrade)
+     * keeps its old "vplustweaks" keys, and the old item and block ids are aliased, so existing worlds carry over.
+     */
+    public static final String LEGACY_ID = "vplustweaks";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    public static Item GHAST_SPEED_UPGRADE;
+    public static Item GHAST_WHISTLE;
+    public static Block ROPE_LADDER;
+
+    @Override
+    public void onInitialize() {
+        ResourceKey<Block> ropeLadderKey = ResourceKey.create(Registries.BLOCK, id("rope_ladder"));
+        ROPE_LADDER = Registry.register(BuiltInRegistries.BLOCK, ropeLadderKey, new RopeLadderBlock(BlockBehaviour.Properties.of()
+                .setId(ropeLadderKey).strength(0.4F).sound(SoundType.LADDER).noOcclusion().noLootTable()));
+        GHAST_SPEED_UPGRADE = register("ghast_speed_upgrade", Item::new);
+        GHAST_WHISTLE = register("ghast_whistle", properties -> new GhastWhistleItem(properties.stacksTo(1)));
+
+        for (String name : new String[] {"ghast_speed_upgrade", "ghast_whistle"}) {
+            ((MappedRegistry<Item>) BuiltInRegistries.ITEM).addAlias(Identifier.fromNamespaceAndPath(LEGACY_ID, name), id(name));
+        }
+        ((MappedRegistry<Block>) BuiltInRegistries.BLOCK).addAlias(Identifier.fromNamespaceAndPath(LEGACY_ID, "rope_ladder"), id("rope_ladder"));
+
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(output -> {
+            output.accept(GHAST_SPEED_UPGRADE);
+            output.accept(GHAST_WHISTLE);
+        });
+
+        GhastChest.register();
+        GhastFeatures.register();
+        RopeLadders.register();
+
+        if (Boolean.getBoolean("happyghastplus.selfTest")) {
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> selfTest());
+        }
+    }
+
+    /** CI smoke test: force-load the mixin target and check that the old Vanilla+ Tweaks ids still resolve. */
+    private static void selfTest() {
+        try {
+            Class.forName("net.minecraft.world.entity.animal.happyghast.HappyGhast");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        check(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(LEGACY_ID, "ghast_whistle")) == GHAST_WHISTLE, "ghast whistle alias");
+        check(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(LEGACY_ID, "ghast_speed_upgrade")) == GHAST_SPEED_UPGRADE, "speed upgrade alias");
+        check(BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(LEGACY_ID, "rope_ladder")) == ROPE_LADDER, "rope ladder alias");
+        LOGGER.info("happyghastplus self test passed");
+    }
+
+    private static void check(boolean ok, String what) {
+        if (!ok) {
+            throw new IllegalStateException("happyghastplus self test failed: " + what);
+        }
+    }
+
+    private static Identifier id(String name) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, name);
+    }
+
+    private static Item register(String name, Function<Item.Properties, Item> factory) {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id(name));
+        return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().setId(key)));
+    }
+}
