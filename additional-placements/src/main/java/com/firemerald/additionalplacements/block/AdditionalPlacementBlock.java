@@ -137,11 +137,6 @@ public abstract class AdditionalPlacementBlock<T extends Block> extends Block im
 	}
 
 	@Override
-	public void updateEntityMovementAfterFallOn(@NotNull BlockGetter level, @NotNull Entity entity) {
-		additionalplacements$getOtherBlock().updateEntityMovementAfterFallOn(level, entity);
-	}
-
-	@Override
 	public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Entity entity) {
 		BlockState modelState = getModelState(state);
 		modelState.getBlock().stepOn(level, pos, modelState, entity);
