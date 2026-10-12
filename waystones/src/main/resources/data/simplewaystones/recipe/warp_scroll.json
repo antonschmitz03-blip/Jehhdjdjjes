@@ -3,10 +3,12 @@
   "category": "misc",
   "ingredients": [
     "minecraft:paper",
+    "minecraft:paper",
     "minecraft:ender_pearl",
     "minecraft:amethyst_shard"
   ],
   "result": {
-    "id": "simplewaystones:warp_scroll"
+    "id": "simplewaystones:warp_scroll",
+    "count": 4
   }
 }

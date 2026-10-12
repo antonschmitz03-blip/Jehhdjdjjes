@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -64,6 +65,20 @@ final class SelfTest {
             check(player.getMainHandItem().getCount() == 1, "warp scroll not used up");
             SimpleWaystones.LOGGER.info("simplewaystones self test: warp scroll ok");
 
+            // Renaming through the anvil-style screen.
+            WaystoneData.Waystone alphaStone = WaystoneData.get().at(level, alpha);
+            menu = WaystoneMenu.create(4, player.getInventory(), player, alphaStone, null);
+            check(menu.getSlot(menu.getRowCount() * 9 - 1).getItem().is(Items.NAME_TAG), "owner gets no rename button");
+            WaystoneRenameMenu rename = WaystoneRenameMenu.create(5, player.getInventory(), player, alphaStone);
+            rename.setItemName("Gamma");
+            rename.clicked(2, 0, ContainerInput.PICKUP, player);
+            check("Gamma".equals(alphaStone.displayName().getString()), "rename failed: " + alphaStone.displayName().getString());
+            rename.removed(player);
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                check(!player.getInventory().getItem(i).is(SimpleWaystones.WAYSTONE_ITEM), "rename screen handed out a waystone");
+            }
+            SimpleWaystones.LOGGER.info("simplewaystones self test: rename ok");
+
             // A waystone removed without breaking it disappears from the list on use.
             level.setBlockAndUpdate(near, Blocks.AIR.defaultBlockState());
             check(!WaystoneTeleport.teleport(player, nearStone, false), "teleported to a removed waystone");
@@ -72,6 +87,7 @@ final class SelfTest {
             WaystoneData.load(server);
             check(WaystoneData.get().discovered(player.getUUID()).size() == 2, "discovered waystones lost on reload");
             check("Beta".equals(WaystoneData.get().at(level, beta).displayName().getString()), "name lost on reload");
+            check("Gamma".equals(WaystoneData.get().at(level, alpha).displayName().getString()), "new name lost on reload");
 
             for (BlockPos pos : new BlockPos[]{alpha, beta}) {
                 level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());

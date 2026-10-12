@@ -71,5 +71,6 @@ jobs:
           grep -q 'simplegraves self test passed' server.log
           grep -q 'simplewaystones self test: teleport ok' server.log
           grep -q 'simplewaystones self test: warp scroll ok' server.log
+          grep -q 'simplewaystones self test: rename ok' server.log
           grep -q 'simplewaystones self test passed' server.log
           if grep -iE 'tbaddons:|vplustweaks:|simplegraves:|simplewaystones:' server.log | grep -iqE 'error|parsing|couldn.t'; then echo "tbaddons data failed to load"; exit 1; fi

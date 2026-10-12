@@ -25,11 +25,13 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The list of discovered waystones, shown as a chest screen with one waystone item per entry, so the mod
- * needs no screen of its own. Clicking an entry teleports. More than 54 waystones get pages with arrows in
- * the bottom row.
+ * needs no screen of its own. Clicking an entry teleports. The owner also gets a name tag in the last slot
+ * that opens {@link WaystoneRenameMenu}. Too many waystones for one screen get pages with arrows in the
+ * bottom row.
  */
 public class WaystoneMenu extends ChestMenu {
     private static final int PAGE_SIZE = 45;
+    private static final int PAGED_RENAME_SLOT = 49;
 
     private final ServerPlayer player;
     /** The waystone the menu was opened at, or null for a warp scroll. */
@@ -37,25 +39,33 @@ public class WaystoneMenu extends ChestMenu {
     private final @Nullable InteractionHand scrollHand;
     private final List<WaystoneData.Waystone> targets;
     private final SimpleContainer container;
+    private final boolean canRename;
     private final boolean paged;
     private int page;
 
     private WaystoneMenu(int containerId, Inventory inventory, SimpleContainer container, int rows, ServerPlayer player,
-                         WaystoneData.@Nullable Waystone from, @Nullable InteractionHand scrollHand, List<WaystoneData.Waystone> targets) {
+                         WaystoneData.@Nullable Waystone from, @Nullable InteractionHand scrollHand, List<WaystoneData.Waystone> targets,
+                         boolean canRename) {
         super(menuType(rows), containerId, inventory, container, rows);
         this.player = player;
         this.from = from;
         this.scrollHand = scrollHand;
         this.targets = targets;
         this.container = container;
-        this.paged = targets.size() > 54;
+        this.canRename = canRename;
+        this.paged = targets.size() + (canRename ? 1 : 0) > 54;
         fill();
+    }
+
+    /** Owners (and creative players) can rename the waystone the list was opened at. */
+    static boolean canRename(ServerPlayer player, WaystoneData.@Nullable Waystone waystone) {
+        return waystone != null && (player.isCreative() || player.getUUID().equals(waystone.owner()));
     }
 
     /** Opens the list at a waystone ({@code from}) or for the warp scroll in {@code scrollHand}. */
     public static void open(ServerPlayer player, WaystoneData.@Nullable Waystone from, @Nullable InteractionHand scrollHand) {
         List<WaystoneData.Waystone> targets = targets(player, from);
-        if (targets.isEmpty()) {
+        if (targets.isEmpty() && !canRename(player, from)) {
             player.sendSystemMessage(Component.translatable("simplewaystones.message.none_discovered").withStyle(ChatFormatting.GRAY), true);
             return;
         }
@@ -68,8 +78,9 @@ public class WaystoneMenu extends ChestMenu {
     static WaystoneMenu create(int containerId, Inventory inventory, ServerPlayer player, WaystoneData.@Nullable Waystone from,
                                @Nullable InteractionHand scrollHand) {
         List<WaystoneData.Waystone> targets = targets(player, from);
-        int rows = Math.max(1, Math.min(6, (targets.size() + 8) / 9));
-        return new WaystoneMenu(containerId, inventory, new SimpleContainer(rows * 9), rows, player, from, scrollHand, targets);
+        boolean canRename = canRename(player, from);
+        int rows = Math.max(1, Math.min(6, (targets.size() + (canRename ? 1 : 0) + 8) / 9));
+        return new WaystoneMenu(containerId, inventory, new SimpleContainer(rows * 9), rows, player, from, scrollHand, targets, canRename);
     }
 
     private static List<WaystoneData.Waystone> targets(ServerPlayer player, WaystoneData.@Nullable Waystone from) {
@@ -96,7 +107,11 @@ public class WaystoneMenu extends ChestMenu {
     }
 
     private int shownCount() {
-        return paged ? PAGE_SIZE : container.getContainerSize();
+        return paged ? PAGE_SIZE : container.getContainerSize() - (canRename ? 1 : 0);
+    }
+
+    private int renameSlot() {
+        return paged ? PAGED_RENAME_SLOT : container.getContainerSize() - 1;
     }
 
     private void fill() {
@@ -106,6 +121,11 @@ public class WaystoneMenu extends ChestMenu {
             if (index < targets.size()) {
                 container.setItem(slot, icon(targets.get(index)));
             }
+        }
+        if (canRename) {
+            ItemStack tag = new ItemStack(Items.NAME_TAG);
+            tag.set(DataComponents.CUSTOM_NAME, plain(Component.translatable("simplewaystones.menu.rename")).withStyle(ChatFormatting.YELLOW));
+            container.setItem(renameSlot(), tag);
         }
         if (paged) {
             if (page > 0) {
@@ -176,6 +196,11 @@ public class WaystoneMenu extends ChestMenu {
 
     /** Package-private for {@link SelfTest}. */
     void select(int slot) {
+        if (canRename && slot == renameSlot() && from != null) {
+            player.closeContainer();
+            WaystoneRenameMenu.open(player, from);
+            return;
+        }
         if (paged && slot == 45 && page > 0) {
             page--;
             fill();

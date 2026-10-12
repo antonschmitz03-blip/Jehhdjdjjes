@@ -8,12 +8,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -26,8 +24,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Right-click a new waystone to discover it, right-click a known one to pick where to go. Sneak + right-click
- * with a named name tag renames it. All waystone info lives in {@link WaystoneData}, so there is no block entity.
+ * Right-click a new waystone to discover it, right-click a known one to pick where to go (and, for the owner,
+ * to rename it). All waystone info lives in {@link WaystoneData}, so there is no block entity.
  */
 public class WaystoneBlock extends Block {
     private static final VoxelShape SHAPE = Shapes.or(Block.box(1, 0, 1, 15, 3, 15), Block.box(3, 3, 3, 13, 16, 13));
@@ -89,29 +87,5 @@ public class WaystoneBlock extends Block {
             return;
         }
         WaystoneMenu.open(player, waystone, null);
-    }
-
-    @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
-                                          InteractionHand hand, BlockHitResult hitResult) {
-        if (!stack.is(Items.NAME_TAG) || !player.isShiftKeyDown() || stack.get(DataComponents.CUSTOM_NAME) == null) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        }
-        if (level instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer) {
-            WaystoneData.Waystone waystone = WaystoneData.get().at(serverLevel, pos);
-            if (waystone == null) {
-                waystone = register(serverLevel, pos, serverPlayer, null);
-            }
-            if (!serverPlayer.isCreative() && !serverPlayer.getUUID().equals(waystone.owner())) {
-                serverPlayer.sendSystemMessage(Component.translatable("simplewaystones.message.not_yours", waystone.ownerName())
-                        .withStyle(ChatFormatting.RED), true);
-                return InteractionResult.SUCCESS;
-            }
-            WaystoneData.get().rename(waystone, stack.get(DataComponents.CUSTOM_NAME).getString());
-            stack.consume(1, serverPlayer);
-            serverPlayer.sendSystemMessage(Component.translatable("simplewaystones.message.renamed", waystone.displayName())
-                    .withStyle(ChatFormatting.AQUA), true);
-        }
-        return InteractionResult.SUCCESS;
     }
 }

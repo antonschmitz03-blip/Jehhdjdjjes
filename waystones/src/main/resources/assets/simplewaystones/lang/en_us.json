@@ -18,5 +18,7 @@
   "simplewaystones.menu.next": "Next page",
   "simplewaystones.dimension.overworld": "Overworld",
   "simplewaystones.dimension.the_nether": "Nether",
-  "simplewaystones.dimension.the_end": "End"
+  "simplewaystones.dimension.the_end": "End",
+  "simplewaystones.menu.rename": "Rename this waystone",
+  "simplewaystones.menu.rename_title": "Rename waystone"
 }

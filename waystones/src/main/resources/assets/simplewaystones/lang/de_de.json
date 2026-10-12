@@ -18,5 +18,7 @@
   "simplewaystones.menu.next": "Nächste Seite",
   "simplewaystones.dimension.overworld": "Oberwelt",
   "simplewaystones.dimension.the_nether": "Nether",
-  "simplewaystones.dimension.the_end": "Ende"
+  "simplewaystones.dimension.the_end": "Ende",
+  "simplewaystones.menu.rename": "Diesen Wegstein umbenennen",
+  "simplewaystones.menu.rename_title": "Wegstein umbenennen"
 }
