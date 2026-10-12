@@ -21,7 +21,8 @@ Install on the server too when playing multiplayer.
   while sneaking), no matter how long it is.
 - **Floating ladders:** ladders can be placed anywhere, with no block behind them.
 - **Happy ghast chest:** right-click a happy ghast with a chest to equip a double chest (54 slots); sneak +
-  right-click to open it. Contents and chest drop when the ghast dies. (No visible chest model yet.)
+  right-click to open it. Contents and chest drop when the ghast dies. The chest shows on top of the
+  ghast, towards its back (needs the mod on the client).
 
 ## Recipes
 

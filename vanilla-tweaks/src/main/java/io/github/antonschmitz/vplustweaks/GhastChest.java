@@ -3,17 +3,21 @@ package io.github.antonschmitz.vplustweaks;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +35,11 @@ public final class GhastChest {
             Identifier.fromNamespaceAndPath(VanillaPlusTweaks.MOD_ID, "ghast_chest"),
             ItemStack.OPTIONAL_CODEC.listOf());
 
+    /** Synced to clients so they can draw the chest on the ghast's back. */
+    public static final AttachmentType<Boolean> HAS_CHEST = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(VanillaPlusTweaks.MOD_ID, "ghast_has_chest"),
+            builder -> builder.persistent(Codec.BOOL).syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
+
     private GhastChest() {}
 
     public static void register() {
@@ -38,11 +47,11 @@ public final class GhastChest {
             if (!isHappyGhast(entity) || player.isSpectator()) {
                 return InteractionResult.PASS;
             }
-            List<ItemStack> contents = entity.getAttached(CHEST);
+            boolean hasChest = entity.getAttachedOrElse(HAS_CHEST, false);
             ItemStack held = player.getItemInHand(hand);
 
-            if (contents == null) {
-                if (!held.is(Items.CHEST)) {
+            if (!hasChest) {
+                if (!held.is(Items.CHEST) || (entity instanceof LivingEntity living && living.isBaby())) {
                     return InteractionResult.PASS;
                 }
                 if (!level.isClientSide()) {
@@ -51,6 +60,7 @@ public final class GhastChest {
                         empty.add(ItemStack.EMPTY);
                     }
                     entity.setAttached(CHEST, empty);
+                    entity.setAttached(HAS_CHEST, true);
                     if (!player.hasInfiniteMaterials()) {
                         held.shrink(1);
                     }
@@ -60,7 +70,8 @@ public final class GhastChest {
 
             if (player.isSecondaryUseActive()) {
                 if (!level.isClientSide()) {
-                    open(player, entity, contents);
+                    List<ItemStack> contents = entity.getAttached(CHEST);
+                    open(player, entity, contents != null ? contents : List.of());
                 }
                 return InteractionResult.SUCCESS;
             }
@@ -72,6 +83,7 @@ public final class GhastChest {
                 return;
             }
             List<ItemStack> contents = entity.getAttached(CHEST);
+            entity.removeAttached(HAS_CHEST);
             if (contents == null) {
                 return;
             }
@@ -85,7 +97,7 @@ public final class GhastChest {
         });
     }
 
-    private static boolean isHappyGhast(net.minecraft.world.entity.Entity entity) {
+    public static boolean isHappyGhast(net.minecraft.world.entity.Entity entity) {
         return EntityType.getKey(entity.getType()).getPath().equals("happy_ghast");
     }
 

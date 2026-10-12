@@ -8,7 +8,8 @@
   "license": "CC0-1.0",
   "environment": "*",
   "entrypoints": {
-    "main": ["io.github.antonschmitz.vplustweaks.VanillaPlusTweaks"]
+    "main": ["io.github.antonschmitz.vplustweaks.VanillaPlusTweaks"],
+    "client": ["io.github.antonschmitz.vplustweaks.client.VanillaPlusTweaksClient"]
   },
   "mixins": ["vplustweaks.mixins.json", "vplustweaks.compat.mixins.json"],
   "depends": {
