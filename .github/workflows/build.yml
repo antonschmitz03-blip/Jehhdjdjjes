@@ -81,8 +81,13 @@ jobs:
       # The addon must also start without Tom's Simple Storage (an optional dependency).
       - name: Server smoke test without Tom's Simple Storage
         run: |
+          # The first server can still hold the port while it shuts down.
+          pkill -f 'runServer' || true
+          sleep 5
           rm run/mods/toms_storage_*.jar
           rm -rf stdin.pipe server.log run/world
+          sed -i 's/^server-port=.*//' run/server.properties
+          echo 'server-port=25566' >> run/server.properties
           mkfifo stdin.pipe
           (./gradlew runServer --console=plain < stdin.pipe > server.log 2>&1; echo "exit $?" >> server.log) &
           exec 3>stdin.pipe
