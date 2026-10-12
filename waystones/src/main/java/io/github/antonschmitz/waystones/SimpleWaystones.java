@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,7 @@ public class SimpleWaystones implements ModInitializer {
                 // As hard as stone bricks to mine, but explosions can't destroy it.
                 .strength(1.5F, 1200.0F)
                 .lightLevel(state -> 7)
+                .pushReaction(PushReaction.BLOCK)
                 .noOcclusion()
                 .setId(blockKey)));
         WAYSTONE_ITEM = registerItem("waystone", properties -> new BlockItem(WAYSTONE, properties.useBlockDescriptionPrefix()));
