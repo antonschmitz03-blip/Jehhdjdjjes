@@ -20,9 +20,12 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
-        with:
-          build-root-directory: additional-placements
-      - run: chmod +x gradlew && ./gradlew build --stacktrace
+      - name: Build
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew build --console=plain 2>&1 | grep -vE '^\s+at |^\s+\.\.\. [0-9]+ more' | head -150
+          exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4
         with:
           name: additional-placements
