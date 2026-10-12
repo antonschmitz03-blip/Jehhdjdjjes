@@ -16,6 +16,7 @@ public class VanillaPlusTweaks implements ModInitializer {
         PetProtection.register();
         HorseStats.register();
         FastLadders.register();
+        GhastChest.register();
 
         if (Boolean.getBoolean("vplustweaks.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(server -> selfTest());
