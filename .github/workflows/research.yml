@@ -1,0 +1,54 @@
+name: Research (temporary)
+
+on:
+  push:
+    branches: [claude/project-thread-pvfpbq]
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew :vanilla-tweaks:compileJava --stacktrace -q || true
+      - name: Dump classes
+        run: |
+          MC=$(find ~/.gradle/caches .gradle vanilla-tweaks/.gradle -name 'minecraft-*merged*.jar' -o -name 'minecraft-clientOnly*.jar' -o -name 'minecraft-common*.jar' 2>/dev/null | grep -v sources | tr '\n' ':')
+          echo "MC jars: $MC"
+          find ~/.gradle/caches .gradle vanilla-tweaks/.gradle -name '*.jar' 2>/dev/null | grep -iE 'minecraft|loom' | grep -v sources | head -40
+          FAPI=$(find ~/.gradle/caches -name 'fabric-*.jar' 2>/dev/null | grep -v sources | tr '\n' ':')
+          CP="$MC$FAPI"
+          for c in \
+            net.minecraft.client.renderer.entity.layers.SnowGolemHeadLayer \
+            net.minecraft.client.renderer.entity.layers.CarriedBlockLayer \
+            net.minecraft.client.renderer.entity.layers.RenderLayer \
+            net.minecraft.client.renderer.entity.state.SnowGolemRenderState \
+            net.minecraft.client.renderer.entity.state.HappyGhastRenderState \
+            net.minecraft.client.renderer.entity.HappyGhastRenderer \
+            net.minecraft.client.renderer.entity.RenderLayerParent \
+            net.minecraft.client.renderer.SubmitNodeCollector \
+            net.minecraft.client.renderer.OrderedSubmitNodeCollector \
+            net.minecraft.client.renderer.block.BlockRenderDispatcher \
+            net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback \
+            net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback \
+            net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey \
+            net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState \
+            net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateExtractionCallback \
+            net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry \
+            net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry\$Builder \
+            net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate \
+            net.minecraft.network.codec.ByteBufCodecs \
+            ; do
+            echo "=================== $c"
+            javap -p -cp "$CP" "$c" 2>&1 | head -80
+          done
+          echo "=================== SnowGolemHeadLayer bytecode"
+          javap -c -p -cp "$CP" net.minecraft.client.renderer.entity.layers.SnowGolemHeadLayer 2>&1 | head -200
+          echo "=================== CarriedBlockLayer bytecode"
+          javap -c -p -cp "$CP" net.minecraft.client.renderer.entity.layers.CarriedBlockLayer 2>&1 | head -200
+          echo "=================== search classes"
+          for j in $(echo "$CP" | tr ':' ' '); do unzip -l "$j" 2>/dev/null | grep -iE 'HappyGhast|RenderStateDataKey|FeatureRendererRegistration|RenderLayerRegistration|EntityRenderStateExtract|Carried.*Layer|SnowGolemHead' | awk '{print $4}'; done | sort -u | head -60
