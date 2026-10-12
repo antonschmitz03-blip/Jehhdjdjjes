@@ -165,7 +165,7 @@ public class BlockModelUtils {
 	}
 
 	public static BakedQuad.MaterialInfo missingTex() {
-		return new BakedQuad.MaterialInfo(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).missingSprite(), ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), -1, false, 0);
+		return new BakedQuad.MaterialInfo(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).missingSprite(), ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), Sheets.cutoutBlockItemGlintSheet(), Sheets.cutoutBlockItemGlintSpecialSheet(), -1, null, 0);
 	}
 
 	public static List<BakedQuad> retexturedQuads(List<BlockStateModelPart> originalModel, BlockStateModelPart ourModel, Direction side) {

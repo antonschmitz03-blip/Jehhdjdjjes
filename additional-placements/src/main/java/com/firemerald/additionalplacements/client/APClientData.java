@@ -16,7 +16,7 @@ public class APClientData {
 		PlatformUtils.checkIsClient();
 	}
 
-	public static final KeyMapping AP_PLACEMENT_KEY = new KeyMapping("key.additionalplacements.placement_toggle", InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KeyMapping.Category.register(AdditionalPlacementsMod.rl("keybinds")));
+	public static final KeyMapping AP_PLACEMENT_KEY = new KeyMapping("key.additionalplacements.placement_toggle", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KeyMapping.Category.register(AdditionalPlacementsMod.rl("keybinds")));
 
 	private static boolean placementEnabled = true;
 	public static long placementKeyPressTime, lastSynchronizedTime;

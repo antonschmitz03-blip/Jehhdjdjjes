@@ -1,6 +1,5 @@
 # class|egrep filter on member lines (empty = all, first 30 lines). Dumped by CI when the build fails.
-net.minecraft.client.resources.model.geometry.BakedQuad$MaterialInfo|
-net.minecraft.client.renderer.Sheets|cutout|solid|translucent
-com.mojang.blaze3d.platform.InputConstants$Type|
-net.minecraft.server.packs.repository.Pack$ResourcesSupplier|
-net.minecraft.client.Minecraft|Screen
+net.minecraft.server.packs.PackMetadataResources|
+net.minecraft.server.packs.repository.Pack$Metadata|
+net.minecraft.server.packs.repository.Pack|Pack\(|create|readMetaAndCreate
+net.minecraft.server.packs.PackResources|
