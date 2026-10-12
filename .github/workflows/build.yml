@@ -67,9 +67,10 @@ jobs:
         run: |
           boot() {
             project=$1
+            port=$2
             mkdir -p "$project/run"
             echo "eula=true" > "$project/run/eula.txt"
-            printf 'online-mode=false\nlevel-type=minecraft\\:flat\n' > "$project/run/server.properties"
+            printf 'online-mode=false\nlevel-type=minecraft\\:flat\nserver-port=%s\n' "$port" > "$project/run/server.properties"
             rm -f "stdin-$project.pipe"
             mkfifo "stdin-$project.pipe"
             (./gradlew ":$project:runServer" --console=plain < "stdin-$project.pipe" > "$project.log" 2>&1; echo "exit $?" >> "$project.log") &
@@ -84,9 +85,9 @@ jobs:
             grep -iE 'vplustweaks|happyghastplus|mixin|error|exception|Done \(' "$project.log" | head -60 || true
             tail -30 "$project.log"
           }
-          boot happy-ghast
+          boot happy-ghast 25601
           grep -q 'happyghastplus self test passed' happy-ghast.log
           if grep -q 'vplustweaks' happy-ghast.log; then echo "happy-ghast alone mentions vplustweaks"; exit 1; fi
-          boot vanilla-tweaks
+          boot vanilla-tweaks 25602
           grep -q 'vplustweaks self test passed' vanilla-tweaks.log
           if grep -q 'happyghastplus' vanilla-tweaks.log; then echo "vanilla-tweaks alone mentions happyghastplus"; exit 1; fi
