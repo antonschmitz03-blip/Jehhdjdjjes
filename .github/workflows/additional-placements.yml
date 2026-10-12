@@ -28,6 +28,26 @@ jobs:
           { grep -E -A2 'error:' build.log | grep -vE '^\s+at |^--$' | awk '!seen[$0]++' | head -90
             grep -E 'What went wrong' -A3 build.log | head -8; } > ../summary.txt || true
           exit ${status:-0}
+      # Boots a dedicated server with only this mod (mixin targets changed across versions, so compile alone proves little).
+      - name: Server smoke test
+        shell: bash
+        run: |
+          mkdir -p run
+          echo "eula=true" > run/eula.txt
+          printf 'online-mode=false\nlevel-type=minecraft\\:flat\n' > run/server.properties
+          mkfifo stdin.pipe
+          (./gradlew runServer --console=plain < stdin.pipe > server.log 2>&1; echo "exit $?" >> server.log) &
+          exec 3>stdin.pipe
+          for i in $(seq 1 120); do
+            if grep -q 'Done (' server.log || grep -q '^exit ' server.log; then break; fi
+            sleep 5
+          done
+          echo stop >&3 || true
+          sleep 20
+          exec 3>&-
+          { grep -iE 'additionalplacements|additional placements|mixin|error|exception|Done \(' server.log | head -70; tail -15 server.log; } > ../summary.txt || true
+          grep -q 'Done (' server.log
+          if grep -iE 'mixin.*(fail|error)|InvalidInjection|critical injection' server.log; then exit 1; fi
       - name: Dump Minecraft class signatures
         if: failure()
         shell: bash
