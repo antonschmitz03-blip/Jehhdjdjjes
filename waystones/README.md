@@ -11,6 +11,6 @@ A stripped-down Waystones for Fabric 26.3. Server-side logic only; install it on
   changing dimension. Free in creative. Adjustable in `config/simplewaystones.json`.
 - **Warp Scroll** (shapeless: paper + ender pearl + amethyst shard): right-click to pick any discovered waystone
   and go there for free. Used up on a successful teleport.
-- Only the owner (or a player in creative mode) can break a waystone. Explosions and pistons can't move or
-  destroy it.
+- Only the owner (or a player in creative mode) can break a waystone. Explosions can't destroy it. A waystone
+  moved by a piston counts as a new one and has to be discovered again.
 - Data lives in `simplewaystones.json` in the world folder.

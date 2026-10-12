@@ -61,7 +61,7 @@ public final class WaystoneData {
         }
 
         public String key() {
-            return key(dimension, x, y, z);
+            return WaystoneData.key(dimension, x, y, z);
         }
 
         public String dimension() {
