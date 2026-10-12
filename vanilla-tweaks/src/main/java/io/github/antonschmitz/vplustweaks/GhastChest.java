@@ -35,7 +35,7 @@ public final class GhastChest {
 
     public static void register() {
         UseEntityCallback.EVENT.register((player, level, hand, entity, hitResult) -> {
-            if (entity.getType() != EntityType.HAPPY_GHAST || player.isSpectator()) {
+            if (!isHappyGhast(entity) || player.isSpectator()) {
                 return InteractionResult.PASS;
             }
             List<ItemStack> contents = entity.getAttached(CHEST);
@@ -68,7 +68,7 @@ public final class GhastChest {
         });
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-            if (entity.getType() != EntityType.HAPPY_GHAST) {
+            if (!isHappyGhast(entity)) {
                 return;
             }
             List<ItemStack> contents = entity.getAttached(CHEST);
@@ -85,18 +85,25 @@ public final class GhastChest {
         });
     }
 
+    private static boolean isHappyGhast(net.minecraft.world.entity.Entity entity) {
+        return EntityType.getKey(entity.getType()).getPath().equals("happy_ghast");
+    }
+
     private static void open(Player player, net.minecraft.world.entity.Entity ghast, List<ItemStack> contents) {
-        SimpleContainer container = new SimpleContainer(SLOTS);
+        SimpleContainer container = new SimpleContainer(SLOTS) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                List<ItemStack> saved = new ArrayList<>(SLOTS);
+                for (int i = 0; i < SLOTS; i++) {
+                    saved.add(getItem(i).copy());
+                }
+                ghast.setAttached(CHEST, saved);
+            }
+        };
         for (int i = 0; i < SLOTS && i < contents.size(); i++) {
             container.setItem(i, contents.get(i).copy());
         }
-        container.addListener(changed -> {
-            List<ItemStack> saved = new ArrayList<>(SLOTS);
-            for (int i = 0; i < SLOTS; i++) {
-                saved.add(container.getItem(i).copy());
-            }
-            ghast.setAttached(CHEST, saved);
-        });
         player.openMenu(new SimpleMenuProvider(
                 (id, inventory, p) -> ChestMenu.sixRows(id, inventory, container),
                 Component.literal("Happy Ghast")));
