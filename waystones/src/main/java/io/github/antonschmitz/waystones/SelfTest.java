@@ -21,9 +21,10 @@ final class SelfTest {
     }
 
     static void run(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        // Fabric hands every mod the same fake player, so leave it as we found it for the other self tests.
+        FakePlayer player = FakePlayer.get(level);
         try {
-            ServerLevel level = server.overworld();
-            FakePlayer player = FakePlayer.get(level);
             BlockPos alpha = place(level, 0, 0);
             BlockPos beta = place(level, 1200, 0);
             BlockPos near = place(level, 200, 0);
@@ -97,6 +98,10 @@ final class SelfTest {
         } catch (Exception | AssertionError e) {
             SimpleWaystones.LOGGER.error("simplewaystones self test FAILED", e);
             return;
+        } finally {
+            player.getInventory().clearContent();
+            player.giveExperienceLevels(-player.experienceLevel);
+            player.setPos(0.5, player.getY(), 0.5);
         }
         SimpleWaystones.LOGGER.info("simplewaystones self test passed");
     }
