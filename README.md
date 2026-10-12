@@ -75,14 +75,17 @@ the items used to craft the variant are **not** returned. The list of variants i
 `tbaddons:revertible_backpacks`. This uses Traveler's Backpack's own `backpack_shaped` recipe type,
 which copies all backpack data onto the result.
 
-## Backpack next to chests
+## Backpack next to chests and machines
 
-While you wear a backpack, opening a chest, double chest, barrel, ender chest or shulker box shows the
+While you wear a backpack, opening a chest, double chest, barrel, ender chest, shulker box, furnace, blast furnace,
+smoker, hopper, dispenser, dropper or brewing stand shows the
 backpack's storage as a panel to the right of the container. No upgrade is needed.
 
 - Click and drag items between the chest, your inventory and the backpack as usual.
 - Shift-click in the backpack panel moves the item into the chest (or your inventory if the chest is full).
   Shift-click in the chest or your inventory works as in vanilla.
+- Four buttons under the panel work like the ones in the backpack screen: Sort, Stack (quick stack into stacks the
+  backpack already has), Store (everything from your inventory) and Take (everything to your inventory).
 - Stack Upgrades apply to the panel slots as well; backpacks and blacklisted items can't be put in.
 
 ## Tom's Simple Storage terminals

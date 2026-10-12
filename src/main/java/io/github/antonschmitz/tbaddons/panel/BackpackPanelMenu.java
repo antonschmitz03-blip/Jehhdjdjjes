@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-/** Implemented by every menu (see {@code BackpackPanelMenuMixin}); only chest and shulker box menus add the panel. */
+/** Implemented by every menu (see {@code BackpackPanelMenuMixin}); chests, shulker boxes, furnaces, hoppers, dispensers and brewing stands add the panel. */
 public interface BackpackPanelMenu {
     /** Appends the storage slots of the worn backpack, if any, after the player inventory slots. */
     void tbaddons$addBackpackPanel(Player player);

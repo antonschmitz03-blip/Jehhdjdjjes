@@ -13,12 +13,14 @@
     "ContainerSorterMixin",
     "ItemStackMixin",
     "ItemStackTemplateMixin",
+    "MachineMenuMixin",
     "ShulkerBoxMenuMixin",
     "SlotItemHandlerMixin"
   ],
   "client": [
     "client.AbstractContainerScreenAccessor",
     "client.AbstractContainerScreenMixin",
+    "client.MachineScreenMixin",
     "client.PanelScreenMixin"
   ],
   "injectors": {

@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import io.github.antonschmitz.tbaddons.panel.BackpackPanel;
 import io.github.antonschmitz.tbaddons.panel.BackpackPanelMenu;
 import net.minecraft.core.NonNullList;
@@ -16,6 +17,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractContainerMenu.class)
 public abstract class BackpackPanelMenuMixin implements BackpackPanelMenu {
@@ -25,6 +29,10 @@ public abstract class BackpackPanelMenuMixin implements BackpackPanelMenu {
     @Shadow
     @Final
     public NonNullList<Slot> slots;
+
+    @Unique
+    private static final int[] TYPES = {ContainerSorter.SORT_BACKPACK, ContainerSorter.QUICK_STACK,
+            ContainerSorter.TRANSFER_TO_BACKPACK, ContainerSorter.TRANSFER_TO_PLAYER};
 
     @Unique
     @Nullable
@@ -42,9 +50,19 @@ public abstract class BackpackPanelMenuMixin implements BackpackPanelMenu {
     @Shadow
     protected abstract boolean moveItemStackTo(ItemStack itemStack, int startSlot, int endSlot, boolean backwards);
 
+    @Inject(method = "clickMenuButton", at = @At("HEAD"), cancellable = true)
+    private void tbaddons$panelButton(Player player, int id, CallbackInfoReturnable<Boolean> cir) {
+        int button = id - BackpackPanel.BUTTON_ID_BASE;
+        if (this.tbaddons$panelWrapper == null || button < 0 || button >= BackpackPanel.BUTTON_COUNT) {
+            return;
+        }
+        ContainerSorter.selectSort(this.tbaddons$panelWrapper, player, TYPES[button], false);
+        cir.setReturnValue(true);
+    }
+
     @Override
     public void tbaddons$addBackpackPanel(Player player) {
-        if (player.isSpectator() || !AttachmentUtils.isWearingBackpack(player)) {
+        if (this.tbaddons$panelStart != -1 || player.isSpectator() || !AttachmentUtils.isWearingBackpack(player)) {
             return;
         }
         BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.LOAD_ALL.get());

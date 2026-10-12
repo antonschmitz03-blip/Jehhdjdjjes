@@ -13,5 +13,9 @@
   "screen.tbaddons.diamond_stack_upgrade": "Diamond Stack Upgrade (x8)",
   "item.tbaddons.soulbound_upgrade": "Soulbound Upgrade",
   "item.travelersbackpack.soulbound_upgrade_tooltip": "You keep the worn backpack when you die",
-  "screen.tbaddons.soulbound_upgrade": "Soulbound"
+  "screen.tbaddons.soulbound_upgrade": "Soulbound",
+  "tbaddons.panel.button.0": "Sort",
+  "tbaddons.panel.button.1": "Stack",
+  "tbaddons.panel.button.2": "Store",
+  "tbaddons.panel.button.3": "Take"
 }

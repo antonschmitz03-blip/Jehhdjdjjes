@@ -13,5 +13,9 @@
   "screen.tbaddons.diamond_stack_upgrade": "Diamant-Stapel-Upgrade (x8)",
   "item.tbaddons.soulbound_upgrade": "Seelenbindungs-Upgrade",
   "item.travelersbackpack.soulbound_upgrade_tooltip": "Du behältst den getragenen Rucksack, wenn du stirbst",
-  "screen.tbaddons.soulbound_upgrade": "Seelenbindung"
+  "screen.tbaddons.soulbound_upgrade": "Seelenbindung",
+  "tbaddons.panel.button.0": "Sort.",
+  "tbaddons.panel.button.1": "Stapeln",
+  "tbaddons.panel.button.2": "Rein",
+  "tbaddons.panel.button.3": "Raus"
 }

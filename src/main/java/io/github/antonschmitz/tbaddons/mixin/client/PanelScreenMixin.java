@@ -41,7 +41,7 @@ public abstract class PanelScreenMixin {
         BackpackPanelMenu panel = this.tbaddons$panel();
         if (panel != null) {
             AbstractContainerScreenAccessor screen = (AbstractContainerScreenAccessor) this;
-            BackpackPanelRenderer.extractBackground(graphics, screen.tbaddons$getLeftPos(), screen.tbaddons$getTopPos(), panel);
+            BackpackPanelRenderer.extractBackground(graphics, screen.tbaddons$getLeftPos(), screen.tbaddons$getTopPos(), panel, mouseX, mouseY);
         }
     }
 
