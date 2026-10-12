@@ -1,7 +1,6 @@
 package io.github.antonschmitz.vplustweaks.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import io.github.antonschmitz.vplustweaks.VanillaPlusTweaks;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -53,7 +52,7 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
             poseStack.scale(-SCALE, -SCALE, SCALE);
             if (side < 0) {
                 // The model's strap points one way; turn it upside down so it faces the body on the other side.
-                poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+                poseStack.scale(-1.0F, -1.0F, 1.0F); // 180° around z
             }
             engine.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
             poseStack.popPose();

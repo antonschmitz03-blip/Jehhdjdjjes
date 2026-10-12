@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.PushReaction;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
@@ -37,8 +36,7 @@ public class VanillaPlusTweaks implements ModInitializer {
         FastLadders.register();
         ResourceKey<Block> ropeLadderKey = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "rope_ladder"));
         ROPE_LADDER = Registry.register(BuiltInRegistries.BLOCK, ropeLadderKey, new LadderBlock(BlockBehaviour.Properties.of()
-                .setId(ropeLadderKey).strength(0.4F).sound(SoundType.LADDER).noOcclusion().noLootTable()
-                .pushReaction(PushReaction.DESTROY)));
+                .setId(ropeLadderKey).strength(0.4F).sound(SoundType.LADDER).noOcclusion().noLootTable()));
         GHAST_SPEED_UPGRADE = register("ghast_speed_upgrade", Item::new);
         GHAST_WHISTLE = register("ghast_whistle", properties -> new GhastWhistleItem(properties.stacksTo(1)));
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(output -> {
