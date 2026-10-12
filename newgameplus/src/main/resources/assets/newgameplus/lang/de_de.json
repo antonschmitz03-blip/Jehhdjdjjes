@@ -1,0 +1,14 @@
+{
+  "newgameplus.button.import": "Spieler importieren...",
+  "newgameplus.button.importing": "Import: %s",
+  "newgameplus.screen.title": "Spieler aus anderer Welt importieren",
+  "newgameplus.screen.hint": "Dein Spieler aus der gewählten Welt kommt in die neue Welt mit. Die alte Welt bleibt unverändert.",
+  "newgameplus.screen.loading": "Welten werden geladen...",
+  "newgameplus.screen.no_worlds": "Keine Welten gefunden",
+  "newgameplus.screen.no_player": "\"%s\" hat keinen gespeicherten Spieler",
+  "newgameplus.screen.read_failed": "\"%s\" konnte nicht gelesen werden, siehe Log",
+  "newgameplus.screen.none": "Nicht importieren",
+  "newgameplus.option.items": "Items",
+  "newgameplus.option.xp": "XP",
+  "newgameplus.option.ender_chest": "Endertruhe"
+}

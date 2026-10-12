@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "newgameplus",
+  "version": "${version}",
+  "name": "New Game Plus",
+  "description": "Start a new world with your player from another world: pick a world with \"Import Player\" on the Create World screen and your inventory, armor, XP and mod slots (Trinkets, Traveler's Backpack) come along on first join.",
+  "authors": ["antonschmitz03-blip"],
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.antonschmitz.newgameplus.NewGamePlus"],
+    "client": ["io.github.antonschmitz.newgameplus.client.NewGamePlusClient"]
+  },
+  "mixins": ["newgameplus.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}
