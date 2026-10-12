@@ -13,7 +13,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.PackResources;
+import java.util.stream.Stream;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionType;
@@ -42,13 +44,13 @@ public class APDynamicResources implements PackResources {
             LOCATION,
             new Pack.ResourcesSupplier() {
                 @Override
-                public @NotNull PackResources openPrimary(PackLocationInfo location) {
+                public @NotNull PackMetadataResources openMetadata(PackLocationInfo location) {
                     return new APDynamicResources();
                 }
 
                 @Override
-                public @NotNull PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
-                    return new APDynamicResources();
+                public @NotNull Stream<PackResources> openResources(PackLocationInfo location, Pack.Metadata metadata) {
+                    return Stream.of(new APDynamicResources());
                 }
             },
             getPackMetadata(

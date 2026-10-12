@@ -1,5 +1,3 @@
 # class|egrep filter on member lines (empty = all, first 30 lines). Dumped by CI when the build fails.
-net.minecraft.server.packs.PackMetadataResources|
-net.minecraft.server.packs.repository.Pack$Metadata|
-net.minecraft.server.packs.repository.Pack|Pack\(|create|readMetaAndCreate
-net.minecraft.server.packs.PackResources|
+net.minecraft.world.level.block.Block|fall|Fall
+net.minecraft.world.level.block.state.BlockBehaviour|fall|Fall
