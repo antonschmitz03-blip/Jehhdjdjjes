@@ -88,7 +88,7 @@ final class SelfTest {
         player.totalExperience = 0;
     }
 
-    /** Lays out a world folder like a 26.3 singleplayer save and reads it back with {@link SourceReader}. */
+    /** Lays out a world folder like a 26.3 singleplayer save (players/data) and reads it back with {@link SourceReader}. */
     private static CompoundTag readThroughWorldFolder(CompoundTag source) throws Exception {
         Path world = Files.createTempDirectory("newgameplus-selftest");
         try {
@@ -98,8 +98,8 @@ final class SelfTest {
             CompoundTag root = new CompoundTag();
             root.put("Data", data);
             NbtIo.writeCompressed(root, world.resolve("level.dat"));
-            Files.createDirectories(world.resolve("playerdata"));
-            NbtIo.writeCompressed(source, world.resolve("playerdata").resolve(owner + ".dat"));
+            Files.createDirectories(world.resolve("players").resolve("data"));
+            NbtIo.writeCompressed(source, world.resolve("players").resolve("data").resolve(owner + ".dat"));
 
             Optional<CompoundTag> read = SourceReader.readPlayer(world, UUID.randomUUID());
             check(read.isPresent(), "no player found in the test world folder");

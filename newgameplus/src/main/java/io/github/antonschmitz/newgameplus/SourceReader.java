@@ -36,20 +36,22 @@ public final class SourceReader {
             return Optional.of(fix(legacy.get(), worldVersion));
         }
 
-        Path playerDir = worldDir.resolve("playerdata");
+        // 26.x keeps players in players/data, older versions in playerdata.
         Optional<UUID> owner = data.read("singleplayer_uuid", UUIDUtil.CODEC);
-        for (UUID id : new UUID[]{owner.orElse(null), preferred}) {
-            if (id != null && Files.isRegularFile(playerDir.resolve(id + ".dat"))) {
-                return Optional.of(fix(read(playerDir.resolve(id + ".dat")), worldVersion));
+        for (Path playerDir : new Path[]{worldDir.resolve("players").resolve("data"), worldDir.resolve("playerdata")}) {
+            for (UUID id : new UUID[]{owner.orElse(null), preferred}) {
+                if (id != null && Files.isRegularFile(playerDir.resolve(id + ".dat"))) {
+                    return Optional.of(fix(read(playerDir.resolve(id + ".dat")), worldVersion));
+                }
             }
-        }
-        // Fall back to whoever played there last.
-        if (Files.isDirectory(playerDir)) {
-            try (Stream<Path> files = Files.list(playerDir)) {
-                Optional<Path> newest = files.filter(p -> p.getFileName().toString().endsWith(".dat"))
-                        .max(Comparator.comparingLong(p -> p.toFile().lastModified()));
-                if (newest.isPresent()) {
-                    return Optional.of(fix(read(newest.get()), worldVersion));
+            // Fall back to whoever played there last.
+            if (Files.isDirectory(playerDir)) {
+                try (Stream<Path> files = Files.list(playerDir)) {
+                    Optional<Path> newest = files.filter(p -> p.getFileName().toString().endsWith(".dat"))
+                            .max(Comparator.comparingLong(p -> p.toFile().lastModified()));
+                    if (newest.isPresent()) {
+                        return Optional.of(fix(read(newest.get()), worldVersion));
+                    }
                 }
             }
         }
