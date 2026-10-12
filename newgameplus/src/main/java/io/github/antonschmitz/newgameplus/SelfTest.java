@@ -53,8 +53,8 @@ final class SelfTest {
             check(!NewGamePlus.hasPending(server), "pending import not used up");
             Files.deleteIfExists(NewGamePlus.pendingFile(server).resolveSibling("newgameplus_applied.dat"));
 
-            player.getInventory().clearContent();
-            player.getEnderChestInventory().clearContent();
+            // Other mods' self tests reuse the same fake player.
+            wipe(player);
             NewGamePlus.LOGGER.info("newgameplus self test: import ok");
         } catch (Exception | AssertionError e) {
             NewGamePlus.LOGGER.error("newgameplus self test FAILED", e);
