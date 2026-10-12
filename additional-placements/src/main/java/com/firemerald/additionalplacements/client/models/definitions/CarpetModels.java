@@ -1,0 +1,37 @@
+package com.firemerald.additionalplacements.client.models.definitions;
+
+import com.firemerald.additionalplacements.AdditionalPlacementsMod;
+import com.firemerald.additionalplacements.block.AdditionalFloorBlock;
+
+import com.mojang.math.Quadrant;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class CarpetModels {
+	public static final Identifier BASE_MODEL_FOLDER = AdditionalPlacementsMod.rl("block/carpets/base");
+	public static final Identifier COLUMN_MODEL_FOLDER = AdditionalPlacementsMod.rl("block/carpets/column");
+	public static final Identifier SIDE_ALL_MODEL_FOLDER = AdditionalPlacementsMod.rl("block/carpets/side_all");
+
+	public static final String[] MODELS = new String[] {
+			"/carpet"
+	};
+
+	public static final StateModelDefinition[] MODEL_DEFINITIONS = new StateModelDefinition[5];
+
+	static {
+		MODEL_DEFINITIONS[Direction.UP.ordinal() - 1] = new StateModelDefinition("/carpet", Quadrant.R180, Quadrant.R0);
+		MODEL_DEFINITIONS[Direction.SOUTH.ordinal() - 1] = new StateModelDefinition("/carpet", Quadrant.R270, Quadrant.R180);
+		MODEL_DEFINITIONS[Direction.WEST.ordinal() - 1] = new StateModelDefinition("/carpet", Quadrant.R270, Quadrant.R270);
+		MODEL_DEFINITIONS[Direction.NORTH.ordinal() - 1] = new StateModelDefinition("/carpet", Quadrant.R270, Quadrant.R0);
+		MODEL_DEFINITIONS[Direction.EAST.ordinal() - 1] = new StateModelDefinition("/carpet", Quadrant.R270, Quadrant.R90);
+	}
+
+	public static StateModelDefinition getModel(Direction direction) {
+		return MODEL_DEFINITIONS[direction.ordinal() - 1];
+	}
+
+	public static StateModelDefinition getModel(BlockState state) {
+		return getModel(state.getValue(AdditionalFloorBlock.PLACING));
+	}
+}

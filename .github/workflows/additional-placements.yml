@@ -1,0 +1,29 @@
+name: Additional Placements
+
+on:
+  push:
+    paths:
+      - 'additional-placements/**'
+      - '.github/workflows/additional-placements.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: additional-placements
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          build-root-directory: additional-placements
+      - run: chmod +x gradlew && ./gradlew build --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: additional-placements
+          path: additional-placements/build/libs/additional-placements-*.jar

@@ -1,0 +1,51 @@
+package com.firemerald.additionalplacements.client;
+
+import com.firemerald.additionalplacements.AdditionalPlacementsMod;
+import com.firemerald.additionalplacements.config.APConfigs;
+import com.firemerald.additionalplacements.network.server.SetPlacementTogglePacket;
+import com.firemerald.additionalplacements.util.PlatformUtils;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+
+public class APClientData {
+	static {
+		PlatformUtils.checkIsClient();
+	}
+
+	public static final KeyMapping AP_PLACEMENT_KEY = new KeyMapping("key.additionalplacements.placement_toggle", InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KeyMapping.Category.register(AdditionalPlacementsMod.rl("keybinds")));
+
+	private static boolean placementEnabled = true;
+	public static long placementKeyPressTime, lastSynchronizedTime;
+	public static boolean placementKeyDown = false;
+
+	public static boolean placementEnabled()
+	{
+		return placementEnabled;
+	}
+
+	public static void setPlacementEnabled(boolean state)
+	{
+		if (state != placementEnabled) togglePlacementEnabled();
+	}
+
+	public static void togglePlacementEnabled() {
+		setPlacementEnabledAndSynchronize(!placementEnabled, APConfigs.client().togglePlacementLogicStateMessage.get());
+	}
+
+	public static void setPlacementEnabledAndSynchronize(boolean state, boolean showMessage) {
+		placementEnabled = state;
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player != null) {
+			synchronizePlacementEnabled();
+			if (showMessage) player.sendSystemMessage(Component.translatable(placementEnabled ? "msg.additionalplacements.placement_enable" : "msg.additionalplacements.placement_disable"));
+		}
+	}
+
+	public static void synchronizePlacementEnabled() {
+		SetPlacementTogglePacket.of(placementEnabled).sendToServer();
+	}
+}

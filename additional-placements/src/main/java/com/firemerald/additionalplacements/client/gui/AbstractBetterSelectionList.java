@@ -1,0 +1,636 @@
+package com.firemerald.additionalplacements.client.gui;
+
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+
+import com.google.common.collect.Lists;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractScrollArea;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenDirection;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public abstract class AbstractBetterSelectionList<E extends AbstractBetterSelectionList.Entry<E>> extends AbstractContainerWidget {
+	protected static final int SCROLLBAR_WIDTH = 6;
+	private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace("widget/scroller");
+	private static final Identifier SCROLLER_BACKGROUND_SPRITE = Identifier.withDefaultNamespace("widget/scroller_background");
+	private static final Identifier MENU_LIST_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/menu_list_background.png");
+	private static final Identifier INWORLD_MENU_LIST_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/inworld_menu_list_background.png");
+	protected final Minecraft minecraft;
+	protected final int normalItemHeight;
+	private final List<E> children = new TrackedList();
+	protected boolean centerListVertically = true;
+	private double scrollAmount;
+	private boolean renderHeader;
+	protected int headerHeight;
+	private boolean scrolling;
+	@Nullable
+	private E selected;
+	@Nullable
+	private E hovered;
+
+	public AbstractBetterSelectionList(Minecraft minecraft, int x, int y, int width, int height, int normalItemHeight) {
+		super(x, y, width, height, CommonComponents.EMPTY, AbstractScrollArea.defaultSettings(normalItemHeight / 2));
+		this.minecraft = minecraft;
+		this.normalItemHeight = normalItemHeight;
+	}
+
+	protected void setRenderHeader(boolean renderHeader, int headerHeight) {
+		this.renderHeader = renderHeader;
+		this.headerHeight = headerHeight;
+		if (!renderHeader) {
+			this.headerHeight = 0;
+		}
+
+	}
+
+	public int getRowWidth() {
+		return width - SCROLLBAR_WIDTH * 2;
+	}
+
+	@Nullable
+	public E getSelected() {
+		return this.selected;
+	}
+
+	public void setSelected(@Nullable E pSelected) {
+		this.selected = pSelected;
+	}
+
+	public E getFirstElement() {
+		return this.children.getFirst();
+	}
+
+	/**
+	 * Gets the focused GUI element.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Nullable
+	public E getFocused() {
+		return (E) (super.getFocused());
+	}
+
+	/**
+	 * {@return a List containing all GUI element children of this GUI element}
+	 */
+	@Override
+	public final @NotNull List<E> children() {
+		return this.children;
+	}
+
+	protected void clearEntries() {
+		this.children.clear();
+		this.selected = null;
+	}
+
+	protected void replaceEntries(Collection<E> entries) {
+		this.clearEntries();
+		this.children.addAll(entries);
+	}
+
+	protected E getEntry(int index) {
+		return this.children().get(index);
+	}
+
+	protected int addEntry(E entry) {
+		this.children.add(entry);
+		return this.children.size() - 1;
+	}
+
+	protected void addEntryToTop(E entry) {
+		double d0 = this.getMaxScroll() - this.getScrollAmount();
+		this.children.addFirst(entry);
+		this.setScrollAmount(this.getMaxScroll() - d0);
+	}
+
+	protected boolean removeEntryFromTop(E entry) {
+		double scrollFromBottom = this.getMaxScroll() - this.getScrollAmount();
+		boolean flag = this.removeEntry(entry);
+		this.setScrollAmount(this.getMaxScroll() - scrollFromBottom);
+		return flag;
+	}
+
+	protected int getItemCount() {
+		return this.children().size();
+	}
+
+	protected boolean isSelectedItem(E entry) {
+		return Objects.equals(this.getSelected(), entry);
+	}
+
+	@Nullable
+	protected final E getEntryAtPosition(double mouseX, double mouseY) {
+		if (mouseX >= this.getScrollbarPosition()) return null;
+		int halfWidth = this.getRowWidth() / 2;
+		int middleX = this.getX() + this.width / 2;
+		int left = middleX - halfWidth;
+		if (mouseX < left) return null;
+		int right = middleX + halfWidth;
+		if (mouseX > right) return null;
+		int mousePosY = Mth.floor(mouseY - this.getY()) - this.headerHeight + (int) this.getScrollAmount() - 4;
+		if (mousePosY < 0) return null;
+		int itemY1 = 0;
+		int itemY2;
+		for (E entry : this.children()) {
+			itemY2 = itemY1 + entry.getHeight();
+			if (mousePosY >= itemY1 && mousePosY < itemY2) return entry;
+			itemY1 = itemY2;
+		}
+		return null;
+	}
+
+	public void updateSize(int width, HeaderAndFooterLayout layout) {
+		this.updateSizeAndPosition(width, layout.getContentHeight(), layout.getHeaderHeight());
+	}
+
+	public void updateSizeAndPosition(int width, int height, int y) {
+		this.setSize(width, height);
+		this.setPosition(0, y);
+		this.refreshScrollAmount();
+	}
+
+	@Override
+	protected int contentHeight() {
+		return children().stream().mapToInt(Entry::getHeight).sum() + this.headerHeight + 4;
+	}
+
+
+	protected int getMaxPosition() {
+		//TODO cache
+		return children().stream().mapToInt(Entry::getHeight).sum() + this.headerHeight;
+	}
+
+	protected boolean clickedHeader(int clickedX, int clickedY) {
+		return false;
+	}
+
+	protected void renderHeader(GuiGraphicsExtractor guiGraphics, int x, int y) {
+	}
+
+	protected void renderDecorations(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+	}
+
+	@Override
+	public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+		this.hovered = this.isMouseOver(mouseX, mouseY) ? this.getEntryAtPosition(mouseX, mouseY) : null;
+		this.renderListBackground(guiGraphics);
+		this.enableScissor(guiGraphics);
+		if (this.renderHeader) {
+			int x = this.getRowLeft();
+			int y = this.getY() + 4 - (int)this.getScrollAmount();
+			this.renderHeader(guiGraphics, x, y);
+		}
+
+		this.renderListItems(guiGraphics, mouseX, mouseY, partialTick);
+		guiGraphics.disableScissor();
+		this.renderListSeparators(guiGraphics);
+		if (this.scrollable()) {
+			int scrollPos = this.getScrollbarPosition();
+			int scrollSize = (int)((float)(this.height * this.height) / (float)this.getMaxPosition());
+			scrollSize = Mth.clamp(scrollSize, 32, this.height - 8);
+			int scrollY = (int)this.getScrollAmount() * (this.height - scrollSize) / this.getMaxScroll() + this.getY();
+			if (scrollY < this.getY()) {
+				scrollY = this.getY();
+			}
+
+			guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_BACKGROUND_SPRITE, scrollPos, this.getY(), 6, this.getHeight());
+			guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SCROLLER_SPRITE, scrollPos, scrollY, 6, scrollSize);
+		}
+
+		this.renderDecorations(guiGraphics, mouseX, mouseY);
+	}
+
+	@Override
+	protected boolean scrollable() {
+		return this.getMaxScroll() > 0;
+	}
+
+	protected void renderListSeparators(GuiGraphicsExtractor pGuiGraphics) {
+		Identifier headerSeparator = this.minecraft.level == null ? Screen.HEADER_SEPARATOR : Screen.INWORLD_HEADER_SEPARATOR;
+		Identifier footerSeparator = this.minecraft.level == null ? Screen.FOOTER_SEPARATOR : Screen.INWORLD_FOOTER_SEPARATOR;
+		pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, headerSeparator, this.getX(), this.getY() - 2, 0.0F, 0.0F, this.getWidth(), 2, 32, 2);
+		pGuiGraphics.blit(RenderPipelines.GUI_TEXTURED, footerSeparator, this.getX(), this.getBottom(), 0.0F, 0.0F, this.getWidth(), 2, 32, 2);
+	}
+
+	protected void renderListBackground(GuiGraphicsExtractor pGuiGraphics) {
+		Identifier resourcelocation = this.minecraft.level == null ? MENU_LIST_BACKGROUND : INWORLD_MENU_LIST_BACKGROUND;
+		pGuiGraphics.blit(
+				RenderPipelines.GUI_TEXTURED,
+				resourcelocation,
+				this.getX(),
+				this.getY(),
+				this.getRight(),
+				this.getBottom() + (int)this.getScrollAmount(),
+				this.getWidth(),
+				this.getHeight(),
+				32,
+				32
+		);
+	}
+
+	protected void enableScissor(GuiGraphicsExtractor guiGraphics) {
+		guiGraphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
+	}
+
+	protected void centerScrollOn(E entry) {
+		int y = 0;
+		for (E item : children()) {
+			if (item == entry) {
+				y += item.getHeight() / 2;
+				break;
+			} else y += item.getHeight();
+		}
+		this.setScrollAmount(y - this.height / 2d);
+	}
+
+	protected void ensureVisible(E entry) {
+		int rowTop = this.getRowTop(entry);
+		int obscuredTop = rowTop - this.getY() - 2;
+		if (obscuredTop < 0) {
+			this.scroll(obscuredTop);
+		}
+
+		int obscuredBottom = rowTop + entry.getHeight() - this.getBottom() + 2;
+		if (obscuredBottom > 0) {
+			this.scroll(obscuredBottom);
+		}
+
+	}
+
+	private void scroll(int scroll) {
+		this.setScrollAmount(this.getScrollAmount() + scroll);
+	}
+
+	@Override
+	protected double scrollRate() {
+		return this.normalItemHeight / 2.0;
+	}
+
+	public double getScrollAmount() {
+		return this.scrollAmount;
+	}
+
+	@Override
+	public void setScrollAmount(double scroll) {
+		this.scrollAmount = Mth.clamp(scroll, 0.0D, this.getMaxScroll());
+	}
+
+	public int getMaxScroll() {
+		return Math.max(0, this.getMaxPosition() - (this.height - 4));
+	}
+
+	protected void updateScrollingState(MouseButtonEvent event) {
+		this.scrolling = event.button() == 0 && event.x() >= this.getScrollbarPosition() && event.x() < this.getScrollbarPosition() + 6;
+	}
+
+	protected int getScrollbarPosition() {
+		return this.getX() + this.width - SCROLLBAR_WIDTH;
+	}
+
+	protected boolean isValidMouseClick(int pButton) {
+		return pButton == 0;
+	}
+
+	@Override
+	public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+		if (!this.isValidMouseClick(event.button())) {
+			return false;
+		} else {
+			this.updateScrollingState(event);
+			if (!this.isMouseOver(event.x(), event.y())) {
+				return false;
+			} else {
+				E clicked = this.getEntryAtPosition(event.x(), event.y());
+				if (clicked != null) {
+					if (clicked.mouseClicked(event, isDoubleClick)) {
+						E focused = this.getFocused();
+						if (focused != clicked && focused instanceof ContainerEventHandler containereventhandler) {
+                            containereventhandler.setFocused(null);
+						}
+
+						this.setFocused(clicked);
+						this.setDragging(true);
+						return true;
+					}
+				} else if (this.clickedHeader((int) (event.x() - (this.getX() + this.width / 2d - this.getRowWidth() / 2d)), (int) (event.y() - this.getY()) + (int) this.getScrollAmount() - 4)) {
+					return true;
+				}
+
+				return this.scrolling;
+			}
+		}
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent event) {
+		if (this.getFocused() != null) {
+			this.getFocused().mouseReleased(event);
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+		if (super.mouseDragged(event, dragX, dragY)) {
+			return true;
+		} else if (event.button() == 0 && this.scrolling) {
+			if (event.y() < this.getY()) {
+				this.setScrollAmount(0.0D);
+			} else if (event.y() > this.getBottom()) {
+				this.setScrollAmount(this.getMaxScroll());
+			} else {
+				double maxScroll = Math.max(1, this.getMaxScroll());
+				int height = this.height;
+				int j = Mth.clamp((int) ((float) (height * height) / (float) this.getMaxPosition()), 32, height - 8);
+				double scrollScale = Math.max(1.0D, maxScroll / (height - j));
+				this.setScrollAmount(this.getScrollAmount() + dragY * scrollScale);
+			}
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		this.setScrollAmount(this.getScrollAmount() - scrollY * this.normalItemHeight / 2.0D);
+		return true;
+	}
+
+	/**
+	 * Sets the focus state of the GUI element.
+	 *
+	 * @param listener the focused GUI element.
+	 */
+	@Override
+	public void setFocused(@Nullable GuiEventListener listener) {
+		super.setFocused(listener);
+		int i = this.children.indexOf(listener);
+		if (i >= 0) {
+			E e = this.children.get(i);
+			this.setSelected(e);
+			if (this.minecraft.getLastInputType().isKeyboard()) {
+				this.ensureVisible(e);
+			}
+		}
+
+	}
+
+	@Nullable
+	protected E nextEntry(ScreenDirection direction) {
+		return this.nextEntry(direction, (unused) -> true);
+	}
+
+	@Nullable
+	protected E nextEntry(ScreenDirection direction, Predicate<E> predicate) {
+		return this.nextEntry(direction, predicate, this.getSelected());
+	}
+
+	@Nullable
+	protected E nextEntry(ScreenDirection direction, Predicate<E> predicate, @Nullable E selected) {
+        if (!this.children().isEmpty() && (int) (byte) switch (direction) {
+			case RIGHT, LEFT -> 0;
+			case UP -> -1;
+			case DOWN -> 1;
+        } != 0) {
+			int start;
+			if (selected == null) {
+				start = (int) (byte) switch (direction) {
+                    case RIGHT, LEFT -> 0;
+                    case UP -> -1;
+                    case DOWN -> 1;
+                } > 0 ? 0 : this.children().size() - 1;
+			} else {
+				start = this.children().indexOf(selected) + (int) (byte) switch (direction) {
+                    case RIGHT, LEFT -> 0;
+                    case UP -> -1;
+                    case DOWN -> 1;
+                };
+			}
+			for (int index = start; index >= 0 && index < this.children.size(); index += (byte) switch (direction) {
+                case RIGHT, LEFT -> 0;
+                case UP -> -1;
+                case DOWN -> 1;
+            }) {
+				E entry = this.children().get(index);
+				if (predicate.test(entry)) {
+					return entry;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Checks if the given mouse coordinates are over the GUI element.
+	 * <p>
+	 *
+	 * @return {@code true} if the mouse is over the GUI element, {@code false}
+	 *         otherwise.
+	 * @param mouseX the X coordinate of the mouse.
+	 * @param mouseY the Y coordinate of the mouse.
+	 */
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		return mouseY >= this.getY() && mouseY <= this.getBottom() && mouseX >= this.getX() && mouseX <= this.getRight();
+	}
+
+	protected void renderListItems(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+		int left = this.getRowLeft();
+		int width = this.getRowWidth();
+		int top = this.getY() + this.headerHeight - (int) this.scrollAmount;
+		int bottom;
+		for (E entry : children()) {
+			bottom = top + entry.getHeight();
+			if (bottom >= this.getY() && top <= this.getBottom()) {
+				this.renderItem(guiGraphics, mouseX, mouseY, partialTick, entry, left, top, width, entry.getHeight());
+				if (bottom > this.getBottom()) break; //no more should render
+			}
+			top = bottom;
+		}
+
+	}
+
+	protected void renderItem(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, E entry, int left, int top, int width, int height) {
+		entry.renderBack(guiGraphics, top, left, width, height, mouseX, mouseY, Objects.equals(this.hovered, entry), partialTick);
+		if (this.isSelectedItem(entry)) {
+			int outerColor = this.isFocused() ? -1 : 0xFF808080;
+			this.renderSelection(guiGraphics, top, width, height, outerColor, 0xFF000000);
+		}
+
+		entry.render(guiGraphics, top, left, width, height, mouseX, mouseY, Objects.equals(this.hovered, entry), partialTick);
+	}
+
+	protected void renderSelection(GuiGraphicsExtractor guiGraphics, int top, int width, int height, int outerColor, int innerColor) {
+		int minX = this.getX() + (this.width - width) / 2;
+		int maxX = this.getX() + (this.width + width) / 2;
+		guiGraphics.fill(minX, top - 2, maxX, top + height + 2, outerColor);
+		guiGraphics.fill(minX + 1, top - 1, maxX - 1, top + height + 1, innerColor);
+	}
+
+	public int getRowLeft() {
+		return this.getX() + this.width / 2 - this.getRowWidth() / 2 + 2;
+	}
+
+	public int getRowRight() {
+		return this.getRowLeft() + this.getRowWidth();
+	}
+
+	protected int getRowTop(E entry) {
+		int y = 0;
+		for (E item : children()) {
+			if (item == entry) break;
+			else y += item.getHeight();
+		}
+		return this.getY() - (int) this.getScrollAmount() + y + this.headerHeight;
+	}
+
+	protected int getRowBottom(E entry) {
+		return this.getRowTop(entry) + entry.getHeight();
+	}
+
+	/**
+	 * {@return the narration priority}
+	 */
+	@Override
+	public @NotNull NarrationPriority narrationPriority() {
+		if (this.isFocused()) {
+			return NarrationPriority.FOCUSED;
+		} else {
+			return this.hovered != null ? NarrationPriority.HOVERED : NarrationPriority.NONE;
+		}
+	}
+
+	@Nullable
+	protected E remove(int index) {
+		E e = this.children.get(index);
+		return this.removeEntry(this.children.get(index)) ? e : null;
+	}
+
+	protected boolean removeEntry(E entry) {
+		boolean flag = this.children.remove(entry);
+		if (flag && entry == this.getSelected()) {
+			this.setSelected(null);
+		}
+
+		return flag;
+	}
+
+	@Nullable
+	protected E getHovered() {
+		return this.hovered;
+	}
+
+	void bindEntryToSelf(Entry<E> entry) {
+		entry.list = this;
+	}
+
+	protected void narrateListElementPosition(NarrationElementOutput narrationElementOutput, E entry) {
+		List<E> list = this.children();
+		if (list.size() > 1) {
+			int index = list.indexOf(entry);
+			if (index != -1) {
+				narrationElementOutput.add(NarratedElementType.POSITION, Component.translatable("narrator.position.list", index + 1, list.size()));
+			}
+		}
+
+	}
+
+	protected abstract static class Entry<E extends Entry<E>> implements GuiEventListener {
+		/** @deprecated */
+		@Deprecated
+		protected AbstractBetterSelectionList<E> list;
+
+		/**
+		 * Sets the focus state of the GUI element.
+		 *
+		 * @param focused {@code true} to apply focus, {@code false} to remove focus
+		 */
+		@Override
+		public void setFocused(boolean focused) {
+		}
+
+		/**
+		 * {@return {@code true} if the GUI element is focused, {@code false} otherwise}
+		 */
+		@Override
+		public boolean isFocused() {
+			return this.list.getFocused() == this;
+		}
+
+		public abstract int getHeight();
+
+		public abstract void render(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick);
+
+		public void renderBack(GuiGraphicsExtractor guiGraphics, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+		}
+
+		/**
+		 * Checks if the given mouse coordinates are over the GUI element.
+		 * <p>
+		 *
+		 * @return {@code true} if the mouse is over the GUI element, {@code false}
+		 *         otherwise.
+		 * @param mouseX the X coordinate of the mouse.
+		 * @param mouseY the Y coordinate of the mouse.
+		 */
+		@Override
+		public boolean isMouseOver(double mouseX, double mouseY) {
+			return Objects.equals(this.list.getEntryAtPosition(mouseX, mouseY), this);
+		}
+	}
+
+	class TrackedList extends AbstractList<E> {
+		private final List<E> delegate = Lists.newArrayList();
+
+		@Override
+		public E get(int index) {
+			return this.delegate.get(index);
+		}
+
+		@Override
+		public int size() {
+			return this.delegate.size();
+		}
+
+		@Override
+		public E set(int index, E entry) {
+			E e = this.delegate.set(index, entry);
+			AbstractBetterSelectionList.this.bindEntryToSelf(entry);
+			return e;
+		}
+
+		@Override
+		public void add(int index, E entry) {
+			this.delegate.add(index, entry);
+			AbstractBetterSelectionList.this.bindEntryToSelf(entry);
+		}
+
+		@Override
+		public E remove(int index) {
+			return this.delegate.remove(index);
+		}
+	}
+}
