@@ -27,6 +27,7 @@ Install on the server too when playing multiplayer.
 |---|---|
 | Leather | Smelt / smoke / campfire-cook rotten flesh |
 | Saddle | `LLL` / `LIL` (leather, iron ingot) |
+| Gunpowder (x2) | Coal or charcoal + sugar + flint (shapeless) |
 | Name tag | Paper + string + iron nugget (shapeless) |
 | Iron / gold / diamond horse armor | `X X` / `XWX` / `X X` (material, any wool) |
 | Chainmail armor | Armor shapes made of iron chains |
