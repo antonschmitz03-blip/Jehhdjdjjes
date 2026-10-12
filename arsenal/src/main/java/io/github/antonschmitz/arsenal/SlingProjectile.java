@@ -45,12 +45,10 @@ public class SlingProjectile extends Snowball {
     protected void onHitEntity(EntityHitResult hitResult) {
         Entity target = hitResult.getEntity();
         if (level() instanceof ServerLevel serverLevel) {
-            if (damage > 0) {
-                target.hurtServer(serverLevel, damageSources().thrown(this, getOwner()), damage);
-            }
-            if (knockback > 0 && target instanceof LivingEntity living) {
-                Vec3 velocity = getDeltaMovement();
-                living.knockback(knockback, -velocity.x, -velocity.z);
+            target.hurtServer(serverLevel, damageSources().thrown(this, getOwner()), damage);
+            if (knockback > 0) {
+                Vec3 push = getDeltaMovement().multiply(1, 0, 1).normalize().scale(knockback);
+                target.push(push.x, 0.1, push.z);
             }
         }
     }

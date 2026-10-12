@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -41,7 +43,8 @@ final class SelfTest {
             level.getEntitiesOfClass(SlingProjectile.class, player.getBoundingBox().inflate(8)).forEach(e -> e.discard());
             VanillaArsenal.LOGGER.info("vanillaarsenal self test: throw ok");
 
-            Cow cow = EntityType.COW.create(level, EntitySpawnReason.COMMAND);
+            EntityType<?> cowType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("cow"));
+            LivingEntity cow = (LivingEntity) cowType.create(level, EntitySpawnReason.COMMAND);
             check(cow != null, "no cow");
             cow.setPos(player.getX() + 3, player.getY(), player.getZ());
             level.addFreshEntity(cow);
