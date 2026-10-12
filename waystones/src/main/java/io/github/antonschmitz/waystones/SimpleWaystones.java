@@ -56,7 +56,7 @@ public class SimpleWaystones implements ModInitializer {
             if (!state.is(WAYSTONE) || !(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) {
                 return true;
             }
-            WaystoneData.Waystone waystone = WaystoneData.get().at(serverLevel, pos);
+            WaystoneData.Waystone waystone = WaystoneData.get().at(serverLevel, WaystoneBlock.lowerPos(state, pos));
             if (waystone == null || serverPlayer.isCreative() || serverPlayer.getUUID().equals(waystone.owner())) {
                 return true;
             }
@@ -66,7 +66,7 @@ public class SimpleWaystones implements ModInitializer {
         });
         PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) -> {
             if (state.is(WAYSTONE) && level instanceof ServerLevel serverLevel) {
-                WaystoneData.get().remove(serverLevel, pos);
+                WaystoneData.get().remove(serverLevel, WaystoneBlock.lowerPos(state, pos));
             }
         });
 

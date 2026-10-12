@@ -2,7 +2,8 @@
 
 A stripped-down Waystones for Fabric 26.3. Server-side logic only; install it on the server and the client.
 
-- **Waystone** (crafted: amethyst shard on top, ender pearl in the middle surrounded by stone bricks). A new one is
+- **Waystone**: a two-block-tall stone (deepslate plinth, stone brick shaft with amethyst inlays, amethyst crystal
+  on top); needs a free block above to place. (Crafted: amethyst shard on top, ender pearl in the middle surrounded by stone bricks.) A new one is
   called "<biome> Waystone" (or the item's anvil name). The owner renames it with the name tag in its teleport list:
   that opens an anvil-style screen, type the name and click the result. Free.
 - **Right-click** a waystone the first time to discover it. After that, right-click opens a list of every waystone

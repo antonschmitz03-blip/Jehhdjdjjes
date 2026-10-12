@@ -85,7 +85,7 @@ public final class WaystoneTeleport {
         return true;
     }
 
-    /** A free two-block space next to the waystone with solid ground, else on top of it. */
+    /** A free two-block space next to the waystone with solid ground, else on top of it. {@code pos} is the lower half. */
     static Vec3 safeSpot(ServerLevel level, BlockPos pos) {
         for (Direction direction : Direction.Plane.HORIZONTAL) {
             BlockPos candidate = pos.relative(direction);
@@ -96,7 +96,7 @@ public final class WaystoneTeleport {
                 }
             }
         }
-        return Vec3.atBottomCenterOf(pos.above());
+        return Vec3.atBottomCenterOf(pos.above(2));
     }
 
     private static boolean isFree(ServerLevel level, BlockPos pos) {

@@ -82,6 +82,7 @@ final class SelfTest {
 
             // A waystone removed without breaking it disappears from the list on use.
             level.setBlockAndUpdate(near, Blocks.AIR.defaultBlockState());
+            check(level.getBlockState(near.above()).isAir(), "upper half left behind after removing the lower half");
             check(!WaystoneTeleport.teleport(player, nearStone, false), "teleported to a removed waystone");
             check(WaystoneData.get().discovered(player.getUUID()).size() == 2, "removed waystone still listed");
 
@@ -91,7 +92,8 @@ final class SelfTest {
             check("Gamma".equals(WaystoneData.get().at(level, alpha).displayName().getString()), "new name lost on reload");
 
             for (BlockPos pos : new BlockPos[]{alpha, beta}) {
-                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                level.setBlockAndUpdate(pos.above(), Blocks.AIR.defaultBlockState());
+                check(level.getBlockState(pos).isAir(), "lower half left behind after removing the upper half");
                 WaystoneData.get().remove(level, pos);
             }
             player.getInventory().clearContent();
@@ -109,7 +111,8 @@ final class SelfTest {
     private static BlockPos place(ServerLevel level, int x, int z) {
         level.getChunk(x >> 4, z >> 4);
         BlockPos pos = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), z);
-        level.setBlockAndUpdate(pos, SimpleWaystones.WAYSTONE.defaultBlockState());
+        WaystoneBlock.placeBoth(level, pos);
+        check(level.getBlockState(pos.above()).is(SimpleWaystones.WAYSTONE), "upper half missing");
         return pos;
     }
 

@@ -1,5 +1,6 @@
 {
   "variants": {
-    "": { "model": "simplewaystones:block/waystone" }
+    "half=lower": { "model": "simplewaystones:block/waystone_lower" },
+    "half=upper": { "model": "simplewaystones:block/waystone_upper" }
   }
 }
