@@ -25,8 +25,8 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew build --console=plain > build.log 2>&1 || status=$?
-          grep -E -A2 'error:|warning: \[' build.log | grep -vE '^\s+at ' | awk '!seen[$0]++' | head -120
-          grep -E 'BUILD|What went wrong' -A3 build.log | head -20
+          { grep -E -A2 'error:' build.log | grep -vE '^\s+at |^--$' | awk '!seen[$0]++' | head -90
+            grep -E 'What went wrong' -A3 build.log | head -8; } > ../summary.txt || true
           exit ${status:-0}
       - name: Dump Minecraft class signatures
         if: failure()
@@ -36,8 +36,15 @@ jobs:
           while IFS='|' read -r cls filt; do
             case "$cls" in \#*|"") continue;; esac
             echo "=== $cls"
-            if [ -n "$filt" ]; then javap -p -cp "$JAR" "$cls" 2>&1 | grep -iE "$filt|class |interface |record " | head -60; else javap -p -cp "$JAR" "$cls" 2>&1 | head -60; fi
-          done < ci/javap-targets.txt
+            if [ -n "$filt" ]; then javap -p -cp "$JAR" "$cls" 2>&1 | grep -iE "$filt" | head -30; else javap -p -cp "$JAR" "$cls" 2>&1 | head -30; fi
+          done < ci/javap-targets.txt >> ../summary.txt
+      - name: Summary
+        if: failure()
+        shell: bash
+        run: |
+          echo "##### SUMMARY #####"
+          sed -E 's/net\.minecraft\.//g; s#/home/runner/work/[^/]+/[^/]+/additional-placements/src/main/java/com/firemerald/additionalplacements/##' ../summary.txt | cut -c1-260
+          echo "##### END SUMMARY #####"
       - uses: actions/upload-artifact@v4
         with:
           name: additional-placements
