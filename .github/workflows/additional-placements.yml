@@ -26,6 +26,17 @@ jobs:
           chmod +x gradlew
           ./gradlew build --console=plain 2>&1 | grep -vE '^\s+at |^\s+\.\.\. [0-9]+ more' | head -150
           exit ${PIPESTATUS[0]}
+      - name: Dump Minecraft class signatures
+        if: failure()
+        shell: bash
+        run: |
+          JAR=$(find ~/.gradle/caches/fabric-loom -name '*.jar' -size +20M | grep -iE 'minecraft' | head -3)
+          echo "$JAR"
+          for j in $JAR; do
+            for c in net.minecraft.client.renderer.SubmitNodeCollector 'net.minecraft.client.renderer.SubmitNodeCollector$CustomGeometryRenderer' net.minecraft.client.renderer.state.level.BlockOutlineRenderState net.minecraft.client.renderer.rendertype.RenderTypes; do
+              javap -p -cp "$j" "$c" 2>&1 | head -60
+            done
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: additional-placements

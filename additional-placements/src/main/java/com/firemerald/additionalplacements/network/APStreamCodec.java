@@ -2,11 +2,9 @@ package com.firemerald.additionalplacements.network;
 
 import java.util.function.Function;
 
-import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-@MethodsReturnNonnullByDefault
 public record APStreamCodec<T extends FriendlyByteBuf, U extends APPacket<T>>(Function<T, U> constructor) implements StreamCodec<T, U> {
     @Override
     public U decode(T buf) {

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.firemerald.additionalplacements.client.models.definitions.StateModelDefinition;
-import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.*;
@@ -42,7 +41,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@MethodsReturnNonnullByDefault
 public abstract class AdditionalPlacementBlock<T extends Block> extends Block implements IPlacementBlock<T> {
 	public static BlockState getModelStateSafe(BlockState worldState) {
 		if (worldState.getBlock() instanceof AdditionalPlacementBlock<?> block) return block.getModelState(worldState);
