@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "minecraft:feather",
+    "S": "minecraft:sugar",
+    "G": "minecraft:ghast_tear"
+  },
+  "pattern": [
+    "FSF",
+    "SGS",
+    "FSF"
+  ],
+  "result": {
+    "id": "vplustweaks:ghast_speed_upgrade"
+  }
+}

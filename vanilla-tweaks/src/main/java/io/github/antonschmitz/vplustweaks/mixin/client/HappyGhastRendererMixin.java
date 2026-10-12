@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Copies the synced "has chest" flag into the render state for {@link GhastChestLayer}. */
+/** Copies the synced chest kind into the render state for {@link GhastChestLayer}. */
 @Mixin(HappyGhastRenderer.class)
 public abstract class HappyGhastRendererMixin {
     @Inject(
@@ -19,6 +19,6 @@ public abstract class HappyGhastRendererMixin {
             at = @At("TAIL")
     )
     private void vplustweaks$extractChest(HappyGhast ghast, HappyGhastRenderState state, float partialTick, CallbackInfo ci) {
-        ((FabricRenderState) (Object) state).setData(GhastChestLayer.HAS_CHEST, ghast.getAttachedOrElse(GhastChest.HAS_CHEST, false));
+        ((FabricRenderState) (Object) state).setData(GhastChestLayer.CHEST_KIND, ghast.getAttachedOrElse(GhastChest.KIND, GhastChest.NONE));
     }
 }
