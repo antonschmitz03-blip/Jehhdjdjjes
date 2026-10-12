@@ -20,61 +20,10 @@ jobs:
           LIFE=$(find ~/.gradle -name 'fabric-lifecycle-events-v1*.jar' | grep -v sources | head -1)
           CP="$MC:$SCR:$LIFE"
           p() { echo "##### $1"; javap -p -cp "$CP" "$1" | grep -vE '^\s*$' | head -${2:-200}; }
-          p net.minecraft.server.players.PlayerList 150
-          echo "##### PlayerList.load + placeNewPlayer bytecode"
-          javap -c -p -cp "$CP" net.minecraft.server.players.PlayerList | awk '/ load\(|placeNewPlayer\(/{f=1} f{print} /^$/{f=0}' | grep -E 'invoke|getfield|Method|load|placeNewPlayer' | head -120
-          p net.minecraft.client.gui.screens.worldselection.CreateWorldScreen
-          echo "##### CreateWorldScreen bytecode invokes"
-          javap -c -p -cp "$CP" net.minecraft.client.gui.screens.worldselection.CreateWorldScreen | grep -E '^  [a-z].*\(|invoke' | head -250
-          p net.minecraft.client.gui.screens.worldselection.WorldCreationUiState 120
-          p net.minecraft.world.level.storage.LevelStorageSource
-          p 'net.minecraft.world.level.storage.LevelStorageSource$LevelStorageAccess'
-          p 'net.minecraft.world.level.storage.LevelStorageSource$LevelCandidates'
-          p 'net.minecraft.world.level.storage.LevelStorageSource$LevelDirectory'
-          p net.minecraft.world.level.storage.LevelSummary
-          p net.minecraft.world.level.storage.LevelResource
-          p net.minecraft.world.level.storage.PlayerDataStorage
-          p net.minecraft.world.level.storage.WorldData
-          p net.minecraft.world.level.storage.PrimaryLevelData 400 | grep -iE 'player|static|version'
-          echo "##### PrimaryLevelData parse bytecode strings"
-          javap -c -p -cp "$CP" net.minecraft.world.level.storage.PrimaryLevelData | grep -E 'ldc' | head -80
-          echo "##### LevelStorageSource strings"
-          javap -c -p -cp "$CP" net.minecraft.world.level.storage.LevelStorageSource 'net.minecraft.world.level.storage.LevelStorageSource$LevelStorageAccess' | grep -E 'ldc|invoke.*(Player|player)' | head -80
-          p net.minecraft.nbt.NbtIo
-          p net.minecraft.nbt.NbtAccounter
-          p net.minecraft.nbt.NbtUtils | grep -iE 'version'
-          p net.minecraft.nbt.CompoundTag
-          p net.minecraft.util.datafix.DataFixTypes
-          p net.minecraft.util.datafix.DataFixers | head -20
-          p net.minecraft.SharedConstants | grep -iE 'version|getCurrent'
-          p net.minecraft.WorldVersion
-          p net.minecraft.world.level.storage.TagValueInput
-          p net.minecraft.world.level.storage.TagValueOutput
-          p net.minecraft.util.ProblemReporter
-          p 'net.minecraft.util.ProblemReporter$ScopedCollector'
-          p net.minecraft.server.level.ServerPlayer 600 | grep -iE 'load|save|experience|lastSent|readAdditional|addAdditional|getUUID|level\(\)|server'
-          p net.minecraft.world.entity.player.Player 600 | grep -iE 'load|save|experience|readAdditional|addAdditional|getInventory|enderchest|getEnderChest|getGameProfile'
-          p net.minecraft.world.entity.Entity 900 | grep -iE ' load\(| save|saveWithoutId|registryAccess|getUUID|level\(\)'
-          echo "##### Player addAdditionalSaveData strings"
-          javap -c -p -cp "$CP" net.minecraft.world.entity.player.Player net.minecraft.server.level.ServerPlayer net.minecraft.world.entity.LivingEntity net.minecraft.world.entity.Entity | grep -E 'ldc +#[0-9]+ +// String' | sed 's/.*String //' | sort -u | tr '\n' ' '
-          echo
-          p net.minecraft.client.Minecraft 600 | grep -iE 'getLevelSource|getUser|setScreen|font|getInstance|screen;|gameDirectory|getSingleplayerServer'
-          p net.minecraft.client.User | grep -iE 'uuid|profile|name'
-          p net.minecraft.client.gui.screens.Screen
-          p net.minecraft.client.gui.components.Button 80
-          p 'net.minecraft.client.gui.components.Button$Builder'
-          p net.minecraft.client.gui.components.Checkbox
-          p 'net.minecraft.client.gui.components.Checkbox$Builder'
-          p net.minecraft.client.gui.components.AbstractWidget 120 | grep -iE 'setX|setY|getX|getY|setWidth|getWidth|setMessage|active|visible|getRight|getBottom'
-          p net.minecraft.client.gui.components.StringWidget 40
-          ls $(dirname $MC); unzip -l "$MC" | grep -E 'client/gui/(GuiGraphics|.*Extractor)' | head
-          G=$(unzip -l "$MC" | awk '{print $4}' | grep -E '^net/minecraft/client/gui/GuiGraphics[A-Za-z]*\.class$' | head -3)
-          for g in $G; do p $(echo ${g%.class} | tr / .) 200 | grep -iE 'drawString|drawCenteredString|text|centered|fill\(' ; done
-          p net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
-          p net.fabricmc.fabric.api.client.screen.v1.Screens
-          p 'net.fabricmc.fabric.api.client.screen.v1.ScreenEvents$AfterInit'
-          p 'net.fabricmc.fabric.api.client.screen.v1.ScreenEvents$Remove'
-          p net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-          p net.minecraft.server.MinecraftServer 700 | grep -iE 'getWorldPath|getWorldData|registryAccess|isSingleplayer|getPlayerList|storageSource|overworld'
-          p net.minecraft.network.chat.Component | grep -iE 'static.*(literal|translatable)'
-          p net.minecraft.world.level.storage.ValueInput | head -60
+          cd /tmp && unzip -q -o "$MC" 'net/minecraft/server/*' 'net/minecraft/world/entity/Entity.class' 'net/minecraft/world/entity/LivingEntity.class' 'net/minecraft/world/entity/player/Player.class' -d mcx && cd -
+          echo "##### callers of loadPlayerData / PlayerDataStorage.load / ServerPlayer.load"
+          for f in $(grep -rlE 'loadPlayerData|PlayerDataStorage\.load|ServerPlayer\.load|readAdditionalSaveData|loadAndSpawn' /tmp/mcx --include=*.class); do c=$(echo ${f#/tmp/mcx/} | sed 's/\.class$//; s#/#.#g'); javap -c -p -cp /tmp/mcx "$c" 2>/dev/null | awk -v c="$c" '/^  [a-z].*\(.*\);$/{m=$0} /loadPlayerData|PlayerDataStorage.load|ServerPlayer.load:|Player.load:|Entity.load:/{print c " :: " m " :: " $0}'; done | cut -c1-400
+          echo "##### Entity.load bytecode"
+          javap -c -p -cp /tmp/mcx net.minecraft.world.entity.Entity | awk '/public void load\(/{f=1} f{print} f&&/^$/{exit}' | grep -E 'String|Method' | head -60
+          echo "##### ServerPlayer bytecode around load/spawn"
+          javap -c -p -cp "$CP" net.minecraft.server.level.ServerPlayer | awk '/^  [a-z].*\(.*\);$/{m=$0; show=(m ~ /readAdditional|loadAndSpawn|adjustSpawn|<init>|snapTo|load\(/)} show' | grep -E '^  [a-z]|String|Method' | cut -c1-220 | head -150
