@@ -1,0 +1,35 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:using_item",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "vanillaarsenal:item/sling"
+    },
+    "on_true": {
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:use_duration",
+      "scale": 0.05,
+      "entries": [
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "vanillaarsenal:item/sling_pulling_1"
+          },
+          "threshold": 0.4
+        },
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "vanillaarsenal:item/sling_pulling_2"
+          },
+          "threshold": 0.8
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "vanillaarsenal:item/sling_pulling_0"
+      }
+    }
+  }
+}

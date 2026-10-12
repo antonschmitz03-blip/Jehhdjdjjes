@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "vanillaarsenal",
+  "version": "${version}",
+  "name": "Vanilla Arsenal",
+  "description": "New weapons that feel like they were always in the game. Starts with the sling: a cheap ranged weapon that hurls stone.",
+  "authors": [
+    "antonschmitz03-blip"
+  ],
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.antonschmitz.arsenal.VanillaArsenal"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}
