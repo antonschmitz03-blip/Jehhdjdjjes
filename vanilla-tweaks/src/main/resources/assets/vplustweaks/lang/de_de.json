@@ -2,5 +2,6 @@
   "item.vplustweaks.ghast_speed_upgrade": "Ghast-Geschwindigkeits-Upgrade",
   "item.vplustweaks.ghast_whistle": "Ghast-Pfeife",
   "message.vplustweaks.ghast_whistle.called": "%s Glücklicher Ghast unterwegs",
-  "message.vplustweaks.ghast_whistle.none": "Kein von dir gerittener Glücklicher Ghast innerhalb von %s Blöcken"
+  "message.vplustweaks.ghast_whistle.none": "Kein von dir gerittener Glücklicher Ghast innerhalb von %s Blöcken",
+  "block.vplustweaks.rope_ladder": "Strickleiter"
 }

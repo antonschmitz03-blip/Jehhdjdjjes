@@ -2,14 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": "minecraft:feather",
+    "I": "minecraft:iron_ingot",
+    "F": "minecraft:firework_rocket",
     "S": "minecraft:sugar",
-    "G": "minecraft:ghast_tear"
+    "R": "minecraft:redstone_block"
   },
   "pattern": [
-    "FSF",
-    "SGS",
-    "FSF"
+    "IFI",
+    "SRS",
+    "IFI"
   ],
   "result": {
     "id": "vplustweaks:ghast_speed_upgrade"

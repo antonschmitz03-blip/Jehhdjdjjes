@@ -23,7 +23,8 @@ Install on the server too when playing multiplayer.
 - **Happy ghast chest:** right-click a happy ghast with a chest to equip a double chest (54 slots), or with an
   ender chest to carry your ender chest; sneak + right-click to open it. The chest shows on top of the ghast,
   towards its back (needs the mod on the client). Contents and chest drop when the ghast dies.
-- **Ghast speed upgrade:** right-click a happy ghast with it to double its flying speed (permanent; drops on death).
+- **Rope ladder:** use the whistle while a happy ghast is within 8 blocks sideways and it lets a rope ladder down to the ground (a farther ghast flies over and drops it on arrival). Riding pulls it up, dismounting lets it down again. The ghast holds still while it is down, and it is pulled up after a minute with nobody near it.
+- **Ghast speed upgrade:** right-click a happy ghast with it to double its flying speed (permanent; drops on death). An upgraded ghast wears a small rocket engine on each side.
 - **Ghast whistle:** calls every happy ghast you have ridden within 128 blocks to fly to you (3 s cooldown).
   Only ghasts in loaded chunks can hear it.
 - **Ghast protection:** players (and their arrows) can't hurt a harnessed happy ghast or the one they ride.
@@ -35,7 +36,7 @@ Install on the server too when playing multiplayer.
 | Leather | Smelt / smoke / campfire-cook rotten flesh |
 | Saddle | `LLL` / `LIL` (leather, iron ingot) |
 | Gunpowder (x2) | Coal or charcoal + sugar + flint (shapeless) |
-| Ghast speed upgrade | `FSF` / `SGS` / `FSF` (feather, sugar, ghast tear) |
+| Ghast speed upgrade | `IFI` / `SRS` / `IFI` (iron ingot, firework rocket, sugar, redstone block) |
 | Ghast whistle | Iron ingot + snowball + string (shapeless) |
 | Name tag | Paper + string + iron nugget (shapeless) |
 | Iron / gold / diamond horse armor | `X X` / `XWX` / `X X` (material, any wool) |

@@ -5,12 +5,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -33,12 +36,19 @@ public final class GhastFeatures {
     private static final double SPEED_BONUS = 1.0; // +100% = double speed
     private static final int RECALL_TICKS = 20 * 45;
     private static final double ARRIVE_DISTANCE = 6.0;
+    /** A ghast this close (sideways) to the whistling player lets its rope ladder down instead of flying over. */
+    private static final double LADDER_DISTANCE = 8.0;
 
     private static final Identifier SPEED_ID = Identifier.fromNamespaceAndPath(VanillaPlusTweaks.MOD_ID, "ghast_speed_upgrade");
 
     /** The last player who steered this ghast; the whistle only calls ghasts you have ridden. */
     private static final AttachmentType<UUID> OWNER = AttachmentRegistry.createPersistent(
             Identifier.fromNamespaceAndPath(VanillaPlusTweaks.MOD_ID, "ghast_owner"), UUIDUtil.CODEC);
+
+    /** Synced to clients so they can draw the rocket engines. */
+    public static final AttachmentType<Boolean> SPEED_UPGRADED = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(VanillaPlusTweaks.MOD_ID, "ghast_speed_upgraded"),
+            builder -> builder.persistent(Codec.BOOL).syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()));
 
     private static final Map<UUID, Recall> RECALLS = new HashMap<>();
 
@@ -58,6 +68,7 @@ public final class GhastFeatures {
             if (!level.isClientSide()) {
                 addSpeed(ghast.getAttribute(Attributes.FLYING_SPEED));
                 addSpeed(ghast.getAttribute(Attributes.MOVEMENT_SPEED));
+                ghast.setAttached(SPEED_UPGRADED, true);
                 if (!player.hasInfiniteMaterials()) {
                     held.shrink(1);
                 }
@@ -100,7 +111,14 @@ public final class GhastFeatures {
         for (HappyGhast ghast : level.getEntitiesOfClass(HappyGhast.class, player.getBoundingBox().inflate(WHISTLE_RANGE),
                 g -> !g.isBaby() && !g.isVehicle() && player.getUUID().equals(g.getAttached(OWNER))
                         && g.distanceTo(player) <= WHISTLE_RANGE)) {
-            RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS));
+            double dx = ghast.getX() - player.getX();
+            double dz = ghast.getZ() - player.getZ();
+            if (dx * dx + dz * dz <= LADDER_DISTANCE * LADDER_DISTANCE) {
+                RECALLS.remove(ghast.getUUID());
+                RopeLadders.lower(ghast, player.position());
+            } else {
+                RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS));
+            }
             count++;
         }
         return count;
@@ -125,11 +143,12 @@ public final class GhastFeatures {
                 it.remove();
                 continue;
             }
-            Vec3 toPlayer = player.position().add(0, 1.5, 0).subtract(ghast.position());
+            Vec3 toPlayer = player.position().add(0, 2.0, 0).subtract(ghast.position());
             double distance = toPlayer.length();
             if (distance < ARRIVE_DISTANCE) {
                 ghast.setDeltaMovement(Vec3.ZERO);
                 it.remove();
+                RopeLadders.lower(ghast, player.position());
                 continue;
             }
             ghast.getNavigation().stop();
