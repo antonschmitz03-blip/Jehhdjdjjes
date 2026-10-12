@@ -128,7 +128,7 @@ public abstract class AdditionalBasePressurePlateBlock<T extends BasePressurePla
 			plateMethods.additionalplacements$playOnSoundPublic(level, pos);
 			level.gameEvent(entity, GameEvent.BLOCK_ACTIVATE, pos);
 		}
-		if (powered) level.scheduleTick(new BlockPos(pos), this, plateMethods.additionalplacements$getPressedTimePublic());
+		if (powered) level.scheduleTick(pos.immutable(), this, plateMethods.additionalplacements$getPressedTimePublic());
 	}
 
 	@Override

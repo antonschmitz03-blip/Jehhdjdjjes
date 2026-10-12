@@ -30,12 +30,12 @@ public class MessageTree {
 
 	public MessageTree(FriendlyByteBuf buf) {
 		this.message = COMPONENT_CODEC.decode(buf);
-		this.children = buf.readList(MessageTree::new);
+		this.children = BufUtils.readList(buf, MessageTree::new);
 	}
 
 	public void write(FriendlyByteBuf buf) {
 		COMPONENT_CODEC.encode(buf, message);
-		buf.writeCollection(children, MessageTree::write);
+		BufUtils.writeCollection(buf, children, MessageTree::write);
 	}
 
 	@FunctionalInterface

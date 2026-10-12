@@ -24,11 +24,7 @@ public class Registration {
 	private static final Map<Identifier, GenerationType<?, ?>> TYPES = new LinkedHashMap<>();
 	private static final Map<Class<?>, GenerationType<?, ?>> TYPES_BY_CLASS = new HashMap<>();
 
-		public static void addRegistration(RegistrationInitializer listener) {
-		com.firemerald.additionalplacements.generation.fabric.RegistrationImpl.addRegistration(listener);
-	}
-
-		public static void gatherTypes() {
+	public static void gatherTypes() {
 		com.firemerald.additionalplacements.generation.fabric.RegistrationImpl.gatherTypes();
 	}
 

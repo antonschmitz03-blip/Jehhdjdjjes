@@ -1,5 +1,6 @@
 package com.firemerald.additionalplacements.network.client;
 
+import com.firemerald.additionalplacements.util.BufUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -31,12 +32,12 @@ public abstract class CheckDataClientPacket implements ClientConfigurationPacket
 	}
 
 	public CheckDataClientPacket(FriendlyByteBuf buf) {
-		data = buf.readMap(FriendlyByteBuf::readIdentifier, buffer -> buffer.readNbt());
+		data = BufUtils.readMap(buf, FriendlyByteBuf::readIdentifier, buffer -> buffer.readNbt());
 	}
 
 	@Override
 	public void write(FriendlyByteBuf buf) {
-		buf.writeMap(data, FriendlyByteBuf::writeIdentifier, (buffer, tag) -> buffer.writeNbt(tag));
+		BufUtils.writeMap(buf, data, FriendlyByteBuf::writeIdentifier, (buffer, tag) -> buffer.writeNbt(tag));
 	}
 
 	@Override

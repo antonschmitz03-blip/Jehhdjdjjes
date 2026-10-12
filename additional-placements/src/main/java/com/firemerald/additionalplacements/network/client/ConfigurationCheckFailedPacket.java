@@ -1,5 +1,6 @@
 package com.firemerald.additionalplacements.network.client;
 
+import com.firemerald.additionalplacements.util.BufUtils;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,20 +34,20 @@ public abstract class ConfigurationCheckFailedPacket implements ClientConfigurat
 	}
 
 	public ConfigurationCheckFailedPacket(FriendlyByteBuf buf) {
-		compiledErrors = buf.readList(buf2 -> {
+		compiledErrors = BufUtils.readList(buf, buf2 -> {
 			Identifier id = buf2.readIdentifier();
-			List<MessageTree> clientErrors = buf2.readList(MessageTree::new);
-			List<MessageTree> serverErrors = buf2.readList(MessageTree::new);
+			List<MessageTree> clientErrors = BufUtils.readList(buf2, MessageTree::new);
+			List<MessageTree> serverErrors = BufUtils.readList(buf2, MessageTree::new);
 			return Triple.of(id, clientErrors, serverErrors);
 		});
 	}
 
 	@Override
 	public void write(FriendlyByteBuf buf) {
-		buf.writeCollection(compiledErrors, (buf2, data) -> {
+		BufUtils.writeCollection(buf, compiledErrors, (buf2, data) -> {
 			buf2.writeIdentifier(data.getLeft());
-			buf2.writeCollection(data.getMiddle(), MessageTree::write);
-			buf2.writeCollection(data.getRight(), MessageTree::write);
+			BufUtils.writeCollection(buf2, data.getMiddle(), MessageTree::write);
+			BufUtils.writeCollection(buf2, data.getRight(), MessageTree::write);
 		});
 	}
 

@@ -18,6 +18,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import com.firemerald.additionalplacements.common.IAPPlayer;
 import com.firemerald.additionalplacements.config.APConfigs;
@@ -118,7 +119,7 @@ public interface IPlacementBlock<T extends Block> extends ItemLike, IGenerationC
 				previewColor = APConfigs.client().previewColorHC();
 			} else previewColor = APConfigs.client().previewColor();
 			if (previewColor[3] > 0) additionalplacements$submitGeometry(bufferSource, pose, RenderTypes.lines(), (p, vc) -> additionalplacements$renderPlacementPreview(p, vc, player, result, delta, previewColor[0], previewColor[1], previewColor[2], previewColor[3], lineWidth));
-			pose.mulPose(DIRECTION_TRANSFORMS[result.getDirection().ordinal()]);
+			pose.mulPose(new Matrix4f().rotation(DIRECTION_TRANSFORMS[result.getDirection().ordinal()]));
 			float[] gridColor;
 			if (highContrast) {
 				float[] backgroundColor = APConfigs.client().gridColorHCB();

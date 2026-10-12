@@ -1,5 +1,6 @@
 package com.firemerald.additionalplacements.network.server;
 
+import com.firemerald.additionalplacements.util.BufUtils;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -38,18 +39,18 @@ public abstract class CheckDataServerPacket implements ServerConfigurationPacket
 	}
 
 	public CheckDataServerPacket(FriendlyByteBuf buf) {
-		serverData = buf.readMap(FriendlyByteBuf::readIdentifier, buf2 -> {
+		serverData = BufUtils.readMap(buf, FriendlyByteBuf::readIdentifier, buf2 -> {
 			CompoundTag clientTag = buf2.readNbt();
-			List<MessageTree> clientErrors = buf2.readList(MessageTree::new);
+			List<MessageTree> clientErrors = BufUtils.readList(buf2, MessageTree::new);
 			return Pair.of(clientTag, clientErrors);
 		});
 	}
 
 	@Override
 	public void write(FriendlyByteBuf buf) {
-		buf.writeMap(serverData, FriendlyByteBuf::writeIdentifier, (buf2, data) -> {
+		BufUtils.writeMap(buf, serverData, FriendlyByteBuf::writeIdentifier, (buf2, data) -> {
 			buf2.writeNbt(data.getLeft());
-			buf2.writeCollection(data.getRight(), MessageTree::write);
+			BufUtils.writeCollection(buf2, data.getRight(), MessageTree::write);
 		});
 	}
 
