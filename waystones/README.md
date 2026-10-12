@@ -15,3 +15,6 @@ A stripped-down Waystones for Fabric 26.3. Server-side logic only; install it on
 - Only the owner (or a player in creative mode) can break a waystone. Explosions can't destroy it. A waystone
   moved by a piston counts as a new one and has to be discovered again.
 - Data lives in `simplewaystones.json` in the world folder.
+- **Xaero's Minimap / World Map** (optional, client side): every discovered waystone gets a purple "WS" waypoint
+  with the waystone's name. Renaming or removing a waystone updates the waypoint. Waypoints are synced for the
+  dimension you are in, so waystones in another dimension appear once you go there.

@@ -34,6 +34,7 @@ public final class WaystoneData {
     private static @Nullable WaystoneData instance;
 
     private final transient @Nullable Path file;
+    private final transient @Nullable MinecraftServer server;
     private final Map<String, Waystone> waystones = new LinkedHashMap<>();
     /** Player UUID to the keys of the waystones they discovered. */
     private final Map<UUID, Set<String>> discovered = new HashMap<>();
@@ -93,21 +94,22 @@ public final class WaystoneData {
         }
     }
 
-    private WaystoneData(@Nullable Path file) {
+    private WaystoneData(@Nullable Path file, @Nullable MinecraftServer server) {
         this.file = file;
+        this.server = server;
     }
 
     public static WaystoneData get() {
         if (instance == null) {
             // Only reachable before the server started; keep an in-memory store so nothing crashes.
-            instance = new WaystoneData(null);
+            instance = new WaystoneData(null, null);
         }
         return instance;
     }
 
     static void load(MinecraftServer server) {
         Path path = server.getWorldPath(LevelResource.ROOT).resolve(SimpleWaystones.MOD_ID + ".json");
-        WaystoneData data = new WaystoneData(path);
+        WaystoneData data = new WaystoneData(path, server);
         if (Files.exists(path)) {
             try (Reader reader = Files.newBufferedReader(path)) {
                 Stored stored = GSON.fromJson(reader, Stored.class);
@@ -186,14 +188,33 @@ public final class WaystoneData {
 
     void removeKey(String key) {
         if (waystones.remove(key) != null) {
+            List<UUID> affected = discoverers(key);
             discovered.values().forEach(keys -> keys.remove(key));
             save();
+            syncWaypoints(affected);
         }
     }
 
     void rename(Waystone waystone, String name) {
         waystone.name = name;
         save();
+        syncWaypoints(discoverers(waystone.key()));
+    }
+
+    private List<UUID> discoverers(String key) {
+        List<UUID> players = new ArrayList<>();
+        discovered.forEach((player, keys) -> {
+            if (keys.contains(key)) {
+                players.add(player);
+            }
+        });
+        return players;
+    }
+
+    private void syncWaypoints(List<UUID> players) {
+        if (server != null) {
+            WaypointSync.sendToDiscoverers(server, players);
+        }
     }
 
     public boolean hasDiscovered(UUID player, Waystone waystone) {
@@ -205,6 +226,7 @@ public final class WaystoneData {
         boolean added = discovered.computeIfAbsent(player, p -> new LinkedHashSet<>()).add(waystone.key());
         if (added) {
             save();
+            syncWaypoints(List.of(player));
         }
         return added;
     }

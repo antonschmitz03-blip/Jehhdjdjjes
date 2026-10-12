@@ -1,10 +1,13 @@
 package io.github.antonschmitz.waystones;
 
+import io.github.antonschmitz.waystones.network.WaystoneWaypointsPayload;
 import java.util.function.Function;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -74,7 +77,12 @@ public class SimpleWaystones implements ModInitializer {
             WaystoneConfig.load();
             WaystoneData.load(server);
         });
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> WaystoneData.unload());
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            WaystoneData.unload();
+            WaypointSync.clear();
+        });
+        PayloadTypeRegistry.clientboundPlay().register(WaystoneWaypointsPayload.TYPE, WaystoneWaypointsPayload.STREAM_CODEC);
+        ServerTickEvents.END_SERVER_TICK.register(WaypointSync::tick);
 
         if (Boolean.getBoolean("simplewaystones.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(SelfTest::run);
