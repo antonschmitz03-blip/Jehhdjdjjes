@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": "minecraft:ender_pearl",
+    "S": ["minecraft:soul_sand", "minecraft:soul_soil"],
+    "T": "minecraft:totem_of_undying",
+    "B": "travelersbackpack:blank_upgrade"
+  },
+  "pattern": [
+    "PSP",
+    "SBS",
+    "PTP"
+  ],
+  "result": {
+    "id": "tbaddons:soulbound_upgrade"
+  }
+}

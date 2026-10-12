@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "simplegraves:block/grave" },
+    "facing=east": { "model": "simplegraves:block/grave", "y": 90 },
+    "facing=south": { "model": "simplegraves:block/grave", "y": 180 },
+    "facing=west": { "model": "simplegraves:block/grave", "y": 270 }
+  }
+}

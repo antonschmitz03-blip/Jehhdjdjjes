@@ -1,0 +1,294 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "base": "minecraft:block/polished_deepslate",
+    "trim": "minecraft:block/deepslate_tiles",
+    "shaft": "minecraft:block/stone_bricks",
+    "chisel": "minecraft:block/chiseled_stone_bricks",
+    "crystal": "minecraft:block/amethyst_block",
+    "particle": "minecraft:block/stone_bricks"
+  },
+  "elements": [
+    {
+      "from": [
+        4.5,
+        0,
+        4.5
+      ],
+      "to": [
+        11.5,
+        2,
+        11.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.5,
+            14,
+            11.5,
+            16
+          ],
+          "texture": "#shaft"
+        },
+        "south": {
+          "uv": [
+            4.5,
+            14,
+            11.5,
+            16
+          ],
+          "texture": "#shaft"
+        },
+        "west": {
+          "uv": [
+            4.5,
+            14,
+            11.5,
+            16
+          ],
+          "texture": "#shaft"
+        },
+        "east": {
+          "uv": [
+            4.5,
+            14,
+            11.5,
+            16
+          ],
+          "texture": "#shaft"
+        },
+        "up": {
+          "uv": [
+            4.5,
+            4.5,
+            11.5,
+            11.5
+          ],
+          "texture": "#shaft"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            4.5,
+            11.5,
+            11.5
+          ],
+          "texture": "#shaft"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        2,
+        3
+      ],
+      "to": [
+        13,
+        5,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            11,
+            13,
+            14
+          ],
+          "texture": "#chisel"
+        },
+        "south": {
+          "uv": [
+            3,
+            11,
+            13,
+            14
+          ],
+          "texture": "#chisel"
+        },
+        "west": {
+          "uv": [
+            3,
+            11,
+            13,
+            14
+          ],
+          "texture": "#chisel"
+        },
+        "east": {
+          "uv": [
+            3,
+            11,
+            13,
+            14
+          ],
+          "texture": "#chisel"
+        },
+        "up": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#chisel"
+        },
+        "down": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#chisel"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        5,
+        4
+      ],
+      "to": [
+        12,
+        6,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            10,
+            12,
+            11
+          ],
+          "texture": "#trim"
+        },
+        "south": {
+          "uv": [
+            4,
+            10,
+            12,
+            11
+          ],
+          "texture": "#trim"
+        },
+        "west": {
+          "uv": [
+            4,
+            10,
+            12,
+            11
+          ],
+          "texture": "#trim"
+        },
+        "east": {
+          "uv": [
+            4,
+            10,
+            12,
+            11
+          ],
+          "texture": "#trim"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ],
+          "texture": "#trim"
+        },
+        "down": {
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ],
+          "texture": "#trim"
+        }
+      }
+    },
+    {
+      "from": [
+        5.5,
+        6,
+        5.5
+      ],
+      "to": [
+        10.5,
+        11,
+        10.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5.5,
+            5,
+            10.5,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "south": {
+          "uv": [
+            5.5,
+            5,
+            10.5,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "west": {
+          "uv": [
+            5.5,
+            5,
+            10.5,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "east": {
+          "uv": [
+            5.5,
+            5,
+            10.5,
+            10
+          ],
+          "texture": "#crystal"
+        },
+        "up": {
+          "uv": [
+            5.5,
+            5.5,
+            10.5,
+            10.5
+          ],
+          "texture": "#crystal"
+        },
+        "down": {
+          "uv": [
+            5.5,
+            5.5,
+            10.5,
+            10.5
+          ],
+          "texture": "#crystal"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8.5,
+          8
+        ],
+        "axis": "y",
+        "angle": 45
+      }
+    }
+  ]
+}

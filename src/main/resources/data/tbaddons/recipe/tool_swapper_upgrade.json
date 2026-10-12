@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": "minecraft:iron_pickaxe",
+    "A": "minecraft:iron_axe",
+    "S": "minecraft:iron_shovel",
+    "B": "travelersbackpack:blank_upgrade",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "PBA",
+    "RSR"
+  ],
+  "result": {
+    "id": "tbaddons:tool_swapper_upgrade"
+  }
+}

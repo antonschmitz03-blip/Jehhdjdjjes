@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.antonschmitz.tbaddons.mixin.compat",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "io.github.antonschmitz.tbaddons.mixin.compat.CompatMixinPlugin",
+  "mixins": [
+    "TrinketsApiMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "tbaddons",
+  "version": "${version}",
+  "name": "Traveler's Backpack Addons",
+  "description": "Extra upgrades for Traveler's Backpack: Tool Swapper, Stack Upgrades (x2 / x4 / x8 stack size) and Soulbound.",
+  "authors": [
+    "antonschmitz03-blip"
+  ],
+  "license": "CC0-1.0",
+  "icon": "assets/tbaddons/textures/item/tool_swapper_upgrade.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.antonschmitz.tbaddons.TBAddons"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "travelersbackpack": ">=11.4.1"
+  },
+  "mixins": [
+    "tbaddons.mixins.json",
+    "tbaddons.compat.mixins.json"
+  ]
+}
