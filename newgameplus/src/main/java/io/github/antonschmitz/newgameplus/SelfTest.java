@@ -64,6 +64,8 @@ final class SelfTest {
     }
 
     private static CompoundTag sourcePlayer(FakePlayer player) {
+        // Other mods' self tests may have run on the same fake player first.
+        wipe(player);
         player.setPos(0.5, 70, 0.5);
         player.getInventory().setItem(0, new ItemStack(Items.DIAMOND, 5));
         player.getInventory().setItem(20, new ItemStack(Items.COBBLESTONE, 64));
