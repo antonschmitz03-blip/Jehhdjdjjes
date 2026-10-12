@@ -26,8 +26,9 @@ public class GhastChestLayer extends RenderLayer<HappyGhastRenderState, HappyGha
 
     private final ItemModelResolver itemModelResolver;
     private final ItemStackRenderState chest = new ItemStackRenderState();
-    private final ItemStack chestStack = new ItemStack(Items.CHEST);
-    private final ItemStack enderChestStack = new ItemStack(Items.ENDER_CHEST);
+    // Created on first render: item components aren't bound yet when the layer is constructed.
+    private ItemStack chestStack;
+    private ItemStack enderChestStack;
 
     public GhastChestLayer(RenderLayerParent<HappyGhastRenderState, HappyGhastModel> parent, ItemModelResolver itemModelResolver) {
         super(parent);
@@ -41,6 +42,10 @@ public class GhastChestLayer extends RenderLayer<HappyGhastRenderState, HappyGha
             return;
         }
         boolean ender = kind == GhastChest.ENDER_CHEST;
+        if (chestStack == null) {
+            chestStack = new ItemStack(Items.CHEST);
+            enderChestStack = new ItemStack(Items.ENDER_CHEST);
+        }
         itemModelResolver.updateForTopItem(chest, ender ? enderChestStack : chestStack, ItemDisplayContext.NONE, null, null, 0);
         // A double chest is drawn as two chests side by side, an ender chest as one in the middle.
         for (float x : ender ? new float[] {0.0F} : new float[] {-0.5F, 0.5F}) {
