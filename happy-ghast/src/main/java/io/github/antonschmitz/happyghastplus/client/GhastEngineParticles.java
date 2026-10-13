@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.happyghast.HappyGhast;
 import net.minecraft.world.phys.Vec3;
 
@@ -31,6 +32,7 @@ public final class GhastEngineParticles {
         }
         for (HappyGhast ghast : level.getEntitiesOfClass(HappyGhast.class, client.player.getBoundingBox().inflate(RANGE),
                 g -> !g.isBaby() && !g.isInvisible() && g.getAttachedOrElse(GhastFeatures.SPEED_UPGRADED, false))) {
+            RandomSource random = ghast.getRandom();
             double yaw = ghast.getYRot() * Mth.DEG_TO_RAD;
             double forwardX = -Math.sin(yaw);
             double forwardZ = Math.cos(yaw);
@@ -50,15 +52,15 @@ public final class GhastEngineParticles {
                 double jitter = 0.015;
                 double backX = velocity.x - forwardX * 0.12;
                 double backZ = velocity.z - forwardZ * 0.12;
-                if (level.random.nextDouble() < 0.5 + 0.3 * power) {
+                if (random.nextDouble() < 0.5 + 0.3 * power) {
                     level.addParticle(ParticleTypes.FLAME, x, y, z,
-                            backX + level.random.nextGaussian() * jitter, velocity.y + level.random.nextGaussian() * jitter,
-                            backZ + level.random.nextGaussian() * jitter);
+                            backX + random.nextGaussian() * jitter, velocity.y + random.nextGaussian() * jitter,
+                            backZ + random.nextGaussian() * jitter);
                 }
-                if (level.random.nextDouble() < 0.25 + 0.2 * power) {
+                if (random.nextDouble() < 0.25 + 0.2 * power) {
                     level.addParticle(ParticleTypes.SMOKE, x - forwardX * 0.1, y, z - forwardZ * 0.1,
-                            backX * 0.6 + level.random.nextGaussian() * jitter, velocity.y + 0.02,
-                            backZ * 0.6 + level.random.nextGaussian() * jitter);
+                            backX * 0.6 + random.nextGaussian() * jitter, velocity.y + 0.02,
+                            backZ * 0.6 + random.nextGaussian() * jitter);
                 }
             }
         }
