@@ -15,21 +15,29 @@ jobs:
         run: |
           MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
           unzip -l "$MC" | awk '{print $4}' > files.txt
-          echo "##### class paths"; grep -E '/(Cow|AbstractCow|Animal|CowRenderer|CowModel|QuadrupedModel|MobRenderer|AgeableMobRenderer|LivingEntityRenderState|CowRenderState|SpawnPlacements|SpawnPlacementTypes|SpawnEggItem|TemptGoal|BreedGoal|PanicGoal|FollowParentGoal|WaterAvoidingRandomStrollGoal|LookAtPlayerGoal|RandomLookAroundGoal|FloatGoal|LayerDefinition|MeshDefinition|PartDefinition|CubeListBuilder|PartPose|ModelLayerLocation|EntityRendererProvider|SynchedEntityData|EntityDataSerializers|EntityDataAccessor|AgeableMob|Mob|PathfinderMob|LivingEntity|InteractionResult|ValueInput|ValueOutput)\.class$' files.txt
-          echo "##### loot"; grep -E 'loot_table/entities/(cow|armadillo)\.json' files.txt; unzip -p "$MC" data/minecraft/loot_table/entities/armadillo.json | jq -c .
-          echo "##### spawn egg assets"; grep -E 'assets/minecraft/(items|models/item|textures/item)/cow_spawn_egg' files.txt
-          for f in assets/minecraft/items/cow_spawn_egg.json assets/minecraft/models/item/cow_spawn_egg.json; do echo "## $f"; unzip -p "$MC" $f; done
           P() { echo "##### javap $1"; javap -p -cp "$MC" "$1" | grep -vE 'lambda\$' | head -${2:-80}; }
-          cls() { grep -E "/$1\.class$" files.txt | head -1 | sed 's#\.class$##; s#/#.#g'; }
-          for c in Animal AgeableMob Mob PathfinderMob SpawnPlacements SpawnPlacementTypes SpawnEggItem TemptGoal BreedGoal PanicGoal FollowParentGoal WaterAvoidingRandomStrollGoal LookAtPlayerGoal RandomLookAroundGoal FloatGoal LayerDefinition MeshDefinition PartDefinition CubeListBuilder PartPose ModelLayerLocation SynchedEntityData EntityDataSerializers InteractionResult LivingEntityRenderState MobRenderer AgeableMobRenderer; do n=$(cls $c); [ -n "$n" ] && P "$n" 60; done
-          P 'net.minecraft.world.entity.EntityType$Builder' 80
-          P 'net.minecraft.client.renderer.entity.EntityRendererProvider$Context' 40
-          P 'net.minecraft.world.item.Item$Properties' 120
+          for j in $(find ~/.gradle -name 'fabric-*.jar' | grep -vE 'sources|loom|loader|mapping'); do unzip -l "$j" 2>/dev/null | awk '{print $4}' | grep -iE 'ModelLayer|ModelPart' | sed "s#^#$(basename $j) :: #"; done | sort -u
+          for j in $(find ~/.gradle -name 'fabric-*.jar' | grep -vE 'sources|loom|loader|mapping'); do for c in $(unzip -l "$j" 2>/dev/null | awk '{print $4}' | grep -E 'api/.*ModelLayerRegistry[A-Za-z$]*\.class$'); do echo "## $c"; javap -cp "$j" "$(echo $c | sed 's#\.class$##; s#/#.#g')"; done; done
+          P net.minecraft.client.model.EntityModel 40
+          P net.minecraft.client.model.Model 40
+          P net.minecraft.client.renderer.entity.LivingEntityRenderer 60
+          P net.minecraft.client.renderer.entity.EntityRenderer 40
+          P net.minecraft.client.model.geom.ModelPart 50
+          P net.minecraft.world.entity.EntityTypes 5
+          javap -cp "$MC" net.minecraft.world.entity.EntityTypes | grep -E ' (COW|AXOLOTL|PIG);'
+          javap -cp "$MC" net.minecraft.world.entity.EntityType | grep -E 'static|create\(' | head -30
+          javap -cp "$MC" net.minecraft.tags.BlockTags | grep -iE 'ore'
+          javap -cp "$MC" net.minecraft.sounds.SoundEvents | grep -iE 'AMETHYST|TUFF|STONE|NOTE_BLOCK_CHIME|NOTE_BLOCK_BELL|ARMADILLO|GLOW|DECORATED_POT|POLISHED' | head -60
+          javap -cp "$MC" net.minecraft.core.particles.ParticleTypes | grep -iE 'WAX|GLOW|ELECTRIC|HAPPY|END_ROD|NOTE|FIREFLY|SCRAPE|TRIAL|SMALL_GUST|INSTANT' 
+          grep -E 'textures/(entity|item)/.*(armadillo|spawn_egg).*png' files.txt | head -20
+          grep -E 'assets/minecraft/items/(armadillo_spawn_egg|axolotl_spawn_egg)' files.txt
+          grep -E 'data/minecraft/(worldgen/configured_feature/(moss_vegetation|flower_meadow|meadow_trees|patch_firefly|wildflowers)|tags/block/(moss_replaceable|animals_spawnable_on))' files.txt
+          for f in data/minecraft/worldgen/configured_feature/moss_vegetation.json data/minecraft/worldgen/configured_feature/flower_meadow.json data/minecraft/tags/block/animals_spawnable_on.json data/minecraft/tags/block/moss_replaceable.json; do echo "## $f"; unzip -p "$MC" $f | jq -c .; done
+          grep -E 'data/minecraft/worldgen/configured_feature/.*(firefly|wildflower|leaf_litter|bush).*' files.txt
+          for f in $(grep -E 'data/minecraft/worldgen/configured_feature/.*(firefly|wildflower).*' files.txt); do echo "## $f"; unzip -p "$MC" $f | jq -c .; done
+          echo "##### PNG sizes"; mkdir t; cd t; unzip -q "$MC" assets/minecraft/textures/item/cow_spawn_egg.png assets/minecraft/textures/item/armadillo_spawn_egg.png; file $(find . -name '*.png'); cd ..
           curl -sSLo vf.jar https://github.com/Vineflower/vineflower/releases/download/1.11.1/vineflower-1.11.1.jar
           mkdir cls out
-          cd cls && unzip -q "$MC" $(grep -E '/(Cow|AbstractCow|CowRenderer|CowModel|QuadrupedModel|CowRenderState|AbstractCowRenderer)\.class$' ../files.txt | tr '\n' ' '); cd ..
+          cd cls && unzip -q "$MC" $(grep -E '/(ArmadilloRenderer|ArmadilloModel|ArmadilloRenderState|NaturalSpawner|Animal)\.class$' ../files.txt | tr '\n' ' '); cd ..
           java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
-          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f"; done
-          echo "##### fabric api classes"
-          for j in $(find ~/.gradle -name 'fabric-*.jar' | grep -vE 'sources|loom|loader|mapping' ); do unzip -l "$j" 2>/dev/null | awk '{print $4}' | grep -E '(EntityRendererRegistry|EntityModelLayerRegistry|FabricDefaultAttributeRegistry|SpawnRestriction|FabricEntityType|BiomeModifications|SpawnPlacement)[A-Za-z$]*\.class$' | sed "s#^#$j :: #"; done | sort -u | head -40
-          for j in $(find ~/.gradle -name 'fabric-*.jar' | grep -vE 'sources|loom|loader|mapping'); do for c in $(unzip -l "$j" 2>/dev/null | awk '{print $4}' | grep -E '/(EntityRendererRegistry|EntityModelLayerRegistry|FabricDefaultAttributeRegistry|FabricEntityType|FabricEntityType\$Builder|FabricEntityType\$Builder\$Mob)\.class$'); do echo "## $c"; javap -cp "$j" "$(echo $c | sed 's#\.class$##; s#/#.#g')" | head -40; done; done
+          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f" | head -400; done
