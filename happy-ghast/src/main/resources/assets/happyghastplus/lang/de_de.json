@@ -3,5 +3,9 @@
   "item.happyghastplus.ghast_whistle": "Ghast-Pfeife",
   "message.happyghastplus.ghast_whistle.called": "%s Glücklicher Ghast unterwegs",
   "message.happyghastplus.ghast_whistle.none": "Kein von dir gerittener Glücklicher Ghast innerhalb von %s Blöcken",
-  "block.happyghastplus.rope_ladder": "Strickleiter"
+  "block.happyghastplus.rope_ladder": "Strickleiter",
+  "item.happyghastplus.ghast_nest": "Ghast-Nest",
+  "block.happyghastplus.ghast_nest": "Ghast-Nest",
+  "item.happyghastplus.ghast_eyelids": "Ghast-Augenlider",
+  "message.happyghastplus.ghast_nest.no_room": "Nicht genug Platz: ein Nest braucht eine freie 6x6-Fläche"
 }

@@ -3,5 +3,9 @@
   "item.happyghastplus.ghast_whistle": "Ghast Whistle",
   "message.happyghastplus.ghast_whistle.called": "%s happy ghast(s) on the way",
   "message.happyghastplus.ghast_whistle.none": "No happy ghast you've ridden within %s blocks",
-  "block.happyghastplus.rope_ladder": "Rope Ladder"
+  "block.happyghastplus.rope_ladder": "Rope Ladder",
+  "item.happyghastplus.ghast_nest": "Ghast Nest",
+  "block.happyghastplus.ghast_nest": "Ghast Nest",
+  "item.happyghastplus.ghast_eyelids": "Ghast Eyelids",
+  "message.happyghastplus.ghast_nest.no_room": "Not enough room: a nest needs a free 6x6 area"
 }
