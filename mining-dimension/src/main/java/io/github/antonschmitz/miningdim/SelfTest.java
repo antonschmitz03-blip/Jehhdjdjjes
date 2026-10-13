@@ -161,7 +161,7 @@ final class SelfTest {
         pebblin.snapTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0.0F, 0.0F);
         mining.addFreshEntity(pebblin);
         pebblin.startProspecting(mining, Pebblin.Ore.IRON);
-        BlockPos ore = pebblin.getTarget();
+        BlockPos ore = pebblin.getOreTarget();
         MiningDimension.LOGGER.info("miningdim self test: pebblin at {} smelled iron at {} ({} blocks away), ore type {}", spot, ore,
                 ore == null ? "-" : String.format("%.1f", Math.sqrt(ore.distSqr(spot))), pebblin.getOre().name);
         if (ore == null || pebblin.getOre() != Pebblin.Ore.IRON) {

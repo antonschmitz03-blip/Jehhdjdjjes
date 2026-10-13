@@ -3,7 +3,9 @@ package io.github.antonschmitz.miningdim;
 import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -52,14 +54,14 @@ public class Pebblin extends Animal {
     /** Ore kinds a pebblin can sniff out. Index 0 means "not prospecting". */
     public enum Ore {
         NONE("none", null, null),
-        COAL("coal", Items.COAL, BlockTags.COAL_ORES),
-        IRON("iron", Items.RAW_IRON, BlockTags.IRON_ORES),
-        COPPER("copper", Items.RAW_COPPER, BlockTags.COPPER_ORES),
-        GOLD("gold", Items.RAW_GOLD, BlockTags.GOLD_ORES),
-        REDSTONE("redstone", Items.REDSTONE, BlockTags.REDSTONE_ORES),
-        LAPIS("lapis", Items.LAPIS_LAZULI, BlockTags.LAPIS_ORES),
-        DIAMOND("diamond", Items.DIAMOND, BlockTags.DIAMOND_ORES),
-        EMERALD("emerald", Items.EMERALD, BlockTags.EMERALD_ORES);
+        COAL("coal", Items.COAL, ores("coal")),
+        IRON("iron", Items.RAW_IRON, ores("iron")),
+        COPPER("copper", Items.RAW_COPPER, ores("copper")),
+        GOLD("gold", Items.RAW_GOLD, ores("gold")),
+        REDSTONE("redstone", Items.REDSTONE, ores("redstone")),
+        LAPIS("lapis", Items.LAPIS_LAZULI, ores("lapis")),
+        DIAMOND("diamond", Items.DIAMOND, ores("diamond")),
+        EMERALD("emerald", Items.EMERALD, ores("emerald"));
 
         public final String name;
         final Item snack;
@@ -69,6 +71,10 @@ public class Pebblin extends Animal {
             this.name = name;
             this.snack = snack;
             this.blocks = blocks;
+        }
+
+        private static TagKey<Block> ores(String metal) {
+            return TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace(metal + "_ores"));
         }
 
         static Ore bySnack(ItemStack stack) {
@@ -197,7 +203,7 @@ public class Pebblin extends Animal {
         return best;
     }
 
-    BlockPos getTarget() {
+    BlockPos getOreTarget() {
         return this.target;
     }
 
@@ -314,7 +320,7 @@ public class Pebblin extends Animal {
 
         @Override
         public boolean canUse() {
-            return this.pebblin.getTarget() != null && this.pebblin.prospectTicks > 0;
+            return this.pebblin.getOreTarget() != null && this.pebblin.prospectTicks > 0;
         }
 
         @Override
@@ -334,7 +340,7 @@ public class Pebblin extends Animal {
 
         @Override
         public void tick() {
-            BlockPos target = this.pebblin.getTarget();
+            BlockPos target = this.pebblin.getOreTarget();
             if (target == null) return;
             Vec3 center = Vec3.atCenterOf(target);
             this.pebblin.getLookControl().setLookAt(center.x, center.y, center.z);
