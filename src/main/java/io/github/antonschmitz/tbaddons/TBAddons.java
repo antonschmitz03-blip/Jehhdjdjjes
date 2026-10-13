@@ -2,6 +2,7 @@ package io.github.antonschmitz.tbaddons;
 
 import com.tiviacz.travelersbackpack.init.ModItemGroups;
 import io.github.antonschmitz.backpacklink.BackpackLink;
+import io.github.antonschmitz.tbaddons.item.MobWardUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.SoulboundUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.StackUpgradeItem;
 import io.github.antonschmitz.tbaddons.item.ToolSwapperUpgradeItem;
@@ -29,6 +30,7 @@ public class TBAddons implements ModInitializer {
     public static Item GOLD_STACK_UPGRADE;
     public static Item DIAMOND_STACK_UPGRADE;
     public static Item SOULBOUND_UPGRADE;
+    public static Item MOB_WARD_UPGRADE;
 
     @Override
     public void onInitialize() {
@@ -40,6 +42,7 @@ public class TBAddons implements ModInitializer {
         DIAMOND_STACK_UPGRADE = register("diamond_stack_upgrade",
                 properties -> new StackUpgradeItem(properties, "diamond_stack_upgrade", 8, StackUpgrade.Diamond.class, StackUpgrade.Diamond::new));
         SOULBOUND_UPGRADE = register("soulbound_upgrade", properties -> new SoulboundUpgradeItem(properties));
+        MOB_WARD_UPGRADE = register("mob_ward_upgrade", properties -> new MobWardUpgradeItem(properties));
 
         CreativeModeTabEvents.modifyOutputEvent(ModItemGroups.TRAVELERS_BACKPACK).register(output -> {
             output.accept(TOOL_SWAPPER_UPGRADE);
@@ -47,6 +50,7 @@ public class TBAddons implements ModInitializer {
             output.accept(GOLD_STACK_UPGRADE);
             output.accept(DIAMOND_STACK_UPGRADE);
             output.accept(SOULBOUND_UPGRADE);
+            output.accept(MOB_WARD_UPGRADE);
         });
 
         ToolSwapHandler.register();
@@ -71,6 +75,11 @@ public class TBAddons implements ModInitializer {
                     "com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter",
                     "net.minecraft.world.inventory.ChestMenu",
                     "net.minecraft.world.inventory.ShulkerBoxMenu",
+                    "net.minecraft.world.inventory.AbstractFurnaceMenu",
+                    "net.minecraft.world.inventory.HopperMenu",
+                    "net.minecraft.world.inventory.DispenserMenu",
+                    "net.minecraft.world.inventory.BrewingStandMenu",
+                    "net.minecraft.world.entity.SpawnPlacements",
                     "com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler",
                     "net.minecraft.world.inventory.AbstractContainerMenu",
                     "net.minecraft.world.item.ItemStackTemplate",

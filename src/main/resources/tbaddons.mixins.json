@@ -15,6 +15,7 @@
     "ItemStackTemplateMixin",
     "MachineMenuMixin",
     "ShulkerBoxMenuMixin",
+    "SpawnPlacementsMixin",
     "SlotItemHandlerMixin"
   ],
   "client": [

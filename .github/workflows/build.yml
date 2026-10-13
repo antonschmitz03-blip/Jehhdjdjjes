@@ -39,9 +39,10 @@ jobs:
             javap -p -cp "$MC" net.minecraft.client.gui.screens.inventory.$cls > $cls.txt
             check $cls.txt 'void extractBackground(net.minecraft.client.gui.GuiGraphicsExtractor, int, int, float)' extractBackground
           done
+          javap -p -cp "$MC" net.minecraft.world.entity.SpawnPlacements > sp.txt
+          check sp.txt 'boolean checkSpawnRules(net.minecraft.world.entity.EntityType<T>, net.minecraft.world.level.ServerLevelAccessor, net.minecraft.world.entity.EntitySpawnReason, net.minecraft.core.BlockPos, net.minecraft.util.RandomSource)' checkSpawnRules
           javap -p -cp "$MC" net.minecraft.client.gui.screens.inventory.AbstractContainerScreen > acs.txt
           check acs.txt 'boolean hasClickedOutside(double, double, int, int)' hasClickedOutside
-          check acs.txt 'boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent, boolean)' mouseClicked
           check acs.txt 'void extractLabels(net.minecraft.client.gui.GuiGraphicsExtractor, int, int)' extractLabels
           check acs.txt 'final int imageWidth;' imageWidth
           check acs.txt 'int leftPos;' leftPos

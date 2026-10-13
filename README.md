@@ -67,6 +67,23 @@ Soul Sand   | Blank Upgrade    | Soul Sand
 Ender Pearl | Totem of Undying | Ender Pearl
 ```
 
+### Mob Ward Upgrade
+
+While you wear the backpack, hostile mobs no longer spawn naturally within 64 blocks of you (vanilla only keeps
+the inner 24 blocks free), so you can work in an unlit base at night. The upgrade has the usual on/off toggle.
+
+- Only natural spawns are blocked. Monster spawners, spawn eggs, commands, raids and structure mobs still work,
+  and mobs that are already there stay.
+- Phantoms are not affected, since they spawn through a separate system.
+
+Recipe (shaped):
+
+```
+Gold Ingot | Glowstone     | Gold Ingot
+Glowstone  | Blank Upgrade | Glowstone
+Gold Ingot | Sea Lantern   | Gold Ingot
+```
+
 ### Reverting backpack variants
 
 Put any special backpack (spider, bat, dragon, iron, ...) alone into a crafting grid to turn it back
@@ -84,8 +101,6 @@ backpack's storage as a panel to the right of the container. No upgrade is neede
 - Click and drag items between the chest, your inventory and the backpack as usual.
 - Shift-click in the backpack panel moves the item into the chest (or your inventory if the chest is full).
   Shift-click in the chest or your inventory works as in vanilla.
-- Four buttons under the panel work like the ones in the backpack screen: Sort, Stack (quick stack into stacks the
-  backpack already has), Store (everything from your inventory) and Take (everything to your inventory).
 - Stack Upgrades apply to the panel slots as well; backpacks and blacklisted items can't be put in.
 
 ## Tom's Simple Storage terminals

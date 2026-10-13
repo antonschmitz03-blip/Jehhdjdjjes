@@ -21,7 +21,7 @@ public abstract class MachineScreenMixin {
         AbstractContainerScreenAccessor screen = (AbstractContainerScreenAccessor) this;
         AbstractContainerMenu menu = screen.tbaddons$getMenu();
         if (menu instanceof BackpackPanelMenu panel && panel.tbaddons$panelWrapper() != null) {
-            BackpackPanelRenderer.extractBackground(graphics, screen.tbaddons$getLeftPos(), screen.tbaddons$getTopPos(), panel, mouseX, mouseY);
+            BackpackPanelRenderer.extractBackground(graphics, screen.tbaddons$getLeftPos(), screen.tbaddons$getTopPos(), panel);
         }
     }
 }

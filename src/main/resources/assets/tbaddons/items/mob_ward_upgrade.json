@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "tbaddons:item/mob_ward_upgrade"
+  }
+}

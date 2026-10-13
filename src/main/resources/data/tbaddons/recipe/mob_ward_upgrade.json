@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "L": "minecraft:glowstone",
+    "S": "minecraft:sea_lantern",
+    "B": "travelersbackpack:blank_upgrade"
+  },
+  "pattern": [
+    "GLG",
+    "LBL",
+    "GSG"
+  ],
+  "result": {
+    "id": "tbaddons:mob_ward_upgrade"
+  }
+}

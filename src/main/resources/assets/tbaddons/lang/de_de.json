@@ -14,8 +14,7 @@
   "item.tbaddons.soulbound_upgrade": "Seelenbindungs-Upgrade",
   "item.travelersbackpack.soulbound_upgrade_tooltip": "Du behältst den getragenen Rucksack, wenn du stirbst",
   "screen.tbaddons.soulbound_upgrade": "Seelenbindung",
-  "tbaddons.panel.button.0": "Sort.",
-  "tbaddons.panel.button.1": "Stapeln",
-  "tbaddons.panel.button.2": "Rein",
-  "tbaddons.panel.button.3": "Raus"
+  "item.tbaddons.mob_ward_upgrade": "Monsterschutz-Upgrade",
+  "item.travelersbackpack.mob_ward_upgrade_tooltip": "Verhindert, dass feindliche Monster im Umkreis von 64 Blöcken spawnen, solange du den Rucksack trägst",
+  "screen.tbaddons.mob_ward_upgrade": "Monsterschutz"
 }
