@@ -146,11 +146,13 @@ final class SelfTest {
 
         // A pebblin fed raw iron should find an iron ore in the generated test chunks.
         BlockPos spot = null;
-        for (int x = 40; x < 56 && spot == null; x++) {
-            for (int y = 0; y < 120 && spot == null; y++) {
-                BlockPos at = new BlockPos(x, y, 48);
-                if (mining.getBlockState(at).isAir() && mining.getBlockState(at.below()).isSolid()) {
-                    spot = at;
+        for (int x = 16; x < CHUNKS * 16 - 16 && spot == null; x++) {
+            for (int z = 16; z < CHUNKS * 16 - 16 && spot == null; z += 4) {
+                for (int y = -50; y < 150 && spot == null; y++) {
+                    BlockPos at = new BlockPos(x, y, z);
+                    if (mining.getBlockState(at).isAir() && mining.getBlockState(at.above()).isAir() && mining.getBlockState(at.below()).isSolid()) {
+                        spot = at;
+                    }
                 }
             }
         }
