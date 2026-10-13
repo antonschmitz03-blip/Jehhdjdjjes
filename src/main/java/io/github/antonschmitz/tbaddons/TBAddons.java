@@ -80,6 +80,7 @@ public class TBAddons implements ModInitializer {
                     "net.minecraft.world.inventory.DispenserMenu",
                     "net.minecraft.world.inventory.BrewingStandMenu",
                     "net.minecraft.world.entity.SpawnPlacements",
+                    "com.tiviacz.travelersbackpack.inventory.Tiers$Tier",
                     "com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler",
                     "net.minecraft.world.inventory.AbstractContainerMenu",
                     "net.minecraft.world.item.ItemStackTemplate",

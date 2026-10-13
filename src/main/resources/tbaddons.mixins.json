@@ -8,6 +8,7 @@
     "BackpackDeathHelperMixin",
     "BackpackPanelMenuMixin",
     "BackpackStorageHandlerMixin",
+    "BackpackUpgradeSlotsMixin",
     "BackpackWrapperMixin",
     "ChestMenuMixin",
     "ContainerSorterMixin",
@@ -15,6 +16,7 @@
     "ItemStackTemplateMixin",
     "MachineMenuMixin",
     "ShulkerBoxMenuMixin",
+    "TierUpgradeSlotsMixin",
     "SpawnPlacementsMixin",
     "SlotItemHandlerMixin"
   ],

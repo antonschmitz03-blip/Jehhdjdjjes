@@ -84,6 +84,11 @@ Glowstone  | Blank Upgrade | Glowstone
 Gold Ingot | Sea Lantern   | Gold Ingot
 ```
 
+### More upgrade slots
+
+Every backpack tier has two more upgrade slots than Traveler's Backpack gives it (added on top of the configured
+count). Existing backpacks get the extra slots the next time they are opened; their contents are not touched.
+
 ### Reverting backpack variants
 
 Put any special backpack (spider, bat, dragon, iron, ...) alone into a crafting grid to turn it back
