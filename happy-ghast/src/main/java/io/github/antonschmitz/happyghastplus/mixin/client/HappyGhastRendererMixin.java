@@ -5,7 +5,9 @@ import io.github.antonschmitz.happyghastplus.GhastFeatures;
 import io.github.antonschmitz.happyghastplus.GhastNests;
 import io.github.antonschmitz.happyghastplus.client.GhastChestLayer;
 import io.github.antonschmitz.happyghastplus.client.GhastEngineLayer;
+import io.github.antonschmitz.happyghastplus.RopeLadders;
 import io.github.antonschmitz.happyghastplus.client.GhastEyelidsLayer;
+import io.github.antonschmitz.happyghastplus.client.GhastRopeLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.minecraft.client.renderer.entity.HappyGhastRenderer;
 import net.minecraft.client.renderer.entity.state.HappyGhastRenderState;
@@ -25,6 +27,7 @@ public abstract class HappyGhastRendererMixin {
     private void happyghastplus$extractChest(HappyGhast ghast, HappyGhastRenderState state, float partialTick, CallbackInfo ci) {
         ((FabricRenderState) (Object) state).setData(GhastChestLayer.CHEST_KIND, ghast.getAttachedOrElse(GhastChest.KIND, GhastChest.NONE));
         ((FabricRenderState) (Object) state).setData(GhastEngineLayer.ENGINES, ghast.getAttachedOrElse(GhastFeatures.SPEED_UPGRADED, false));
+        ((FabricRenderState) (Object) state).setData(GhastRopeLayer.ROPE, ghast.getAttachedOrElse(RopeLadders.ROPE, 0.0F));
         ((FabricRenderState) (Object) state).setData(GhastEyelidsLayer.SLEEPING, ghast.getAttachedOrElse(GhastNests.SLEEPING, false));
     }
 }

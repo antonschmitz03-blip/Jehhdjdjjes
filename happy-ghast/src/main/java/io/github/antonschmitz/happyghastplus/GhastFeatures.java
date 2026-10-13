@@ -121,7 +121,7 @@ public final class GhastFeatures {
             double dz = ghast.getZ() - player.getZ();
             if (dx * dx + dz * dz <= LADDER_DISTANCE * LADDER_DISTANCE) {
                 RECALLS.remove(ghast.getUUID());
-                RopeLadders.lower(ghast, player.position());
+                RopeLadders.lower(ghast);
             } else {
                 RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS));
             }
@@ -154,7 +154,7 @@ public final class GhastFeatures {
             if (distance < ARRIVE_DISTANCE) {
                 ghast.setDeltaMovement(Vec3.ZERO);
                 it.remove();
-                RopeLadders.lower(ghast, player.position());
+                RopeLadders.lower(ghast);
                 continue;
             }
             ghast.getNavigation().stop();

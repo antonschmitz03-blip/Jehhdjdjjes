@@ -13,9 +13,11 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
   An upgraded ghast wears a rocket engine on each side that trails a little fire and smoke while it flies forward.
 - **Whistle:** calls every happy ghast you have ridden within 128 blocks to fly to you (3 s cooldown).
   Only ghasts in loaded chunks can hear it.
-- **Rope ladder:** use the whistle while a happy ghast is within 8 blocks sideways and it lets a rope ladder down
-  to the ground (a farther ghast flies over and drops it on arrival). Riding pulls it up, dismounting lets it down
-  again. The ghast holds still while it is down, and it is pulled up after a minute with nobody near it.
+- **Rope ladder:** use the whistle while a happy ghast is within 8 blocks sideways and it lets a rope ladder down on
+  its right-hand side, from its back to the ground (a farther ghast flies over and drops it on arrival). The ladder is
+  drawn on the ghast, turns with it and has no blocks; hold jump to climb up, sneak to hold on. Riding pulls it up,
+  dismounting lets it down again. The ghast holds still while it is down, and it is pulled up after a minute with
+  nobody near it.
 - **Protection:** players (and their arrows) can't hurt a harnessed happy ghast or the one they ride.
 - **Ghast nest:** a 6x6 straw nest (place it on the ground; it needs a free 6x6 area without the corners). A harnessed
   happy ghast that hovers slowly within 6 blocks above it and about 3 blocks of its middle settles in, and a few

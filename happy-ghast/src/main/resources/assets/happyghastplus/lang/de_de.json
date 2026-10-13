@@ -7,5 +7,7 @@
   "item.happyghastplus.ghast_nest": "Ghast-Nest",
   "block.happyghastplus.ghast_nest": "Ghast-Nest",
   "item.happyghastplus.ghast_eyelids": "Ghast-Augenlider",
-  "message.happyghastplus.ghast_nest.no_room": "Nicht genug Platz: ein Nest braucht eine freie 6x6-Fläche"
+  "message.happyghastplus.ghast_nest.no_room": "Nicht genug Platz: ein Nest braucht eine freie 6x6-Fläche",
+  "item.happyghastplus.ghast_rope_segment": "Strickleiterteil",
+  "item.happyghastplus.ghast_rope_top": "Strickleiterteil"
 }

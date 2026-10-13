@@ -42,6 +42,9 @@ public class HappyGhastPlus implements ModInitializer {
     public static Item GHAST_NEST_ITEM;
     /** Only drawn over a sleeping ghast's face; not obtainable. */
     public static Item GHAST_EYELIDS;
+    /** Pieces of the rope ladder the ghast draws; not obtainable. */
+    public static Item GHAST_ROPE_SEGMENT;
+    public static Item GHAST_ROPE_TOP;
 
     @Override
     public void onInitialize() {
@@ -56,6 +59,8 @@ public class HappyGhastPlus implements ModInitializer {
         GHAST_WHISTLE = register("ghast_whistle", properties -> new GhastWhistleItem(properties.stacksTo(1)));
         GHAST_NEST_ITEM = register("ghast_nest", GhastNestItem::new);
         GHAST_EYELIDS = register("ghast_eyelids", Item::new);
+        GHAST_ROPE_SEGMENT = register("ghast_rope_segment", Item::new);
+        GHAST_ROPE_TOP = register("ghast_rope_top", Item::new);
 
         for (String name : new String[] {"ghast_speed_upgrade", "ghast_whistle"}) {
             ((MappedRegistry<Item>) BuiltInRegistries.ITEM).addAlias(Identifier.fromNamespaceAndPath(LEGACY_ID, name), id(name));
@@ -93,6 +98,7 @@ public class HappyGhastPlus implements ModInitializer {
         check(BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(LEGACY_ID, "rope_ladder")) == ROPE_LADDER, "rope ladder alias");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_nest")) == GHAST_NEST_ITEM, "ghast nest item");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_eyelids")) == GHAST_EYELIDS, "ghast eyelids item");
+        check(BuiltInRegistries.ITEM.getValue(id("ghast_rope_top")) == GHAST_ROPE_TOP, "ghast rope item");
         check(BuiltInRegistries.BLOCK.getValue(id("ghast_nest")) == GHAST_NEST, "ghast nest block");
         nestSelfTest(server.overworld());
         LOGGER.info("happyghastplus self test passed");

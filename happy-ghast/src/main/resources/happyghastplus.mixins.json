@@ -3,7 +3,9 @@
   "minVersion": "0.8",
   "package": "io.github.antonschmitz.happyghastplus.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "LivingEntityMixin"
+  ],
   "client": [
     "client.HappyGhastRendererMixin"
   ],

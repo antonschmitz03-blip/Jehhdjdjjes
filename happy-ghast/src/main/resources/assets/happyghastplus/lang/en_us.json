@@ -7,5 +7,7 @@
   "item.happyghastplus.ghast_nest": "Ghast Nest",
   "block.happyghastplus.ghast_nest": "Ghast Nest",
   "item.happyghastplus.ghast_eyelids": "Ghast Eyelids",
-  "message.happyghastplus.ghast_nest.no_room": "Not enough room: a nest needs a free 6x6 area"
+  "message.happyghastplus.ghast_nest.no_room": "Not enough room: a nest needs a free 6x6 area",
+  "item.happyghastplus.ghast_rope_segment": "Rope Ladder Piece",
+  "item.happyghastplus.ghast_rope_top": "Rope Ladder Piece"
 }
