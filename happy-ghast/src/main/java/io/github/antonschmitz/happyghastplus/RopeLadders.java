@@ -88,6 +88,10 @@ public final class RopeLadders {
         DEPLOYED.put(ghast.getUUID(), new Deployed(level, placed, ghast.position(), 0));
     }
 
+    public static boolean isDeployed(HappyGhast ghast) {
+        return DEPLOYED.containsKey(ghast.getUUID());
+    }
+
     public static void retract(UUID ghast) {
         Deployed deployed = DEPLOYED.remove(ghast);
         if (deployed != null) {

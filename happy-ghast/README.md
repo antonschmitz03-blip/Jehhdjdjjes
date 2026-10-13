@@ -17,6 +17,10 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
   to the ground (a farther ghast flies over and drops it on arrival). Riding pulls it up, dismounting lets it down
   again. The ghast holds still while it is down, and it is pulled up after a minute with nobody near it.
 - **Protection:** players (and their arrows) can't hurt a harnessed happy ghast or the one they ride.
+- **Ghast nest:** a 6x6 straw nest (place it on the ground; it needs a free 6x6 area without the corners). A harnessed
+  happy ghast that hovers slowly within 6 blocks above it and about 3 blocks of its middle settles in, and a few
+  seconds later closes its eyes (the smile stays) and slowly heals. Riding it, hurting it or whistling wakes it up.
+  Only the low straw floor is solid; you walk through the rim. Breaking any part removes the whole nest and drops it.
 
 ## Recipes
 
@@ -24,6 +28,7 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
 |---|---|
 | Ghast speed upgrade | `IFI` / `SRS` / `IFI` (iron ingot, firework rocket, sugar, redstone block) |
 | Ghast whistle | Iron ingot + snowball + string (shapeless) |
+| Ghast nest | `HSH` / `SHS` / `HSH` (hay bale, stick) |
 
 ## Coming from Vanilla+ Tweaks 1.4.0
 

@@ -3,7 +3,7 @@
   "id": "happyghastplus",
   "version": "${version}",
   "name": "Happy Ghast+",
-  "description": "More to do with your happy ghast: carry a double chest or ender chest, craft a speed upgrade (with rocket engines), call it with a whistle from up to 128 blocks away, climb aboard with a rope ladder, and keep players from hurting it.",
+  "description": "More to do with your happy ghast: carry a double chest or ender chest, craft a speed upgrade (with rocket engines), call it with a whistle from up to 128 blocks away, climb aboard with a rope ladder, keep players from hurting it, and let it sleep in a straw nest.",
   "authors": ["antonschmitz03-blip"],
   "license": "CC0-1.0",
   "environment": "*",

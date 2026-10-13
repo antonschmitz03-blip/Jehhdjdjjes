@@ -104,6 +104,11 @@ public final class GhastFeatures {
         }
     }
 
+    /** Whether the whistle is currently calling this ghast. */
+    public static boolean isRecalled(HappyGhast ghast) {
+        return RECALLS.containsKey(ghast.getUUID());
+    }
+
     /** Called by the whistle. Returns how many ghasts are on their way. */
     public static int callGhasts(ServerPlayer player) {
         ServerLevel level = (ServerLevel) player.level();
@@ -111,6 +116,7 @@ public final class GhastFeatures {
         for (HappyGhast ghast : level.getEntitiesOfClass(HappyGhast.class, player.getBoundingBox().inflate(WHISTLE_RANGE),
                 g -> !g.isBaby() && !g.isVehicle() && player.getUUID().equals(g.getAttached(OWNER))
                         && g.distanceTo(player) <= WHISTLE_RANGE)) {
+            GhastNests.wake(ghast);
             double dx = ghast.getX() - player.getX();
             double dz = ghast.getZ() - player.getZ();
             if (dx * dx + dz * dz <= LADDER_DISTANCE * LADDER_DISTANCE) {

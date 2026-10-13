@@ -19,6 +19,9 @@ public class HappyGhastPlusClient implements ClientModInitializer {
                 helper.register(new GhastEngineLayer(
                         (RenderLayerParent<HappyGhastRenderState, HappyGhastModel>) (Object) renderer,
                         context.getItemModelResolver()));
+                helper.register(new GhastEyelidsLayer(
+                        (RenderLayerParent<HappyGhastRenderState, HappyGhastModel>) (Object) renderer,
+                        context.getItemModelResolver()));
             }
         });
     }
