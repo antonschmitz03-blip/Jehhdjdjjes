@@ -11,6 +11,7 @@ public class HappyGhastPlusClient implements ClientModInitializer {
     @Override
     @SuppressWarnings("unchecked")
     public void onInitializeClient() {
+        GhastEngineParticles.register();
         LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
             if (renderer instanceof HappyGhastRenderer) {
                 helper.register(new GhastChestLayer(

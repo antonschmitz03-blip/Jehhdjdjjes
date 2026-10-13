@@ -23,9 +23,11 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
     public static final RenderStateDataKey<Boolean> ENGINES = RenderStateDataKey.create(() -> "happyghastplus:ghast_engines");
 
     // Same model space as GhastChestLayer: y points down from 1.501 blocks above the feet, +z is the back.
-    private static final float SIDE_OFFSET = 2.2F;
-    private static final float HEIGHT = 2.6F;
-    private static final float SCALE = 1.25F;
+    static final float SIDE_OFFSET = 2.2F;
+    static final float HEIGHT = 2.6F;
+    static final float SCALE = 1.6F;
+    /** How far behind the ghast's centre the engine's nozzle is (half the model's length, scaled). */
+    static final float NOZZLE_BACK = 8.0F / 16.0F * SCALE;
 
     private final ItemModelResolver itemModelResolver;
     private final ItemStackRenderState engine = new ItemStackRenderState();
