@@ -63,6 +63,17 @@
               "count": 1,
               "weight": 5
             }
+          ],
+          "creature": [
+            {
+              "type": "miningdim:pebblin",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 1,
+                "max_inclusive": 2
+              },
+              "weight": 10
+            }
           ]
         }
       },

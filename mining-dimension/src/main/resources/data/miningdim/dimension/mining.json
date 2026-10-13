@@ -73,6 +73,30 @@
             "weirdness": 0.0,
             "offset": 0.0
           }
+        },
+        {
+          "biome": "miningdim:meadow_caverns",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              -1.0,
+              1.0
+            ],
+            "continentalness": 0.0,
+            "erosion": [
+              -2.0,
+              0.55
+            ],
+            "depth": 0.0,
+            "weirdness": [
+              0.55,
+              2.0
+            ],
+            "offset": 0.0
+          }
         }
       ]
     },

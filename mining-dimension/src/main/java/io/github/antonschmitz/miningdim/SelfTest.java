@@ -26,7 +26,8 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 final class SelfTest {
     private static final int CHUNKS = 6;
     private static final Set<String> DECOR = Set.of("shroomlight", "glow_lichen", "cave_vines", "cave_vines_plant", "moss_block",
-            "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "basalt", "blackstone", "smooth_basalt", "magma_block", "clay", "big_dripleaf", "small_dripleaf");
+            "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "basalt", "blackstone", "smooth_basalt", "magma_block", "clay", "big_dripleaf", "small_dripleaf",
+            "grass_block", "short_grass", "firefly_bush", "wildflowers");
 
     private SelfTest() {
     }
@@ -92,6 +93,7 @@ final class SelfTest {
 
         // Biomes should be small: sample a 512x512 area every 16 blocks at three depths (only biomes get computed).
         Map<String, Integer> biomeCounts = new TreeMap<>();
+        BlockPos meadow = null;
         int changes = 0;
         for (int y : new int[] {-40, 40, 120}) {
             String previous = null;
@@ -99,6 +101,9 @@ final class SelfTest {
                 for (int z = 0; z < 512; z += 16) {
                     String biome = mining.getBiome(pos.set(x, y, z)).unwrapKey().map(key -> key.identifier().getPath()).orElse("?");
                     biomeCounts.merge(biome, 1, Integer::sum);
+                    if (meadow == null && biome.equals("meadow_caverns")) {
+                        meadow = new BlockPos(x, y, z);
+                    }
                     if (z > 0 && !biome.equals(previous)) {
                         changes++;
                     }
@@ -109,9 +114,60 @@ final class SelfTest {
         // Each sample line is 512 blocks long; the average run between biome changes shows how big biomes are.
         MiningDimension.LOGGER.info("miningdim self test: biome samples {}, a new biome every ~{} blocks", biomeCounts,
                 changes == 0 ? "inf" : String.valueOf(3 * 32 * 512 / changes));
-        if (biomeCounts.size() < 5) {
-            throw new IllegalStateException("miningdim self test: expected all five biomes in a 512 block area");
+        if (biomeCounts.size() < 6 || meadow == null) {
+            throw new IllegalStateException("miningdim self test: expected all six biomes in a 512 block area");
         }
+
+        // Meadow caverns need grass floors with enough light for farm animals to spawn (raw brightness > 8).
+        int grass = 0;
+        int spawnable = 0;
+        for (int cx = (meadow.getX() >> 4) - 1; cx <= (meadow.getX() >> 4) + 1; cx++) {
+            for (int cz = (meadow.getZ() >> 4) - 1; cz <= (meadow.getZ() >> 4) + 1; cz++) {
+                LevelChunk chunk = mining.getChunk(cx, cz);
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        for (int y = mining.getMinY(); y < mining.getMaxY(); y++) {
+                            if (chunk.getBlockState(pos.set(x, y, z)).is(Blocks.GRASS_BLOCK)) {
+                                grass++;
+                                BlockPos above = new BlockPos(cx * 16 + x, y + 1, cz * 16 + z);
+                                if (mining.getBlockState(above).getCollisionShape(mining, above).isEmpty() && mining.getRawBrightness(above, 0) > 8) {
+                                    spawnable++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        MiningDimension.LOGGER.info("miningdim self test: meadow near {} has {} grass blocks, {} lit enough for animals", meadow, grass, spawnable);
+        if (spawnable == 0) {
+            throw new IllegalStateException("miningdim self test: meadow has no spawnable grass");
+        }
+
+        // A pebblin fed raw iron should find an iron ore in the generated test chunks.
+        BlockPos spot = null;
+        for (int x = 40; x < 56 && spot == null; x++) {
+            for (int y = 0; y < 120 && spot == null; y++) {
+                BlockPos at = new BlockPos(x, y, 48);
+                if (mining.getBlockState(at).isAir() && mining.getBlockState(at.below()).isSolid()) {
+                    spot = at;
+                }
+            }
+        }
+        if (spot == null) {
+            throw new IllegalStateException("miningdim self test: no floor for a pebblin");
+        }
+        Pebblin pebblin = MiningDimension.PEBBLIN.create(mining, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+        pebblin.snapTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0.0F, 0.0F);
+        mining.addFreshEntity(pebblin);
+        pebblin.startProspecting(mining, Pebblin.Ore.IRON);
+        BlockPos ore = pebblin.getTarget();
+        MiningDimension.LOGGER.info("miningdim self test: pebblin at {} smelled iron at {} ({} blocks away), ore type {}", spot, ore,
+                ore == null ? "-" : String.format("%.1f", Math.sqrt(ore.distSqr(spot))), pebblin.getOre().name);
+        if (ore == null || pebblin.getOre() != Pebblin.Ore.IRON) {
+            throw new IllegalStateException("miningdim self test: pebblin found no iron");
+        }
+        pebblin.discard();
 
         // Mineshafts: look for structure starts in a 50x50 chunk area (cheap, no terrain), then generate one fully.
         Registry<Structure> structures = mining.registryAccess().lookupOrThrow(Registries.STRUCTURE);

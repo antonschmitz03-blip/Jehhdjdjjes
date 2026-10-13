@@ -5,5 +5,8 @@
   "biome.miningdim.lush_caverns": "Üppige Kavernen",
   "biome.miningdim.dripstone_caverns": "Tropfsteinkavernen",
   "biome.miningdim.crystal_caverns": "Kristallkavernen",
-  "biome.miningdim.basalt_caverns": "Basaltkavernen"
+  "biome.miningdim.basalt_caverns": "Basaltkavernen",
+  "biome.miningdim.meadow_caverns": "Wiesenkavernen",
+  "entity.miningdim.pebblin": "Kieselchen",
+  "item.miningdim.pebblin_spawn_egg": "Kieselchen-Spawn-Ei"
 }

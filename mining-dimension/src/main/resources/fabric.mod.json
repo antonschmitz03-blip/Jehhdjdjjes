@@ -3,12 +3,19 @@
   "id": "miningdim",
   "version": "${version}",
   "name": "Mining Dimension",
-  "description": "A sealed cave dimension made for mining: bigger, more common ore veins, no lava and no water. Build a chiseled deepslate frame and light it with flint and steel. Coordinates are 1:1 with the overworld.",
-  "authors": ["antonschmitz03-blip"],
+  "description": "A sealed cave dimension made for mining: bigger, more common ore veins and no lava. Six cave biomes, abandoned mineshafts, and Pebblins: little stone critters that sniff out ore when you feed them some. Build a chiseled deepslate frame and light it with flint and steel. Coordinates are 1:1 with the overworld.",
+  "authors": [
+    "antonschmitz03-blip"
+  ],
   "license": "CC0-1.0",
   "environment": "*",
   "entrypoints": {
-    "main": ["io.github.antonschmitz.miningdim.MiningDimension"]
+    "main": [
+      "io.github.antonschmitz.miningdim.MiningDimension"
+    ],
+    "client": [
+      "io.github.antonschmitz.miningdim.client.MiningDimensionClient"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.19.5",

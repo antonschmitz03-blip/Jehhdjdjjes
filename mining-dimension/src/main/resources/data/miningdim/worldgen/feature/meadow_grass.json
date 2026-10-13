@@ -1,0 +1,85 @@
+{
+  "type": "minecraft:vegetation_patch",
+  "depth": 1,
+  "extra_bottom_block_chance": 0.0,
+  "extra_edge_column_chance": 0.4,
+  "ground_state": {
+    "type": "minecraft:weighted",
+    "entries": [
+      {
+        "data": "minecraft:grass_block",
+        "weight": 60
+      },
+      {
+        "data": "minecraft:shroomlight",
+        "weight": 1
+      }
+    ]
+  },
+  "replaceable": "#minecraft:moss_replaceable",
+  "surface": "floor",
+  "vegetation_chance": 0.6,
+  "vegetation_feature": {
+    "feature": {
+      "type": "minecraft:simple_block",
+      "to_place": {
+        "type": "minecraft:weighted",
+        "entries": [
+          {
+            "data": "minecraft:short_grass",
+            "weight": 60
+          },
+          {
+            "data": "minecraft:tall_grass",
+            "weight": 10
+          },
+          {
+            "data": "minecraft:dandelion",
+            "weight": 5
+          },
+          {
+            "data": "minecraft:poppy",
+            "weight": 5
+          },
+          {
+            "data": "minecraft:cornflower",
+            "weight": 4
+          },
+          {
+            "data": "minecraft:oxeye_daisy",
+            "weight": 4
+          },
+          {
+            "data": "minecraft:azure_bluet",
+            "weight": 4
+          },
+          {
+            "data": "minecraft:allium",
+            "weight": 2
+          },
+          {
+            "data": {
+              "id": "minecraft:wildflowers",
+              "properties": {
+                "flower_amount": "4",
+                "facing": "north"
+              }
+            },
+            "weight": 3
+          },
+          {
+            "data": "minecraft:firefly_bush",
+            "weight": 2
+          }
+        ]
+      }
+    },
+    "placement": []
+  },
+  "vertical_range": 5,
+  "xz_radius": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 5,
+    "max_inclusive": 8
+  }
+}
