@@ -20,6 +20,7 @@ public class PebblinRenderer extends MobRenderer<Pebblin, PebblinRenderState, Pe
 
     public PebblinRenderer(EntityRendererProvider.Context context) {
         super(context, new PebblinModel(context.bakeLayer(PebblinModel.LAYER)), 0.35F);
+        this.addLayer(new PebblinGlowLayer(this));
     }
 
     @Override

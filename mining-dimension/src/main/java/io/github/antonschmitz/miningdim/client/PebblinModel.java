@@ -11,7 +11,10 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
-/** A round little rock on stubby legs with a crystal cluster on its back. */
+/**
+ * A round little rock on stubby legs: pebble ears, a snout, a pebble tail and a geode crust with five crystals on its back.
+ * Generated from the model spec used for the preview renders, so keep texture offsets in sync with the textures.
+ */
 public class PebblinModel extends QuadrupedModel<PebblinRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(MiningDimension.id("pebblin"), "main");
 
@@ -22,27 +25,52 @@ public class PebblinModel extends QuadrupedModel<PebblinRenderState> {
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        root.addOrReplaceChild("head",
-                CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -3.0F, -4.0F, 6.0F, 5.0F, 4.0F),
-                PartPose.offset(0.0F, 18.0F, -5.0F));
-        PartDefinition body = root.addOrReplaceChild("body",
-                CubeListBuilder.create().texOffs(0, 10).addBox(-4.0F, -6.0F, -5.0F, 8.0F, 6.0F, 10.0F),
-                PartPose.offset(0.0F, 21.0F, 0.0F));
-        body.addOrReplaceChild("crystal_big",
-                CubeListBuilder.create().texOffs(40, 8).addBox(-1.0F, -4.0F, -1.0F, 2.0F, 4.0F, 2.0F),
-                PartPose.offsetAndRotation(0.0F, -6.0F, 0.5F, -0.15F, 0.0F, 0.1F));
-        body.addOrReplaceChild("crystal_mid",
-                CubeListBuilder.create().texOffs(40, 16).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F),
-                PartPose.offsetAndRotation(2.0F, -6.0F, 2.5F, 0.35F, 0.0F, 0.4F));
-        body.addOrReplaceChild("crystal_small",
-                CubeListBuilder.create().texOffs(50, 16).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F),
-                PartPose.offsetAndRotation(-2.0F, -6.0F, -1.5F, -0.3F, 0.0F, -0.45F));
-        CubeListBuilder leg = CubeListBuilder.create().texOffs(40, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 3.0F, 2.0F);
-        root.addOrReplaceChild("right_hind_leg", leg, PartPose.offset(-2.5F, 21.0F, 3.0F));
-        root.addOrReplaceChild("left_hind_leg", leg, PartPose.offset(2.5F, 21.0F, 3.0F));
-        root.addOrReplaceChild("right_front_leg", leg, PartPose.offset(-2.5F, 21.0F, -3.0F));
-        root.addOrReplaceChild("left_front_leg", leg, PartPose.offset(2.5F, 21.0F, -3.0F));
-        return LayerDefinition.create(mesh, 64, 32);
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create()
+                .texOffs(0, 24).addBox(-3.5F, -3F, -4F, 7F, 5F, 4F)
+                .texOffs(20, 33).addBox(-2.5F, -4F, -4F, 5F, 1F, 3F)
+                .texOffs(56, 33).addBox(-1.5F, 0F, -5F, 3F, 2F, 1F),
+                PartPose.offset(0F, 18F, -5F));
+        head.addOrReplaceChild("right_ear", CubeListBuilder.create()
+                .texOffs(36, 33).addBox(-1F, -2F, -1F, 2F, 2F, 2F),
+                PartPose.offsetAndRotation(-2.5F, -3F, -2F, 0F, 0F, -0.35F));
+        head.addOrReplaceChild("left_ear", CubeListBuilder.create()
+                .texOffs(36, 33).addBox(-1F, -2F, -1F, 2F, 2F, 2F),
+                PartPose.offsetAndRotation(2.5F, -3F, -2F, 0F, 0F, 0.35F));
+        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
+                .texOffs(0, 0).addBox(-4.5F, -6F, -5F, 9F, 5F, 10F)
+                .texOffs(0, 15).addBox(-3.5F, -7F, -4F, 7F, 1F, 8F)
+                .texOffs(30, 15).addBox(-3.5F, -1F, -4F, 7F, 1F, 8F)
+                .texOffs(30, 24).addBox(-2.5F, -8F, -2F, 5F, 1F, 5F)
+                .texOffs(44, 33).addBox(-1F, -4F, 5F, 2F, 2F, 2F),
+                PartPose.offset(0F, 22F, 0F));
+        body.addOrReplaceChild("crystal_big", CubeListBuilder.create()
+                .texOffs(22, 24).addBox(-1F, -6F, -1F, 2F, 6F, 2F),
+                PartPose.offsetAndRotation(0F, -8F, 0.5F, -0.1F, 0.3F, 0.08F));
+        body.addOrReplaceChild("crystal_right", CubeListBuilder.create()
+                .texOffs(50, 24).addBox(-1F, -4F, -1F, 2F, 4F, 2F),
+                PartPose.offsetAndRotation(-1.5F, -8F, -1F, -0.3F, 0.2F, -0.5F));
+        body.addOrReplaceChild("crystal_left", CubeListBuilder.create()
+                .texOffs(0, 33).addBox(-1F, -4F, -1F, 2F, 4F, 2F),
+                PartPose.offsetAndRotation(1.5F, -8F, 1.5F, 0.35F, -0.3F, 0.5F));
+        body.addOrReplaceChild("crystal_tiny_front", CubeListBuilder.create()
+                .texOffs(0, 39).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(1F, -8F, -1.5F, -0.5F, 0F, 0.3F));
+        body.addOrReplaceChild("crystal_tiny_back", CubeListBuilder.create()
+                .texOffs(52, 33).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(-1F, -8F, 2.5F, 0.5F, 0F, -0.25F));
+        root.addOrReplaceChild("right_hind_leg", CubeListBuilder.create()
+                .texOffs(8, 33).addBox(-1.5F, 0F, -1.5F, 3F, 2F, 3F),
+                PartPose.offset(-2.5F, 22F, 3F));
+        root.addOrReplaceChild("left_hind_leg", CubeListBuilder.create()
+                .texOffs(8, 33).addBox(-1.5F, 0F, -1.5F, 3F, 2F, 3F),
+                PartPose.offset(2.5F, 22F, 3F));
+        root.addOrReplaceChild("right_front_leg", CubeListBuilder.create()
+                .texOffs(8, 33).addBox(-1.5F, 0F, -1.5F, 3F, 2F, 3F),
+                PartPose.offset(-2.5F, 22F, -3F));
+        root.addOrReplaceChild("left_front_leg", CubeListBuilder.create()
+                .texOffs(8, 33).addBox(-1.5F, 0F, -1.5F, 3F, 2F, 3F),
+                PartPose.offset(2.5F, 22F, -3F));
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
     @Override
