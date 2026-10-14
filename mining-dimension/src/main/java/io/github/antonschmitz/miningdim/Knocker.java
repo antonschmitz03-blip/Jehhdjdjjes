@@ -72,7 +72,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
             List.<Item>of(Items.GOLD_BLOCK, Items.RAW_GOLD_BLOCK, Items.GOLD_INGOT, Items.RAW_GOLD, Items.GOLD_ORE, Items.DEEPSLATE_GOLD_ORE),
             List.<Item>of(Items.IRON_BLOCK, Items.RAW_IRON_BLOCK, Items.LAPIS_BLOCK, Items.IRON_INGOT, Items.RAW_IRON, Items.LAPIS_LAZULI,
                     Items.AMETHYST_SHARD, Items.IRON_ORE, Items.DEEPSLATE_IRON_ORE, Items.LAPIS_ORE, Items.DEEPSLATE_LAPIS_ORE),
-            List.<Item>of(Items.COPPER_BLOCK, Items.RAW_COPPER_BLOCK, Items.REDSTONE_BLOCK, Items.COPPER_INGOT, Items.RAW_COPPER, Items.REDSTONE,
+            List.<Item>of(Items.RAW_COPPER_BLOCK, Items.REDSTONE_BLOCK, Items.COPPER_INGOT, Items.RAW_COPPER, Items.REDSTONE,
                     Items.QUARTZ, Items.GOLD_NUGGET, Items.IRON_NUGGET, Items.REDSTONE_ORE, Items.DEEPSLATE_REDSTONE_ORE),
             List.<Item>of(Items.COAL, Items.COAL_BLOCK, Items.COAL_ORE, Items.DEEPSLATE_COAL_ORE, Items.COPPER_ORE, Items.DEEPSLATE_COPPER_ORE));
 
