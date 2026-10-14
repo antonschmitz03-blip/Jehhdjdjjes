@@ -1,0 +1,45 @@
+name: Research
+on:
+  push:
+    branches: [claude/project-thread-h6kkmi]
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew :mining-dimension:compileJava -q || true
+      - shell: bash {0}
+        run: |
+          MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
+          unzip -l "$MC" | awk '{print $4}' > files.txt
+          P() { echo "##### javap $1"; javap -p -cp "$MC" "$1" | grep -vE 'lambda\$' | grep -E "${2:-.}" | head -${3:-80}; }
+          P net.minecraft.world.entity.Mob 'Drop|drop|Home|home|restrict|Persist|Hand|canPickUp|pickUp|setItemSlot|wantsToPickUp' 60
+          P net.minecraft.world.entity.item.ItemEntity 'Owner|owner|Thrower|getItem|Pickup' 30
+          P net.minecraft.world.entity.player.Inventory 'getItem|removeItem|Selected|setItem|getContainerSize|SELECTION|HOTBAR|static' 40
+          P net.minecraft.world.level.block.state.BlockBehaviour 'randomTick|isRandomlyTicking' 10
+          P net.minecraft.world.level.storage.ValueOutput '' 40
+          P net.minecraft.world.level.storage.ValueInput '' 40
+          P net.minecraft.world.entity.ai.goal.AvoidEntityGoal '<init>' 10
+          P net.minecraft.world.entity.ai.goal.RangedAttackGoal '<init>' 10
+          P net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal '' 20
+          P net.minecraft.world.entity.monster.RangedAttackMob '' 10
+          P net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile '' 30
+          P net.minecraft.client.renderer.entity.ThrownItemRenderer '<init>' 10
+          P net.minecraft.client.model.ArmedModel '' 10
+          P net.minecraft.client.renderer.entity.layers.ItemInHandLayer '' 20
+          P net.minecraft.client.renderer.entity.state.ArmedEntityRenderState '' 40
+          P net.minecraft.client.model.HumanoidModel '' 60
+          P net.minecraft.world.entity.LivingEntity 'getMainHandItem|setItemInHand|hasLineOfSight' 10
+          grep -iE 'Snowball|ThrowableItemProjectile|AllayRenderer|AllayModel|VexModel|VexRenderer|ArmedModel|HumanoidArm|ItemInHandLayer' files.txt
+          echo '##### vanilla simple_block / features'
+          mkdir d && cd d && unzip -q "$MC" 'data/minecraft/worldgen/*' 'assets/minecraft/blockstates/barrel.json' 'assets/minecraft/models/block/barrel.json' 'assets/minecraft/items/barrel.json' 2>/dev/null; cd ..
+          grep -rl '"minecraft:simple_block"' d | head -5
+          f=$(grep -rl '"minecraft:simple_block"' d | head -1); cat "$f"; echo
+          cat d/assets/minecraft/blockstates/barrel.json d/assets/minecraft/models/block/barrel.json d/assets/minecraft/items/barrel.json
+          curl -sSLo vf.jar https://github.com/Vineflower/vineflower/releases/download/1.11.1/vineflower-1.11.1.jar
+          mkdir cls out; cd cls && unzip -q "$MC" $(grep -E '/(AllayRenderer|AllayModel|Snowball|ItemInHandLayer|ArmedEntityRenderState|ThrowableItemProjectile|AllayRenderState|VexRenderer|VexModel)\.class$' ../files.txt | tr '\n' ' '); cd ..
+          java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
+          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f"; done
