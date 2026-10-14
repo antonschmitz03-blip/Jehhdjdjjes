@@ -13,46 +13,15 @@ jobs:
       - run: chmod +x gradlew && ./gradlew :mining-dimension:compileJava -q || true
       - shell: bash {0}
         run: |
+          pip install -q pillow
           MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
-          unzip -l "$MC" | awk '{print $4}' > files.txt
           mkdir t && cd t && unzip -q "$MC" 'assets/minecraft/textures/block/*_ore.png' assets/minecraft/textures/block/stone.png assets/minecraft/textures/block/deepslate.png && cd ..
           python3 - <<'PY'
-          import zlib,struct,glob,collections
-          def png(p):
-              d=open(p,'rb').read(); i=8; idat=b''; pal=None; trns=None
-              while i<len(d):
-                  n,=struct.unpack('>I',d[i:i+4]); t=d[i+4:i+8]; c=d[i+8:i+8+n]; i+=12+n
-                  if t==b'IHDR': w,h,bd,ct=struct.unpack('>IIBB',c[:10])
-                  elif t==b'PLTE': pal=[tuple(c[k:k+3]) for k in range(0,len(c),3)]
-                  elif t==b'tRNS': trns=c
-                  elif t==b'IDAT': idat+=c
-              raw=zlib.decompress(idat); bpp={2:3,6:4,3:1,0:1,4:2}[ct]; stride=w*bpp; out=[]; prev=bytearray(stride); k=0
-              for y in range(h):
-                  f=raw[k]; k+=1; line=bytearray(raw[k:k+stride]); k+=stride
-                  for x in range(stride):
-                      a=line[x-bpp] if x>=bpp else 0; b=prev[x]; cc=prev[x-bpp] if x>=bpp else 0
-                      if f==1: line[x]=(line[x]+a)&255
-                      elif f==2: line[x]=(line[x]+b)&255
-                      elif f==3: line[x]=(line[x]+(a+b)//2)&255
-                      elif f==4:
-                          p=a+b-cc; pa,pb,pc=abs(p-a),abs(p-b),abs(p-cc)
-                          line[x]=(line[x]+(a if pa<=pb and pa<=pc else b if pb<=pc else cc))&255
-                  prev=line
-                  for x in range(w):
-                      px=line[x*bpp:(x+1)*bpp]
-                      out.append(pal[px[0]] if ct==3 else tuple(px[:3]) if ct in(2,6) else (px[0],)*3)
-              return out
-          base=set(png('t/assets/minecraft/textures/block/stone.png'))|set(png('t/assets/minecraft/textures/block/deepslate.png'))
+          import glob,collections
+          from PIL import Image
+          px=lambda p:[c[:3] for c in Image.open(p).convert('RGBA').getdata()]
+          base=set(px('t/assets/minecraft/textures/block/stone.png'))|set(px('t/assets/minecraft/textures/block/deepslate.png'))
           for f in sorted(glob.glob('t/assets/minecraft/textures/block/*_ore.png')):
-              cnt=collections.Counter(c for c in png(f) if c not in base)
-              print(f.split('/')[-1], [(('#%02x%02x%02x'%c),n) for c,n in cnt.most_common(8)])
+              cnt=collections.Counter(c for c in px(f) if c not in base)
+              print('ORE',f.split('/')[-1], [('#%02x%02x%02x'%c,n) for c,n in cnt.most_common(10)])
           PY
-          P() { echo "##### javap $1"; javap -p -cp "$MC" "$1" | grep -vE 'lambda\$' | head -${2:-60}; }
-          grep -E 'renderer/entity/layers/(EyesLayer|SpiderEyesLayer|RenderLayer|EnderEyesLayer)' files.txt
-          P net.minecraft.client.renderer.entity.layers.RenderLayer
-          P net.minecraft.client.renderer.entity.layers.EyesLayer
-          javap -cp "$MC" net.minecraft.client.renderer.rendertype.RenderTypes | grep -iE 'eyes|emissive|translucent_emissive|entityCutout'
-          curl -sSLo vf.jar https://github.com/Vineflower/vineflower/releases/download/1.11.1/vineflower-1.11.1.jar
-          mkdir cls out; cd cls && unzip -q "$MC" $(grep -E 'renderer/entity/layers/(EyesLayer|SpiderEyesLayer|BreezeEyesLayer|EnderEyesLayer|WardenEmissiveLayer|LivingEntityEmissiveLayer)\.class$' ../files.txt | tr '\n' ' '); cd ..
-          java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
-          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f"; done
