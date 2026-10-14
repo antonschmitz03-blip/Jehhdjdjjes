@@ -66,15 +66,15 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
 
     /** Hotbar loot, most tempting first. Anything not listed is left alone, so tools, weapons and armour are safe. */
     private static final List<List<Item>> LOOT_TIERS = List.of(
-            List.of(Items.NETHERITE_BLOCK, Items.NETHERITE_INGOT, Items.NETHERITE_SCRAP, Items.ANCIENT_DEBRIS),
-            List.of(Items.DIAMOND_BLOCK, Items.EMERALD_BLOCK, Items.DIAMOND, Items.EMERALD, Items.DIAMOND_ORE, Items.DEEPSLATE_DIAMOND_ORE,
+            List.<Item>of(Items.NETHERITE_BLOCK, Items.NETHERITE_INGOT, Items.NETHERITE_SCRAP, Items.ANCIENT_DEBRIS),
+            List.<Item>of(Items.DIAMOND_BLOCK, Items.EMERALD_BLOCK, Items.DIAMOND, Items.EMERALD, Items.DIAMOND_ORE, Items.DEEPSLATE_DIAMOND_ORE,
                     Items.EMERALD_ORE, Items.DEEPSLATE_EMERALD_ORE, Items.ENCHANTED_BOOK),
-            List.of(Items.GOLD_BLOCK, Items.RAW_GOLD_BLOCK, Items.GOLD_INGOT, Items.RAW_GOLD, Items.GOLD_ORE, Items.DEEPSLATE_GOLD_ORE),
-            List.of(Items.IRON_BLOCK, Items.RAW_IRON_BLOCK, Items.LAPIS_BLOCK, Items.IRON_INGOT, Items.RAW_IRON, Items.LAPIS_LAZULI,
+            List.<Item>of(Items.GOLD_BLOCK, Items.RAW_GOLD_BLOCK, Items.GOLD_INGOT, Items.RAW_GOLD, Items.GOLD_ORE, Items.DEEPSLATE_GOLD_ORE),
+            List.<Item>of(Items.IRON_BLOCK, Items.RAW_IRON_BLOCK, Items.LAPIS_BLOCK, Items.IRON_INGOT, Items.RAW_IRON, Items.LAPIS_LAZULI,
                     Items.AMETHYST_SHARD, Items.IRON_ORE, Items.DEEPSLATE_IRON_ORE, Items.LAPIS_ORE, Items.DEEPSLATE_LAPIS_ORE),
-            List.of(Items.COPPER_BLOCK, Items.RAW_COPPER_BLOCK, Items.REDSTONE_BLOCK, Items.COPPER_INGOT, Items.RAW_COPPER, Items.REDSTONE,
+            List.<Item>of(Items.COPPER_BLOCK, Items.RAW_COPPER_BLOCK, Items.REDSTONE_BLOCK, Items.COPPER_INGOT, Items.RAW_COPPER, Items.REDSTONE,
                     Items.QUARTZ, Items.GOLD_NUGGET, Items.IRON_NUGGET, Items.REDSTONE_ORE, Items.DEEPSLATE_REDSTONE_ORE),
-            List.of(Items.COAL, Items.COAL_BLOCK, Items.COAL_ORE, Items.DEEPSLATE_COAL_ORE, Items.COPPER_ORE, Items.DEEPSLATE_COPPER_ORE));
+            List.<Item>of(Items.COAL, Items.COAL_BLOCK, Items.COAL_ORE, Items.DEEPSLATE_COAL_ORE, Items.COPPER_ORE, Items.DEEPSLATE_COPPER_ORE));
 
     private BlockPos den;
     private UUID victim;
@@ -182,7 +182,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         this.setGuaranteedDrop(EquipmentSlot.MAINHAND);
         this.victim = player.getUUID();
         this.setPersistenceRequired();
-        this.swing(InteractionHand.MAIN_HAND);
+        this.swingForAttack(InteractionHand.MAIN_HAND);
         this.playSound(SoundEvents.ITEM_PICKUP, 0.8F, 1.6F);
         this.playSound(SoundEvents.WITCH_CELEBRATE, 1.0F, 1.9F);
         level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(loot)), this.getX(), this.getY() + 1.0, this.getZ(),
@@ -204,7 +204,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         }
         item.setDefaultPickUpDelay();
         level.addFreshEntity(item);
-        this.swing(InteractionHand.MAIN_HAND);
+        this.swingForAttack(InteractionHand.MAIN_HAND);
         this.playSound(SoundEvents.ALLAY_ITEM_GIVEN, 1.0F, 0.8F);
     }
 
@@ -257,7 +257,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         }
         if (this.knocksLeft > 0 && this.tickCount % 6 == 0) {
             this.knocksLeft--;
-            this.swing(InteractionHand.OFF_HAND);
+            this.swingForAttack(InteractionHand.OFF_HAND);
             this.playSound(SoundEvents.NOTE_BLOCK_BASEDRUM.value(), 1.4F, 0.55F + this.random.nextFloat() * 0.1F);
         }
         if (--this.knockCooldown <= 0 && this.tickCount % 20 == 0) {
@@ -282,7 +282,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         double dist = Math.sqrt(dx * dx + dz * dz);
         pebble.shoot(dx, dy + dist * 0.2, dz, 1.2F, 8.0F);
         level.addFreshEntity(pebble);
-        this.swing(InteractionHand.OFF_HAND);
+        this.swingForAttack(InteractionHand.OFF_HAND);
         this.playSound(SoundEvents.SNOWBALL_THROW, 0.8F, 0.6F);
     }
 
@@ -519,7 +519,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
                 return false;
             }
             BlockPos origin = this.knocker.blockPosition();
-            for (BlockPos pos : BlockPos.withinManhattan(origin, 8, 4, 8)) {
+            for (BlockPos pos : BlockPos.betweenClosed(origin.offset(-8, -4, -8), origin.offset(8, 4, 8))) {
                 if (isTorch(level.getBlockState(pos))) {
                     this.torch = pos.immutable();
                     return true;
@@ -550,7 +550,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
                     level.removeBlock(this.torch, false);
                     this.knocker.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.TORCH));
                     this.knocker.setGuaranteedDrop(EquipmentSlot.MAINHAND);
-                    this.knocker.swing(InteractionHand.MAIN_HAND);
+                    this.knocker.swingForAttack(InteractionHand.MAIN_HAND);
                     this.knocker.playSound(SoundEvents.WITCH_CELEBRATE, 1.0F, 1.9F);
                 }
                 this.torch = null;
