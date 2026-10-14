@@ -9,7 +9,8 @@ A Fabric mod for Minecraft 26.3 that adds a sealed cave dimension made for minin
 - **Terrain:** y -64 to 191, bedrock floor and roof, stone above y 0 and deepslate below. Caves use vanilla's
   cheese, spaghetti and pillar caves (no noodle caves). No lava, no aquifers, no carvers; the only water is in small clay pools.
 - **Ores:** every vanilla overworld ore (coal, iron, copper, gold, redstone, lapis, diamond) at the vanilla heights,
-  with **3x the ore per vein** and **2x as many veins**, so about 6x the ore of the overworld. The mountain-only
+  with vanilla vein sizes and about **1.5x as many veins** (diamonds only about 1.25x), so a bit more ore than the
+  overworld. The mountain-only
   coal and iron layers are left out because the whole dimension is solid rock. Large copper and iron veins generate
   like in the overworld.
 - **Biomes:** six small cave biomes (roughly 25-50 blocks across, and they change with depth too):
