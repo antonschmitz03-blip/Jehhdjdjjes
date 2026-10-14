@@ -1,8 +1,10 @@
 package io.github.antonschmitz.miningdim;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Direction.Axis;
@@ -12,6 +14,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.BlockUtil.FoundRectangle;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +33,7 @@ final class SelfTest {
     private static final int CHUNKS = 6;
     private static final Set<String> DECOR = Set.of("shroomlight", "glow_lichen", "cave_vines", "cave_vines_plant", "moss_block",
             "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "basalt", "blackstone", "smooth_basalt", "magma_block", "clay", "big_dripleaf", "small_dripleaf",
-            "grass_block", "short_grass", "firefly_bush", "wildflowers");
+            "grass_block", "short_grass", "firefly_bush", "wildflowers", "knocker_den");
 
     private SelfTest() {
     }
@@ -41,6 +47,7 @@ final class SelfTest {
         Map<String, Integer> counts = new TreeMap<>();
         Map<String, Integer> decor = new TreeMap<>();
         int air = 0;
+        BlockPos den = null;
         int[] airByBand = new int[8];
         int water = 0;
         int lava = 0;
@@ -68,6 +75,9 @@ final class SelfTest {
                                     counts.merge(name, 1, Integer::sum);
                                 } else if (DECOR.contains(name)) {
                                     decor.merge(name, 1, Integer::sum);
+                                    if (den == null && name.equals("knocker_den")) {
+                                        den = new BlockPos(cx * 16 + x, y, cz * 16 + z);
+                                    }
                                 }
                             }
                         }
@@ -171,6 +181,8 @@ final class SelfTest {
         }
         pebblin.discard();
 
+        knockerTest(mining, den);
+
         // Mineshafts: look for structure starts in a 50x50 chunk area (cheap, no terrain), then generate one fully.
         Registry<Structure> structures = mining.registryAccess().lookupOrThrow(Registries.STRUCTURE);
         Map<String, Integer> startCounts = new TreeMap<>();
@@ -241,5 +253,48 @@ final class SelfTest {
         }
 
         MiningDimension.LOGGER.info("miningdim self test passed");
+    }
+
+    /** A den fills up with knockers; one robs a player, gives the loot back for bread, and three offerings appease the den. */
+    private static void knockerTest(ServerLevel mining, BlockPos den) {
+        if (den == null) {
+            throw new IllegalStateException("miningdim self test: no knocker den generated");
+        }
+        int spawned = 0;
+        for (int i = 0; i < 5 && KnockerDenBlock.residents(mining, den).size() < KnockerDenBlock.MAX_KNOCKERS; i++) {
+            spawned += KnockerDenBlock.populate(mining, den, mining.getRandom());
+        }
+        List<Knocker> residents = KnockerDenBlock.residents(mining, den);
+        MiningDimension.LOGGER.info("miningdim self test: knocker den at {} spawned {} knockers", den, residents.size());
+        if (residents.isEmpty()) {
+            throw new IllegalStateException("miningdim self test: knocker den spawned nobody");
+        }
+        Knocker knocker = residents.get(0);
+        Player player = FakePlayer.get(mining);
+        player.snapTo(knocker.getX(), knocker.getY(), knocker.getZ(), 0.0F, 0.0F);
+        player.getInventory().setItem(0, new ItemStack(Items.IRON_PICKAXE));
+        player.getInventory().setItem(1, new ItemStack(Items.IRON_INGOT, 5));
+        player.getInventory().setItem(4, new ItemStack(Items.DIAMOND, 3));
+        knocker.steal(mining, player);
+        boolean stoleDiamonds = knocker.getMainHandItem().is(Items.DIAMOND) && player.getInventory().getItem(4).isEmpty()
+                && player.getInventory().getItem(0).is(Items.IRON_PICKAXE);
+        knocker.eat(mining, bread(mining, player));
+        boolean gaveBack = !knocker.hasLoot();
+        for (int i = 0; i < Knocker.OFFERINGS_NEEDED; i++) {
+            knocker.eat(mining, bread(mining, player));
+        }
+        boolean appeased = residents.stream().allMatch(k -> k.isAppeasedBy(player)) && !knocker.canRob(player);
+        MiningDimension.LOGGER.info("miningdim self test: knocker stole diamonds {}, gave them back {}, den appeased {}", stoleDiamonds, gaveBack, appeased);
+        if (!stoleDiamonds || !gaveBack || !appeased) {
+            throw new IllegalStateException("miningdim self test: knocker behaviour broken");
+        }
+        residents.forEach(Knocker::discard);
+    }
+
+    private static ItemEntity bread(ServerLevel level, Player thrower) {
+        ItemEntity item = new ItemEntity(level, thrower.getX(), thrower.getY(), thrower.getZ(), new ItemStack(Items.BREAD));
+        item.setThrower(thrower);
+        level.addFreshEntity(item);
+        return item;
     }
 }

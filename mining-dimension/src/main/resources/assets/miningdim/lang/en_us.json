@@ -8,5 +8,11 @@
   "biome.miningdim.basalt_caverns": "Basalt Caverns",
   "biome.miningdim.meadow_caverns": "Meadow Caverns",
   "entity.miningdim.pebblin": "Pebblin",
-  "item.miningdim.pebblin_spawn_egg": "Pebblin Spawn Egg"
+  "item.miningdim.pebblin_spawn_egg": "Pebblin Spawn Egg",
+  "entity.miningdim.knocker": "Knocker",
+  "item.miningdim.knocker_spawn_egg": "Knocker Spawn Egg",
+  "block.miningdim.knocker_den": "Knocker Stash",
+  "entity.miningdim.knocker_pebble": "Knocker Pebble",
+  "entity.miningdim.knocker.stole": "A Knocker pinched your %s! Throw it some food to get it back.",
+  "entity.miningdim.knocker.appeased": "The Knockers of this den will leave your pockets alone for a day."
 }

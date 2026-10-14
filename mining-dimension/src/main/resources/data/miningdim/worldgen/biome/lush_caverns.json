@@ -159,7 +159,8 @@
       "minecraft:lush_caves_clay",
       "minecraft:lush_caves_vegetation",
       "minecraft:rooted_azalea_tree",
-      "minecraft:spore_blossom"
+      "minecraft:spore_blossom",
+      "miningdim:knocker_den"
     ],
     []
   ],

@@ -149,7 +149,8 @@
     [
       "minecraft:glow_lichen",
       "miningdim:glow_lichen_extra",
-      "miningdim:shroomlight"
+      "miningdim:shroomlight",
+      "miningdim:knocker_den"
     ],
     []
   ],

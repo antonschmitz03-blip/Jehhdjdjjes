@@ -8,5 +8,11 @@
   "biome.miningdim.basalt_caverns": "Basaltkavernen",
   "biome.miningdim.meadow_caverns": "Wiesenkavernen",
   "entity.miningdim.pebblin": "Kieselchen",
-  "item.miningdim.pebblin_spawn_egg": "Kieselchen-Spawn-Ei"
+  "item.miningdim.pebblin_spawn_egg": "Kieselchen-Spawn-Ei",
+  "entity.miningdim.knocker": "Klopfer",
+  "item.miningdim.knocker_spawn_egg": "Klopfer-Spawn-Ei",
+  "block.miningdim.knocker_den": "Klopfer-Beutesack",
+  "entity.miningdim.knocker_pebble": "Klopfer-Kiesel",
+  "entity.miningdim.knocker.stole": "Ein Klopfer hat dir %s stibitzt! Wirf ihm etwas zu essen, um es zurückzubekommen.",
+  "entity.miningdim.knocker.appeased": "Die Klopfer dieses Baus lassen deine Taschen einen Tag lang in Ruhe."
 }
