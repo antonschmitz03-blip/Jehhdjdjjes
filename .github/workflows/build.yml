@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      server_test:
+        description: Also boot test servers (slow; only for world data migration or likely mod conflicts)
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -15,15 +20,8 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
-      - run: chmod +x gradlew && ./gradlew build --stacktrace
-      - uses: actions/upload-artifact@v4
-        with:
-          name: travelers-backpack-addons
-          path: build/libs/*.jar
-      - uses: actions/upload-artifact@v4
-        with:
-          name: vanilla-plus-tweaks
-          path: vanilla-tweaks/build/libs/*.jar
+      # This branch is Happy Ghast+'s: build only that mod, the other mods have their own branches.
+      - run: chmod +x gradlew && ./gradlew :happy-ghast:build --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: happy-ghast-plus
@@ -31,7 +29,9 @@ jobs:
 
       # Boots a dedicated server with Traveler's Backpack + Trinkets + this addon and force-loads all mixin targets.
       - name: Server smoke test
+        if: ${{ inputs.server_test }}
         run: |
+          ./gradlew build --stacktrace # the combined boot needs every mod's jar
           mkdir -p run/mods
           cp libs/*.jar run/mods/
           cp vanilla-tweaks/build/libs/vanilla-plus-tweaks-*.jar run/mods/
@@ -67,6 +67,7 @@ jobs:
 
       # Vanilla+ Tweaks and Happy Ghast+ are independent mods: each must also boot without the other.
       - name: Standalone smoke tests
+        if: ${{ inputs.server_test }}
         run: |
           boot() {
             project=$1
