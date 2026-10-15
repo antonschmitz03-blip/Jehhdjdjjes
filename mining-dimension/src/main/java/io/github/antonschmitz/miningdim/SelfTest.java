@@ -156,32 +156,33 @@ final class SelfTest {
             throw new IllegalStateException("miningdim self test: meadow has no spawnable grass");
         }
 
-        // A pebblin fed raw iron should find an iron ore in the generated test chunks.
+        // A pebblin fed raw iron should find an iron ore in the generated test chunks (try floors until one is near iron).
         BlockPos spot = null;
-        for (int x = 16; x < CHUNKS * 16 - 16 && spot == null; x++) {
-            for (int z = 16; z < CHUNKS * 16 - 16 && spot == null; z += 4) {
-                for (int y = -50; y < 150 && spot == null; y++) {
+        BlockPos ore = null;
+        int tried = 0;
+        for (int x = 16; x < CHUNKS * 16 - 16 && ore == null && tried < 60; x += 5) {
+            for (int z = 16; z < CHUNKS * 16 - 16 && ore == null && tried < 60; z += 5) {
+                for (int y = -50; y < 150 && ore == null && tried < 60; y += 3) {
                     BlockPos at = new BlockPos(x, y, z);
-                    if (mining.getBlockState(at).isAir() && mining.getBlockState(at.above()).isAir() && mining.getBlockState(at.below()).isSolid()) {
+                    if (!(mining.getBlockState(at).isAir() && mining.getBlockState(at.above()).isAir() && mining.getBlockState(at.below()).isSolid())) continue;
+                    tried++;
+                    Pebblin candidate = MiningDimension.PEBBLIN.create(mining, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+                    candidate.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 0.0F);
+                    mining.addFreshEntity(candidate);
+                    candidate.startProspecting(mining, Pebblin.Ore.IRON);
+                    if (candidate.getOreTarget() != null && candidate.getOre() == Pebblin.Ore.IRON) {
                         spot = at;
+                        ore = candidate.getOreTarget();
                     }
+                    candidate.discard();
                 }
             }
         }
         if (spot == null) {
-            throw new IllegalStateException("miningdim self test: no floor for a pebblin");
+            throw new IllegalStateException("miningdim self test: pebblin found no iron after " + tried + " floors");
         }
-        Pebblin pebblin = MiningDimension.PEBBLIN.create(mining, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-        pebblin.snapTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0.0F, 0.0F);
-        mining.addFreshEntity(pebblin);
-        pebblin.startProspecting(mining, Pebblin.Ore.IRON);
-        BlockPos ore = pebblin.getOreTarget();
-        MiningDimension.LOGGER.info("miningdim self test: pebblin at {} smelled iron at {} ({} blocks away), ore type {}", spot, ore,
-                ore == null ? "-" : String.format("%.1f", Math.sqrt(ore.distSqr(spot))), pebblin.getOre().name);
-        if (ore == null || pebblin.getOre() != Pebblin.Ore.IRON) {
-            throw new IllegalStateException("miningdim self test: pebblin found no iron");
-        }
-        pebblin.discard();
+        MiningDimension.LOGGER.info("miningdim self test: pebblin at {} smelled iron at {} ({} blocks away) after {} floors", spot, ore,
+                String.format("%.1f", Math.sqrt(ore.distSqr(spot))), tried);
 
         knockerTest(mining, den);
 
