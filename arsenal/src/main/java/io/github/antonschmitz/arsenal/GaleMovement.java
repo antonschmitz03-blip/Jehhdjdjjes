@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -67,7 +67,8 @@ public final class GaleMovement {
             if (entity instanceof AbstractArrow arrow && arrow.getOwner() instanceof ServerPlayer player) {
                 State state = STATES.get(player.getUUID());
                 if (state != null && state.focusing()) {
-                    arrow.setBaseDamage(arrow.getBaseDamage() * FOCUS_ARROW_BONUS);
+                    // An arrow's damage scales with its speed.
+                    arrow.setDeltaMovement(arrow.getDeltaMovement().scale(FOCUS_ARROW_BONUS));
                 }
             }
         });
