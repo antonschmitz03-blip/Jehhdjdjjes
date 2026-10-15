@@ -27,7 +27,9 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
     static final float HEIGHT = 2.6F;
     static final float SCALE = 1.6F;
     /** How far behind the ghast's centre the engine's nozzle is (half the model's length, scaled). */
-    static final float NOZZLE_BACK = 8.0F / 16.0F * SCALE;
+    /** The engines sit this far behind the ghast's centre, clear of the rope ladder on the right side. */
+    static final float BACK_SHIFT = 1.4F;
+    static final float NOZZLE_BACK = 8.0F / 16.0F * SCALE - BACK_SHIFT;
 
     private final ItemModelResolver itemModelResolver;
     private final ItemStackRenderState engine = new ItemStackRenderState();
@@ -50,7 +52,7 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
         itemModelResolver.updateForTopItem(engine, engineStack, ItemDisplayContext.NONE, null, null, 0);
         for (int side : new int[] {1, -1}) {
             poseStack.pushPose();
-            poseStack.translate(side * SIDE_OFFSET, 1.501F - HEIGHT, 0.0F);
+            poseStack.translate(side * SIDE_OFFSET, 1.501F - HEIGHT, BACK_SHIFT);
             poseStack.scale(-SCALE, -SCALE, SCALE);
             if (side < 0) {
                 // The model's strap points one way; turn it upside down so it faces the body on the other side.
