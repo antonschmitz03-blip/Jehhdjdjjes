@@ -37,7 +37,7 @@ public final class GaleMovement {
     static final double FOCUS_RADIUS = 12.0;
     static final double HOP_SPEED = 0.9;
     static final double HOP_LIFT = 0.5;
-    static final double AIR_JUMP_LIFT = 0.75;
+    static final double AIR_JUMP_LIFT = 0.55;
     static final int HOP_COOLDOWN_TICKS = 20;
     static final double FOCUS_ARROW_BONUS = 1.5;
 
