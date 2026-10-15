@@ -16,8 +16,13 @@ jobs:
             curl -sSfL -o "$project.jar" "$url"
           done
           unzip -q -o enchanting-infuser.jar -d inf
-          echo "=== classes"; find inf -name '*.class' | grep -iE 'menu|screen|cost|infus' | head -60
-          echo "=== InfuserMenu members"
-          javap -p -cp inf fuzs.enchantinginfuser.common.world.inventory.InfuserMenu
-          echo "=== uses of cost in InfuserMenu bytecode"
-          javap -p -c -cp inf fuzs.enchantinginfuser.common.world.inventory.InfuserMenu | grep -nE "^  [a-z].*\(|Cost|cost|getEnchantmentCost|invokestatic|Level" | head -250
+          C=fuzs.enchantinginfuser.common.world.inventory.InfuserMenu
+          echo "=== calculateEnchantingCost"
+          javap -p -c -cp inf $C | awk '/private int calculateEnchantingCost\(\)/{f=1} f{print} /private boolean clickRepairButton/{f=0}'
+          echo "=== processEnchantingCost"
+          javap -p -c -cp inf $C | awk '/private void processEnchantingCost/{f=1} f{print} /private int calculateEnchantingCost/{f=0}'
+          echo "=== Screen cost uses"
+          javap -p -c -cp inf 'fuzs.enchantinginfuser.common.client.gui.screens.inventory.InfuserScreen' | grep -nE "Cost|cost|experienceLevel|getEnchantingCost|calculate" | head -60
+          javap -p -c -cp inf 'fuzs.enchantinginfuser.common.client.gui.components.InfuserEnchantButton' | grep -nE "Cost|cost|experienceLevel" | head -40
+          echo "=== EnchantmentCostHelper"
+          javap -p -cp inf fuzs.enchantinginfuser.common.util.EnchantmentCostHelper
