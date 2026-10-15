@@ -29,11 +29,16 @@ import net.minecraft.world.phys.Vec3;
  * <li>Long hop: jump while sneaking to be thrown where you look (about 7 blocks when looking level).</li>
  * <li>Air jump: one extra jump per time in the air.</li>
  * <li>Focus: while airborne, drawing the bow holds you in place and slows nearby mobs and projectiles for up to
- * 3 seconds; arrows loosed meanwhile do +50% damage. Once per time in the air.</li>
+ * 6 seconds; arrows loosed meanwhile do +50% damage. Once per time in the air.</li>
  * </ul>
  */
 public final class GaleMovement {
-    static final int FOCUS_TICKS = 60;
+    static final int FOCUS_TICKS = 120;
+    /** Projectiles keep this share of their speed while slowed. */
+    static final double PROJECTILE_SPEED = 0.1;
+    /** Slowness 7 stops a walking mob; the velocity multiplier covers falling and flung ones. */
+    static final int MOB_SLOWNESS = 6;
+    static final double MOB_MOTION = 0.3;
     static final double FOCUS_RADIUS = 12.0;
     static final double HOP_SPEED = 1.0;
     static final double HOP_LIFT = 0.3;
@@ -193,9 +198,9 @@ public final class GaleMovement {
         player.fallDistance = 0;
         AABB area = player.getBoundingBox().inflate(FOCUS_RADIUS);
         for (Mob mob : player.level().getEntitiesOfClass(Mob.class, area)) {
-            mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 3, 4, false, false, false));
+            mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 3, MOB_SLOWNESS, false, false, false));
             // Falling and flung mobs crawl as well.
-            mob.setDeltaMovement(mob.getDeltaMovement().multiply(0.6, 0.6, 0.6));
+            mob.setDeltaMovement(mob.getDeltaMovement().multiply(MOB_MOTION, MOB_MOTION, MOB_MOTION));
         }
         Set<Projectile> inRange = new HashSet<>();
         for (Projectile projectile : player.level().getEntitiesOfClass(Projectile.class, area)) {
@@ -207,7 +212,7 @@ public final class GaleMovement {
             if (!state.slowed.containsKey(projectile)) {
                 state.slowed.put(projectile, projectile.isNoGravity());
                 projectile.setNoGravity(true);
-                projectile.setDeltaMovement(projectile.getDeltaMovement().scale(0.2));
+                projectile.setDeltaMovement(projectile.getDeltaMovement().scale(PROJECTILE_SPEED));
             }
         }
         // Projectiles that left the area or hit something get their gravity back (a hit one is already removed).
@@ -226,7 +231,7 @@ public final class GaleMovement {
 
     private static void release(Projectile projectile, boolean hadNoGravity) {
         projectile.setNoGravity(hadNoGravity);
-        projectile.setDeltaMovement(projectile.getDeltaMovement().scale(5.0));
+        projectile.setDeltaMovement(projectile.getDeltaMovement().scale(1.0 / PROJECTILE_SPEED));
     }
 
     private static void endFocus(ServerPlayer player) {

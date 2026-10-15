@@ -18,6 +18,6 @@ it for the item and its textures). Starts with the sling.
   - **Long hop:** jump while sneaking to be thrown wherever you look, about 7 blocks when looking level (1 s cooldown).
   - **Air jump:** one extra jump per time in the air, about 3 blocks high, keeping your momentum.
   - **Focus:** while airborne, drawing the bow holds you in place and slows mobs and projectiles within 12 blocks to
-    a crawl for up to 3 s. Arrows loosed meanwhile do +50% damage. Once per time in the air.
+    a near stop (a tenth of their speed) for up to 6 s. Arrows loosed meanwhile do +50% damage. Once per time in the air.
   While the bow is in your hand the jump key never opens an elytra, so the two don't fight.
   The movement runs on the server; the elytra rule is a small mixin on both sides.
