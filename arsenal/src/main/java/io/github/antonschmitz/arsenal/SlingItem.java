@@ -94,7 +94,10 @@ public class SlingItem extends Item {
         }
     }
 
-    /** The off hand first, then deepslate, then any other stone, then gravel and snowballs from the inventory. */
+    /**
+     * The off hand first, then deepslate, then any other stone, then gravel and snowballs from the inventory.
+     * TNT is only thrown from the off hand.
+     */
     public static ItemStack findAmmo(Player player) {
         if (SlingAmmo.of(player.getOffhandItem()) != null) {
             return player.getOffhandItem();
@@ -103,7 +106,7 @@ public class SlingItem extends Item {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack stack = player.getInventory().getItem(i);
                 SlingAmmo type = SlingAmmo.of(stack);
-                if (type != null && (preferred == null || type == preferred)) {
+                if (type != null && type != SlingAmmo.TNT && (preferred == null || type == preferred)) {
                     return stack;
                 }
             }

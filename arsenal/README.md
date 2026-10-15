@@ -11,7 +11,7 @@ it for the item and its textures). Starts with the sling.
 - **Ammo:** any stone block (stone, cobblestone, andesite, granite, diorite, tuff, blackstone, basalt, sandstone,
   end stone, nether bricks ... see the `vanillaarsenal:sling_ammo` tag) does 10. Deepslate and all its variants
   (`vanillaarsenal:sling_ammo_deepslate`) do 12. Gravel throws 3 pellets for 4 each. Snowballs do no damage but
-  knock mobs back hard.
+  knock mobs back hard. TNT (off hand only) explodes on impact like lit TNT.
 - Thrown stones are vanilla snowballs carrying the block item, so they need no client code and never break blocks.
 - **Gale Bow** (3 breeze rods + 3 string, bow pattern): a normal bow (450 durability, all bow enchantments, repairs with
   breeze rods) with movement tricks while it is held:
