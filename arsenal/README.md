@@ -13,3 +13,10 @@ it for the item and its textures). Starts with the sling.
   (`vanillaarsenal:sling_ammo_deepslate`) do 12. Gravel throws 3 pellets for 4 each. Snowballs do no damage but
   knock mobs back hard.
 - Thrown stones are vanilla snowballs carrying the block item, so they need no client code and never break blocks.
+- **Gale Bow** (3 breeze rods + 3 string, bow pattern): a normal bow (450 durability, all bow enchantments, repairs with
+  breeze rods) with movement tricks while it is held:
+  - **Long hop:** jump while sneaking and walking forward on the ground to leap about 7 blocks (1 s cooldown).
+  - **Air jump:** one extra jump per time in the air, about 2.5 times as high as a normal jump.
+  - **Focus:** while airborne, drawing the bow holds you in place and slows mobs and projectiles within 12 blocks to
+    a crawl for up to 3 s. Arrows loosed meanwhile do +50% damage. Once per time in the air.
+  All of it runs on the server; no client code.

@@ -20,6 +20,7 @@ public class VanillaArsenal implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static Item SLING;
+    public static Item GALE_BOW;
 
     @Override
     public void onInitialize() {
@@ -29,7 +30,18 @@ public class VanillaArsenal implements ModInitializer {
                 .enchantable(1)
                 .repairable(Items.LEATHER)));
 
-        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(output -> output.accept(SLING));
+        GALE_BOW = registerItem("gale_bow", properties -> new GaleBowItem(properties
+                .stacksTo(1)
+                .durability(450)
+                .enchantable(1)
+                .repairable(Items.BREEZE_ROD)));
+
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register(output -> {
+            output.accept(SLING);
+            output.accept(GALE_BOW);
+        });
+
+        GaleMovement.register();
 
         if (Boolean.getBoolean("vanillaarsenal.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(SelfTest::run);

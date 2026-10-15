@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " RS",
+    "R S",
+    " RS"
+  ],
+  "key": {
+    "R": "minecraft:breeze_rod",
+    "S": "minecraft:string"
+  },
+  "result": {
+    "id": "vanillaarsenal:gale_bow",
+    "count": 1
+  }
+}
