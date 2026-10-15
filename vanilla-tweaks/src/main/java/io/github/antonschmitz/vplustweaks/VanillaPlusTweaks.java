@@ -1,5 +1,6 @@
 package io.github.antonschmitz.vplustweaks;
 
+import java.util.Arrays;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -31,7 +32,12 @@ public class VanillaPlusTweaks implements ModInitializer {
             Class.forName("net.minecraft.world.entity.OwnableEntity");
             Class.forName("net.minecraft.world.level.block.LadderBlock");
             if (FabricLoader.getInstance().isModLoaded("enchantinginfuser")) {
-                Class.forName("fuzs.enchantinginfuser.common.world.inventory.InfuserMenu");
+                Class<?> infuserMenu = Class.forName("fuzs.enchantinginfuser.common.world.inventory.InfuserMenu");
+                // The mixin's handler is merged into the Infuser's menu class, so it only shows up if the patch was applied.
+                boolean patched = Arrays.stream(infuserMenu.getDeclaredMethods()).anyMatch(method -> method.getName().contains("vplustweaks$halveCost"));
+                if (!patched) {
+                    throw new IllegalStateException("The Enchanting Infuser cost patch was not applied");
+                }
                 LOGGER.info("vplustweaks self test: enchanting infuser mixin loaded");
             }
         } catch (ClassNotFoundException e) {
