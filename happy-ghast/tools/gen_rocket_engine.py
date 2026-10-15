@@ -1,4 +1,5 @@
-"""Generates the rocket engine drawn on a speed-upgraded happy ghast: a stubby firework rocket on a leather saddle pad.
+"""Generates the rocket engine drawn on a speed-upgraded happy ghast: a 3D take on the vanilla firework rocket item,
+strapped to a leather saddle pad.
 
 Writes models/item/ghast_rocket_engine.json and textures/item/ghast_rocket_engine.png (16x16 atlas, 1 texel per model
 pixel). Run from the repository root: python happy-ghast/tools/gen_rocket_engine.py
@@ -17,11 +18,9 @@ ROOT = os.path.join(os.path.dirname(__file__), '..', 'src', 'main', 'resources',
 # Atlas regions: material -> (u, v, width, height) in texels.
 REGIONS = {
     'paper': (0, 0, 8, 8),
-    'band': (8, 0, 2, 8),
-    'crimp': (10, 0, 1, 8),
-    'cone': (11, 0, 3, 3),
-    'cap': (11, 3, 3, 3),
-    'fuse': (14, 0, 2, 4),
+    'cone': (8, 0, 6, 6),
+    'collar': (14, 0, 2, 6),
+    'fuse': (8, 6, 2, 2),
     'leather': (0, 8, 8, 4),
     'leather_dark': (0, 12, 8, 2),
     'iron': (8, 8, 2, 2),
@@ -30,28 +29,28 @@ REGIONS = {
 
 # (material, from, to)
 ELEMENTS = [
-    # rocket: red paper tube with a white band and a crimped ring near the back
-    ('paper', [6, 6, 4], [10, 10, 12]),
-    ('band', [5.95, 5.95, 6], [10.05, 10.05, 7.5]),
-    ('crimp', [5.95, 5.95, 10.5], [10.05, 10.05, 11]),
-    # stepped grey nose
-    ('cone', [6.5, 6.5, 2.5], [9.5, 9.5, 4]),
+    # red paper tube with white flecks, like the item sprite
+    ('paper', [6, 6, 5.5], [10, 10, 12.5]),
+    # pale collar between tube and nose
+    ('collar', [5.9, 5.9, 4.5], [10.1, 10.1, 5.5]),
+    # red nose cone, wider than the tube, in three steps
+    ('cone', [5, 5, 3.5], [11, 11, 4.5]),
+    ('cone', [6, 6, 2.5], [10, 10, 3.5]),
     ('cone', [7, 7, 1.5], [9, 9, 2.5]),
-    ('cone', [7.5, 7.5, 1], [8.5, 8.5, 1.5]),
-    # paper end cap and fuse at the back
-    ('cap', [6.5, 6.5, 12], [9.5, 9.5, 12.5]),
+    # dark fuse out of the back, curling to the outer side
     ('fuse', [7.5, 7.5, 12.5], [8.5, 8.5, 14]),
+    ('fuse', [6.3, 7.5, 13.2], [7.5, 8.5, 14]),
     # saddle pad between rocket and harness
-    ('leather', [10, 6.5, 4.5], [12, 9.5, 11.5]),
-    ('leather_dark', [11.5, 6, 4.5], [12, 10, 11.5]),
+    ('leather', [10, 6.5, 5.5], [12, 9.5, 12]),
+    ('leather_dark', [11.5, 6, 5.5], [12, 10, 12]),
     # two straps around the rocket, buckled on the outer side
-    ('leather', [5.8, 5.8, 5], [10.2, 10.2, 5.8]),
-    ('leather', [5.8, 5.8, 9.2], [10.2, 10.2, 10]),
-    ('iron', [5.5, 7.4, 4.9], [5.8, 8.6, 5.9]),
-    ('iron', [5.5, 7.4, 9.1], [5.8, 8.6, 10.1]),
+    ('leather', [5.8, 5.8, 6.5], [10.2, 10.2, 7.2]),
+    ('leather', [5.8, 5.8, 10.5], [10.2, 10.2, 11.2]),
+    ('iron', [5.5, 7.4, 6.4], [5.8, 8.6, 7.3]),
+    ('iron', [5.5, 7.4, 10.4], [5.8, 8.6, 11.3]),
     # small iron hooks into the harness
-    ('hook', [12, 7.5, 5.1], [12.6, 8.5, 5.7]),
-    ('hook', [12, 7.5, 9.3], [12.6, 8.5, 9.9]),
+    ('hook', [12, 7.5, 6.5], [12.6, 8.5, 7.1]),
+    ('hook', [12, 7.5, 10.5], [12.6, 8.5, 11.1]),
 ]
 
 FACE_SIZE = {
@@ -90,13 +89,12 @@ def texture():
             for x in range(w):
                 px[v + y][u + x] = fn(x, y) + (255,)
 
-    red = [(176, 46, 38), (190, 54, 44), (184, 50, 40)]
-    fill('paper', lambda x, y: (150, 36, 30) if (x + y) % 4 == 0 else ((206, 70, 58) if (x + 2 * y) % 7 == 0 else rnd.choice(red)))
-    fill('band', lambda x, y: (222, 218, 208) if y % 3 == 1 else (240, 238, 232))
-    fill('crimp', lambda x, y: (128, 30, 26) if y % 2 else (142, 34, 28))
-    fill('cone', lambda x, y: (150, 150, 150) if (x, y) == (1, 1) else rnd.choice([(126, 126, 126), (114, 114, 114)]))
-    fill('cap', lambda x, y: (176, 144, 98) if (x, y) == (1, 1) else rnd.choice([(204, 172, 120), (192, 160, 110)]))
-    fill('fuse', lambda x, y: (86, 80, 72) if y == 0 else rnd.choice([(52, 46, 42), (44, 40, 36)]))
+    # colours taken from the vanilla firework rocket sprite
+    red = [(185, 41, 41), (185, 41, 41), (153, 41, 41)]
+    fill('paper', lambda x, y: (244, 244, 244) if (x * 3 + y * 5) % 11 == 0 else ((178, 204, 209) if (x * 5 + y) % 13 == 0 else rnd.choice(red)))
+    fill('cone', lambda x, y: (214, 42, 42) if x + y < 3 else ((109, 23, 23) if x + y > 8 else rnd.choice([(185, 41, 41), (153, 41, 41), (132, 27, 27)])))
+    fill('collar', lambda x, y: (244, 244, 244) if y % 3 == 0 else (178, 204, 209))
+    fill('fuse', lambda x, y: (45, 20, 9) if (x + y) % 2 else (62, 30, 14))
     fill('leather', lambda x, y: (176, 128, 84) if y == 1 and x % 2 == 0 else rnd.choice([(122, 76, 44), (112, 68, 40), (132, 84, 50)]))
     fill('leather_dark', lambda x, y: rnd.choice([(92, 56, 32), (84, 50, 30)]))
     fill('iron', lambda x, y: (214, 214, 220) if (x, y) == (0, 0) else (168, 168, 176))
