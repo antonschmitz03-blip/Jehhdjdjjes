@@ -64,7 +64,7 @@ public class GhastSearchlightLayer extends RenderLayer<HappyGhastRenderState, Ha
         poseStack.translate(0.0F, 1.501F - SearchlightAim.MOUNT_HEIGHT, -SearchlightAim.MOUNT_FORWARD);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         // Now +x is the ghast's right and -z its front; a positive yaw turns the lamp to the right.
-        poseStack.mulPose(Axis.YP.rotationDegrees(-aim.yaw()));
+        poseStack.rotateDegrees(Axis.YP, -aim.yaw());
 
         poseStack.pushPose();
         poseStack.scale(SearchlightAim.SCALE, SearchlightAim.SCALE, SearchlightAim.SCALE);
@@ -73,7 +73,7 @@ public class GhastSearchlightLayer extends RenderLayer<HappyGhastRenderState, Ha
         poseStack.popPose();
 
         poseStack.translate(0.0F, SearchlightAim.PIVOT, 0.0F);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-aim.pitch())); // positive pitch tips the lens (-z) down
+        poseStack.rotateDegrees(Axis.XP, -aim.pitch()); // positive pitch tips the lens (-z) down
         poseStack.scale(SearchlightAim.SCALE, SearchlightAim.SCALE, SearchlightAim.SCALE);
         head.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
         poseStack.popPose();
