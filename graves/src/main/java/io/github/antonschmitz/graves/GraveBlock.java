@@ -24,15 +24,42 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public class GraveBlock extends BaseEntityBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
-    private static final VoxelShape BASE = Block.box(1, 0, 1, 15, 2, 15);
-    /** The headstone stands at the back, so you face its front when you face the grave. */
-    private static final VoxelShape SHAPE_NORTH = Shapes.or(BASE, Block.box(2, 2, 10, 14, 15, 13));
-    private static final VoxelShape SHAPE_SOUTH = Shapes.or(BASE, Block.box(2, 2, 3, 14, 15, 6));
-    private static final VoxelShape SHAPE_WEST = Shapes.or(BASE, Block.box(10, 2, 2, 13, 15, 14));
-    private static final VoxelShape SHAPE_EAST = Shapes.or(BASE, Block.box(3, 2, 2, 6, 15, 14));
+    /** Plinth, burial mound, pedestal and headstone, modelled facing north (headstone at the back). */
+    private static final double[][] BOXES = {
+            {1, 0, 1, 15, 1, 15},
+            {3, 1, 2, 13, 3, 9},
+            {2, 1, 9, 14, 3, 14},
+            {3, 3, 10, 13, 15, 13},
+    };
+    private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
+
+    static {
+        for (Direction facing : Direction.Plane.HORIZONTAL) {
+            VoxelShape shape = Shapes.empty();
+            for (double[] b : BOXES) {
+                shape = Shapes.or(shape, rotated(facing, b));
+            }
+            SHAPES.put(facing, shape);
+        }
+    }
+
+    /** Rotates a north-facing box the same way the blockstate rotates the model (y = 90 per step clockwise). */
+    private static VoxelShape rotated(Direction facing, double[] b) {
+        double x1 = b[0], z1 = b[2], x2 = b[3], z2 = b[5];
+        double[] r = switch (facing) {
+            case EAST -> new double[] {16 - z2, x1, 16 - z1, x2};
+            case SOUTH -> new double[] {16 - x2, 16 - z2, 16 - x1, 16 - z1};
+            case WEST -> new double[] {z1, 16 - x2, z2, 16 - x1};
+            default -> new double[] {x1, z1, x2, z2};
+        };
+        return Block.box(r[0], b[1], r[1], r[2], b[4], r[3]);
+    }
 
     public GraveBlock(Properties properties) {
         super(properties);
@@ -51,12 +78,7 @@ public class GraveBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return switch (state.getValue(FACING)) {
-            case SOUTH -> SHAPE_SOUTH;
-            case WEST -> SHAPE_WEST;
-            case EAST -> SHAPE_EAST;
-            default -> SHAPE_NORTH;
-        };
+        return SHAPES.get(state.getValue(FACING));
     }
 
     @Override

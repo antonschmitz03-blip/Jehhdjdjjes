@@ -1,0 +1,20 @@
+name: Grave preview (temporary)
+on:
+  push:
+    branches: [claude/project-thread-k77z8b]
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew :graves:compileJava -q
+      - run: |
+          MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
+          mkdir -p vanilla && cd vanilla && unzip -q "$MC" 'assets/minecraft/textures/block/*' && cd ..
+          pip install -q pillow
+          python3 graves/tools/render_preview.py graves/src/main/resources/assets/simplegraves/models/block/grave.json \
+            graves/src/main/resources/assets/simplegraves/textures vanilla/assets/minecraft/textures preview.png
+          echo "PREVIEW-BEGIN"; base64 -w 0 preview.png; echo; echo "PREVIEW-END"
