@@ -45,7 +45,7 @@ A Fabric mod for Minecraft 26.3 that adds a sealed cave dimension made for minin
   the stack back; killed, it always drops it. Three food offerings to a den's knockers keep that den off your
   pockets for one in-game day, and while they like you they knock on the rock when monsters lurk nearby. They
   also pocket torches now and then (if mobGriefing is on), and hitting one makes its den-mates pelt you with
-  pebbles. Breaking the sack spills its stash (the fuller, the richer: nuggets, raw ores, gold, lapis, the odd emerald) and makes its knockers furious.
+  pebbles. Breaking the sack spills its stash (the fuller, the richer: nuggets, raw ores, gold, lapis, the odd emerald) and makes its knockers furious. If any of them survive, they rebuild an empty sack after about two in-game days; kill them all and the den is gone for good.
   Spawn egg in the Spawn Eggs tab, den in Functional Blocks.
 - Beds set your spawn but can't be slept in.
 

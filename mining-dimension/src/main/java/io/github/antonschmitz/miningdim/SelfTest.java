@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -291,6 +292,13 @@ final class SelfTest {
         if (!stoleDiamonds || !gaveBack || !appeased) {
             throw new IllegalStateException("miningdim self test: knocker behaviour broken");
         }
+        BlockState denState = mining.getBlockState(den);
+        mining.setBlock(den, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        boolean rebuilt = knocker.rebuildDen(mining) && mining.getBlockState(den).getBlock() instanceof KnockerDenBlock
+                && mining.getBlockState(den).getValue(KnockerDenBlock.FILL) == 0;
+        MiningDimension.LOGGER.info("miningdim self test: knockers rebuilt broken sack {}", rebuilt);
+        if (!rebuilt) throw new IllegalStateException("miningdim self test: den rebuild broken");
+        mining.setBlock(den, denState, Block.UPDATE_ALL);
         residents.forEach(Knocker::discard);
     }
 

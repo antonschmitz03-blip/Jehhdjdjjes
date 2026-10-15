@@ -58,6 +58,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public class Knocker extends PathfinderMob implements RangedAttackMob {
     static final int OFFERINGS_NEEDED = 3;
+    /** Two in-game days until surviving Knockers rebuild a broken stash sack. */
+    static final int REBUILD_TICKS = 48000;
     static final long APPEASED_TICKS = 24000L;
     static final int DEN_RADIUS = 20;
     static final int STEAL_COOLDOWN = 2400;
@@ -248,9 +250,30 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
 
     // ---------- ticking ----------
 
+    private int rebuildTicks;
+
+    /** Puts an empty stash sack back where the den was, if the spot is still free. */
+    boolean rebuildDen(ServerLevel level) {
+        if (this.den == null || level.getBlockState(this.den).getBlock() instanceof KnockerDenBlock) return false;
+        BlockPos below = this.den.below();
+        if (!level.getBlockState(this.den).canBeReplaced() || !level.getBlockState(below).isFaceSturdy(level, below, net.minecraft.core.Direction.UP)) return false;
+        level.setBlock(this.den, MiningDimension.KNOCKER_DEN.defaultBlockState().setValue(KnockerDenBlock.FILL, 0)
+                .setValue(KnockerDenBlock.FACING, net.minecraft.core.Direction.Plane.HORIZONTAL.getRandomDirection(this.random)), net.minecraft.world.level.block.Block.UPDATE_ALL);
+        level.playSound(null, this.den, SoundEvents.WOOL_PLACE, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+        for (Knocker mate : denMates()) mate.rebuildTicks = 0;
+        return true;
+    }
+
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
+        if (this.den != null && this.tickCount % 20 == 0 && level.isLoaded(this.den)) {
+            if (level.getBlockState(this.den).getBlock() instanceof KnockerDenBlock) {
+                this.rebuildTicks = 0;
+            } else if ((this.rebuildTicks += 20) >= REBUILD_TICKS && !rebuildDen(level)) {
+                this.rebuildTicks = REBUILD_TICKS - 1200; // spot blocked, look again in a minute
+            }
+        }
         if (this.stealCooldown > 0) this.stealCooldown--;
         if (this.getTarget() != null && ++this.angerTicks > 400) {
             this.setTarget(null);
@@ -305,6 +328,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         output.storeNullable("Den", BlockPos.CODEC, this.den);
         if (this.victim != null) output.putString("Victim", this.victim.toString());
         output.putInt("StealCooldown", this.stealCooldown);
+        output.putInt("RebuildTicks", this.rebuildTicks);
         output.store("AppeasedUntil", LONG_MAP, this.appeasedUntil);
         output.store("Offerings", INT_MAP, this.offerings);
     }
@@ -315,6 +339,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         input.read("Den", BlockPos.CODEC).ifPresent(this::setDen);
         this.victim = input.getString("Victim").map(UUID::fromString).orElse(null);
         this.stealCooldown = input.getIntOr("StealCooldown", 600);
+        this.rebuildTicks = input.getIntOr("RebuildTicks", 0);
         input.read("AppeasedUntil", LONG_MAP).ifPresent(this.appeasedUntil::putAll);
         input.read("Offerings", INT_MAP).ifPresent(this.offerings::putAll);
     }

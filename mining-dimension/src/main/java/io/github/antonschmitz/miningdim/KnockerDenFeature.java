@@ -1,6 +1,6 @@
 package io.github.antonschmitz.miningdim;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -16,16 +16,19 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
  * A knocker camp: the stash sack on a trodden patch of dirt and gravel, an unlit campfire, straw beds (hay bales), a few candles, sometimes a stolen torch on the wall or a bent rail,
  * and cobwebs under the ceiling.
  */
-public class KnockerDenFeature extends Feature<NoneFeatureConfiguration> {
-    public KnockerDenFeature(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
+public class KnockerDenFeature implements Feature {
+    public static final KnockerDenFeature INSTANCE = new KnockerDenFeature();
+    public static final MapCodec<KnockerDenFeature> CODEC = MapCodec.unit(INSTANCE);
+
+    @Override
+    public MapCodec<KnockerDenFeature> codec() {
+        return CODEC;
     }
 
     private static boolean floorAt(WorldGenLevel level, BlockPos pos) {
@@ -37,10 +40,7 @@ public class KnockerDenFeature extends Feature<NoneFeatureConfiguration> {
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-        WorldGenLevel level = context.level();
-        BlockPos origin = context.origin();
-        RandomSource random = context.random();
+    public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         if (!floorAt(level, origin)) return false;
 
         // Trodden floor and the spots where props can stand.
