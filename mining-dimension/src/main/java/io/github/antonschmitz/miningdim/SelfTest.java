@@ -106,6 +106,7 @@ final class SelfTest {
         // Biomes should be small: sample a 512x512 area every 16 blocks at three depths (only biomes get computed).
         Map<String, Integer> biomeCounts = new TreeMap<>();
         BlockPos meadow = null;
+        java.util.List<BlockPos> meadows = new java.util.ArrayList<>();
         int changes = 0;
         for (int y : new int[] {-40, 40, 120}) {
             String previous = null;
@@ -113,8 +114,9 @@ final class SelfTest {
                 for (int z = 0; z < 512; z += 16) {
                     String biome = mining.getBiome(pos.set(x, y, z)).unwrapKey().map(key -> key.identifier().getPath()).orElse("?");
                     biomeCounts.merge(biome, 1, Integer::sum);
-                    if (meadow == null && biome.equals("meadow_caverns")) {
-                        meadow = new BlockPos(x, y, z);
+                    if (biome.equals("meadow_caverns")) {
+                        if (meadow == null) meadow = new BlockPos(x, y, z);
+                        if (meadows.size() < 12 && (x + z) % 64 == 0) meadows.add(new BlockPos(x, y, z));
                     }
                     if (z > 0 && !biome.equals(previous)) {
                         changes++;
@@ -133,6 +135,10 @@ final class SelfTest {
         // Meadow caverns need grass floors with enough light for farm animals to spawn (raw brightness > 8).
         int grass = 0;
         int spawnable = 0;
+        meadows.add(0, meadow);
+        for (BlockPos mp : meadows) {
+            if (spawnable > 0) break;
+            meadow = mp;
         for (int cx = (meadow.getX() >> 4) - 1; cx <= (meadow.getX() >> 4) + 1; cx++) {
             for (int cz = (meadow.getZ() >> 4) - 1; cz <= (meadow.getZ() >> 4) + 1; cz++) {
                 LevelChunk chunk = mining.getChunk(cx, cz);
@@ -150,6 +156,7 @@ final class SelfTest {
                     }
                 }
             }
+        }
         }
         MiningDimension.LOGGER.info("miningdim self test: meadow near {} has {} grass blocks, {} lit enough for animals", meadow, grass, spawnable);
         if (spawnable == 0) {
