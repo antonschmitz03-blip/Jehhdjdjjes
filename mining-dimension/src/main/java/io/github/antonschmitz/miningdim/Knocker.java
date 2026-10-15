@@ -1,5 +1,9 @@
 package io.github.antonschmitz.miningdim;
 
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import com.mojang.serialization.Codec;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -87,9 +91,29 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
     private final Map<String, Long> appeasedUntil = new HashMap<>();
     private final Map<String, Integer> offerings = new HashMap<>();
 
+    public static final int SKINS = 4, CLOTHES = 5, LAMPS = 3;
+    private static final EntityDataAccessor<Integer> DATA_LOOK = SynchedEntityData.defineId(Knocker.class, EntityDataSerializers.INT);
+
     public Knocker(EntityType<? extends Knocker> type, Level level) {
         super(type, level);
+        this.entityData.set(DATA_LOOK, this.random.nextInt(SKINS) | this.random.nextInt(CLOTHES) << 2 | this.random.nextInt(LAMPS) << 5);
+        AttributeInstance scale = this.getAttribute(Attributes.SCALE);
+        if (scale != null) scale.setBaseValue(0.9 + this.random.nextDouble() * 0.25);
         this.setDropChance(EquipmentSlot.MAINHAND, 2.0F);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_LOOK, 0);
+    }
+
+    public int getSkin() { return this.entityData.get(DATA_LOOK) & 3; }
+    public int getClothes() { return (this.entityData.get(DATA_LOOK) >> 2 & 7) % CLOTHES; }
+    public int getLamp() { return (this.entityData.get(DATA_LOOK) >> 5 & 3) % LAMPS; }
+
+    private void setSkin(int skin) {
+        this.entityData.set(DATA_LOOK, this.entityData.get(DATA_LOOK) & ~3 | skin);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -118,6 +142,8 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
 
     public void setDen(BlockPos den) {
         this.den = den;
+        // every den is one clan, so its Knockers share a skin tone
+        this.setSkin(Math.floorMod(den.hashCode() * 31 + 7, SKINS));
         this.setHomeTo(den, DEN_RADIUS);
         this.setPersistenceRequired();
     }
@@ -329,6 +355,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         if (this.victim != null) output.putString("Victim", this.victim.toString());
         output.putInt("StealCooldown", this.stealCooldown);
         output.putInt("RebuildTicks", this.rebuildTicks);
+        output.putInt("Look", this.entityData.get(DATA_LOOK));
         output.store("AppeasedUntil", LONG_MAP, this.appeasedUntil);
         output.store("Offerings", INT_MAP, this.offerings);
     }
@@ -336,6 +363,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
+        this.entityData.set(DATA_LOOK, input.getIntOr("Look", this.entityData.get(DATA_LOOK)));
         input.read("Den", BlockPos.CODEC).ifPresent(this::setDen);
         this.victim = input.getString("Victim").map(UUID::fromString).orElse(null);
         this.stealCooldown = input.getIntOr("StealCooldown", 600);

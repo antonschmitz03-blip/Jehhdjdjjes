@@ -41,7 +41,7 @@ A Fabric mod for Minecraft 26.3 that adds a sealed cave dimension made for minin
   sparkle trail and a chime at it. Mine it and it sniffs out the next one. If there's none nearby it puffs a sad
   little cloud. Adults now and then shed a flint or a few iron or gold nuggets. They breed with glow berries,
   follow you for ore or glow berries, never dig and never attack. Spawn egg in the Spawn Eggs tab.
-- **Knockers:** mischievous mine goblins from Cornish folklore, with glowing eyes and a lamp on their miner's cap.
+- **Knockers:** mischievous mine goblins from Cornish folklore, with glowing eyes and a lamp on their miner's cap. Each den is a clan with its own skin tone; clothes, lamp colour and size vary per Knocker.
   They live in threes around dens: a little camp on the cave floor with a trodden dirt patch, an unlit campfire, straw beds, candles, cobwebs and their stash sack, which bulges fuller (up to overflowing) with every theft. You can hear a den before you see it: muffled giggles and knocks, and a full sack glints with gold. An empty den fills up with knockers again over time. A knocker
   sneaks up and pinches the most valuable stack in your hotbar (gems, ingots, raw ores, nuggets, ore blocks,
   enchanted books; never tools, weapons or armour), then runs off clutching it. Throw it any food and it hands
