@@ -94,15 +94,18 @@ public class SlingItem extends Item {
         }
     }
 
-    /** The off hand first, then the inventory from the top left. */
+    /** The off hand first, then deepslate, then any other stone, then gravel and snowballs from the inventory. */
     public static ItemStack findAmmo(Player player) {
         if (SlingAmmo.of(player.getOffhandItem()) != null) {
             return player.getOffhandItem();
         }
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (SlingAmmo.of(stack) != null) {
-                return stack;
+        for (SlingAmmo preferred : new SlingAmmo[]{SlingAmmo.DEEPSLATE_BLOCK, SlingAmmo.STONE_BLOCK, null}) {
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack stack = player.getInventory().getItem(i);
+                SlingAmmo type = SlingAmmo.of(stack);
+                if (type != null && (preferred == null || type == preferred)) {
+                    return stack;
+                }
             }
         }
         return null;

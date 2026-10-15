@@ -4,7 +4,7 @@ New weapons that feel like they were always in the game. Install on the server a
 it for the item and its textures). Starts with the sling.
 
 - **Sling** (shapeless: 2 string + leather): hold right-click to swing it, release to throw. A full draw takes one
-  second. Ammo comes from the off hand first, then the inventory. Takes Unbreaking and Mending, repairs with leather.
+  second. Ammo comes from the off hand first, then deepslate, then other stone, then gravel and snowballs from the inventory. Takes Unbreaking and Mending, repairs with leather.
   250 durability, one use per throw.
 - Stones fly at 4.5 blocks per tick (a bow tops out at 3.0) and almost flat, and hit for 10 at full draw (a fully
   drawn bow does 6 to 9).
