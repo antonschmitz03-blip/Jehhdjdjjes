@@ -14,5 +14,6 @@
   "block.miningdim.knocker_den": "Knocker Stash",
   "entity.miningdim.knocker_pebble": "Knocker Pebble",
   "entity.miningdim.knocker.stole": "A Knocker pinched your %s! Throw it some food to get it back.",
-  "entity.miningdim.knocker.appeased": "The Knockers of this den will leave your pockets alone for a day."
+  "entity.miningdim.knocker.appeased": "The Knockers of this den will leave your pockets alone for a day.",
+  "block.miningdim.glowworm": "Glowworm Thread"
 }

@@ -88,6 +88,18 @@ public class MiningDimension implements ModInitializer {
     public static final Item KNOCKER_DEN_ITEM = Registry.register(BuiltInRegistries.ITEM, KNOCKER_DEN_ITEM_KEY,
             new BlockItem(KNOCKER_DEN, new Item.Properties().useBlockDescriptionPrefix().setId(KNOCKER_DEN_ITEM_KEY)));
 
+    public static final ResourceKey<Block> GLOWWORM_KEY = ResourceKey.create(Registries.BLOCK, id("glowworm"));
+    public static final Block GLOWWORM = Registry.register(BuiltInRegistries.BLOCK, GLOWWORM_KEY, new GlowwormBlock(BlockBehaviour.Properties.of()
+            .setId(GLOWWORM_KEY)
+            .noCollision()
+            .instabreak()
+            .sound(SoundType.WEEPING_VINES)
+            .lightLevel(state -> state.getValue(GlowwormBlock.TIP) ? 8 : 4)
+            .noLootTable()));
+
+    public static final MapCodec<GlowwormFeature> GLOWWORM_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("glowworms"), GlowwormFeature.CODEC);
+    public static final MapCodec<UndergroundLakeFeature> UNDERGROUND_LAKE_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("underground_lake"), UndergroundLakeFeature.CODEC);
+    public static final MapCodec<DigSiteFeature> DIG_SITE_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("dig_site"), DigSiteFeature.CODEC);
     public static final MapCodec<KnockerDenFeature> KNOCKER_DEN_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("knocker_den"),
             KnockerDenFeature.CODEC);
 

@@ -119,6 +119,17 @@
               },
               "weight": 6
             }
+          ],
+          "underground_water_creature": [
+            {
+              "type": "minecraft:glow_squid",
+              "count": {
+                "type": "minecraft:uniform",
+                "min_inclusive": 2,
+                "max_inclusive": 4
+              },
+              "weight": 10
+            }
           ]
         }
       },
@@ -185,7 +196,10 @@
       "miningdim:glow_lichen_extra",
       "miningdim:shroomlight_meadow",
       "miningdim:meadow_grass",
-      "miningdim:knocker_den"
+      "miningdim:knocker_den",
+      "miningdim:glowworms",
+      "miningdim:underground_lake",
+      "miningdim:dig_site"
     ],
     []
   ],

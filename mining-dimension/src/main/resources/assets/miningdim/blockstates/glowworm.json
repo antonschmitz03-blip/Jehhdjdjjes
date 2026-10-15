@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "tip=false": {
+      "model": "miningdim:block/glowworm"
+    },
+    "tip=true": {
+      "model": "miningdim:block/glowworm_tip"
+    }
+  }
+}

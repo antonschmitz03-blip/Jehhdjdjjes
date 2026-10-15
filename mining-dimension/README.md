@@ -25,6 +25,9 @@ A Fabric mod for Minecraft 26.3 that adds a sealed cave dimension made for minin
     rabbits spawn here (the shroomlight keeps the grass bright enough for them).
 - **Mineshafts:** vanilla abandoned mineshafts (normal near the bedrock floor, badlands-style anywhere), with the
   usual rails, chests and cave spider spawners.
+- **Underground lakes:** still pools sunk into flat cave floors in every biome except Lush Caverns, one to three blocks deep with a clay and gravel shore; glow squid live in them.
+- **Dig sites:** abandoned camps scattered through the same biomes: a bit of broken rail running into a cave-in, a lopsided timber support with a lantern, cobwebs and a supply chest beside the track.
+- **Glowworms:** ceilings in the same biomes sometimes hang with clusters of glowing threads (they give a little light, the tips drip glow particles).
 - **Light:** rare shroomlight clusters hang from cave ceilings (more of them in Crystal Caverns), plus glow berry
   vines everywhere and about twice the vanilla glow lichen.
 - **Atmosphere:** each biome has a few drifting particles (dust motes, spore specks, water drips, purple sparkles),
