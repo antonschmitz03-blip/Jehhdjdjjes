@@ -15,5 +15,7 @@
   "entity.miningdim.knocker_pebble": "Klopfer-Kiesel",
   "entity.miningdim.knocker.stole": "Ein Klopfer hat dir %s stibitzt! Wirf ihm etwas zu essen, um es zurückzubekommen.",
   "entity.miningdim.knocker.appeased": "Die Klopfer dieses Baus lassen deine Taschen einen Tag lang in Ruhe.",
-  "block.miningdim.glowworm": "Leuchtwurm-Faden"
+  "block.miningdim.glowworm": "Leuchtwurm-Faden",
+  "block.miningdim.glowcap": "Leuchtkappe",
+  "block.miningdim.ember_moss": "Glutmoos"
 }

@@ -162,7 +162,8 @@
       "miningdim:knocker_den",
       "miningdim:glowworms",
       "miningdim:underground_lake",
-      "miningdim:dig_site"
+      "miningdim:dig_site",
+      "miningdim:glowcap_floor"
     ],
     []
   ],

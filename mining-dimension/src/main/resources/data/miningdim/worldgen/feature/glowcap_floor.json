@@ -1,0 +1,9 @@
+{
+  "type": "miningdim:scatter",
+  "state": {
+    "Name": "miningdim:glowcap"
+  },
+  "mode": "floor",
+  "tries": 9,
+  "radius": 4
+}

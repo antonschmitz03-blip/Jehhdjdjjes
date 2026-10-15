@@ -1,0 +1,9 @@
+{
+  "type": "miningdim:scatter",
+  "state": {
+    "Name": "minecraft:fern"
+  },
+  "mode": "floor",
+  "tries": 14,
+  "radius": 5
+}

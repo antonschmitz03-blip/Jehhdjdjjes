@@ -97,6 +97,28 @@ public class MiningDimension implements ModInitializer {
             .lightLevel(state -> state.getValue(GlowwormBlock.TIP) ? 8 : 4)
             .noLootTable()));
 
+    public static final ResourceKey<Block> GLOWCAP_KEY = ResourceKey.create(Registries.BLOCK, id("glowcap"));
+    public static final Block GLOWCAP = Registry.register(BuiltInRegistries.BLOCK, GLOWCAP_KEY, new GlowcapBlock(BlockBehaviour.Properties.of()
+            .setId(GLOWCAP_KEY)
+            .noCollision()
+            .instabreak()
+            .sound(SoundType.GRASS)
+            .lightLevel(state -> 5)));
+    public static final ResourceKey<Item> GLOWCAP_ITEM_KEY = ResourceKey.create(Registries.ITEM, id("glowcap"));
+    public static final Item GLOWCAP_ITEM = Registry.register(BuiltInRegistries.ITEM, GLOWCAP_ITEM_KEY,
+            new BlockItem(GLOWCAP, new Item.Properties().useBlockDescriptionPrefix().setId(GLOWCAP_ITEM_KEY)));
+
+    public static final ResourceKey<Block> EMBER_MOSS_KEY = ResourceKey.create(Registries.BLOCK, id("ember_moss"));
+    public static final Block EMBER_MOSS = Registry.register(BuiltInRegistries.BLOCK, EMBER_MOSS_KEY, new EmberMossBlock(BlockBehaviour.Properties.of()
+            .setId(EMBER_MOSS_KEY)
+            .strength(0.1F)
+            .sound(SoundType.MOSS)
+            .lightLevel(state -> 3)));
+    public static final ResourceKey<Item> EMBER_MOSS_ITEM_KEY = ResourceKey.create(Registries.ITEM, id("ember_moss"));
+    public static final Item EMBER_MOSS_ITEM = Registry.register(BuiltInRegistries.ITEM, EMBER_MOSS_ITEM_KEY,
+            new BlockItem(EMBER_MOSS, new Item.Properties().useBlockDescriptionPrefix().setId(EMBER_MOSS_ITEM_KEY)));
+
+    public static final MapCodec<ScatterFeature> SCATTER_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("scatter"), ScatterFeature.CODEC);
     public static final MapCodec<GlowwormFeature> GLOWWORM_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("glowworms"), GlowwormFeature.CODEC);
     public static final MapCodec<UndergroundLakeFeature> UNDERGROUND_LAKE_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("underground_lake"), UndergroundLakeFeature.CODEC);
     public static final MapCodec<DigSiteFeature> DIG_SITE_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("dig_site"), DigSiteFeature.CODEC);
@@ -116,6 +138,10 @@ public class MiningDimension implements ModInitializer {
             output.accept(KNOCKER_SPAWN_EGG);
         });
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(output -> output.accept(KNOCKER_DEN_ITEM));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.NATURAL_BLOCKS).register(output -> {
+            output.accept(GLOWCAP_ITEM);
+            output.accept(EMBER_MOSS_ITEM);
+        });
 
         if (Boolean.getBoolean("miningdim.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(SelfTest::run);

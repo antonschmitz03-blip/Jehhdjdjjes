@@ -1,0 +1,9 @@
+{
+  "type": "miningdim:scatter",
+  "state": {
+    "Name": "minecraft:azalea"
+  },
+  "mode": "floor",
+  "tries": 4,
+  "radius": 5
+}

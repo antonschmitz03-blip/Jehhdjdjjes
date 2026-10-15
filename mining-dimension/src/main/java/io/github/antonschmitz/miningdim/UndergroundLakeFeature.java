@@ -9,6 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -83,6 +84,13 @@ public class UndergroundLakeFeature implements Feature {
         BlockState waterState = Blocks.WATER.defaultBlockState();
         for (BlockPos pos : water) {
             level.setBlock(pos, waterState, Block.UPDATE_CLIENTS);
+        }
+        // Sea pickles on the lake bed (they only glow underwater).
+        for (BlockPos pos : water) {
+            if (!water.contains(pos.below()) && random.nextFloat() < 0.12F) {
+                level.setBlock(pos, Blocks.SEA_PICKLE.defaultBlockState().setValue(SeaPickleBlock.PICKLES, 1 + random.nextInt(4)).setValue(SeaPickleBlock.WATERLOGGED, true),
+                        Block.UPDATE_CLIENTS);
+            }
         }
         // 4. Clay and gravel on the shore.
         for (BlockPos cell : surface) {

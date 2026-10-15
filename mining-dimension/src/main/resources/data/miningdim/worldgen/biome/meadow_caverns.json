@@ -199,7 +199,11 @@
       "miningdim:knocker_den",
       "miningdim:glowworms",
       "miningdim:underground_lake",
-      "miningdim:dig_site"
+      "miningdim:dig_site",
+      "miningdim:meadow_fern",
+      "miningdim:meadow_large_fern",
+      "miningdim:meadow_berries",
+      "miningdim:meadow_azalea"
     ],
     []
   ],

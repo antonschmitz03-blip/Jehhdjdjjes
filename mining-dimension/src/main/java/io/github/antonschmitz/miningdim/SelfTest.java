@@ -35,7 +35,7 @@ final class SelfTest {
     private static final Set<String> DECOR = Set.of("shroomlight", "glow_lichen", "cave_vines", "cave_vines_plant", "moss_block",
             "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "basalt", "blackstone", "smooth_basalt", "magma_block", "clay", "big_dripleaf", "small_dripleaf",
             "grass_block", "short_grass", "firefly_bush", "wildflowers", "knocker_den",
-            "campfire", "candle", "hay_block", "coarse_dirt", "glowworm", "chest", "rail", "lantern", "oak_fence");
+            "campfire", "candle", "hay_block", "coarse_dirt", "glowworm", "chest", "rail", "lantern", "oak_fence", "ember_moss", "glowcap", "hanging_roots", "sea_pickle", "fern", "large_fern", "sweet_berry_bush");
 
     private SelfTest() {
     }

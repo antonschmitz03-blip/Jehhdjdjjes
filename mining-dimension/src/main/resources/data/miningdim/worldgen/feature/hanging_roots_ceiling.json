@@ -1,0 +1,9 @@
+{
+  "type": "miningdim:scatter",
+  "state": {
+    "Name": "minecraft:hanging_roots"
+  },
+  "mode": "ceiling",
+  "tries": 14,
+  "radius": 4
+}
