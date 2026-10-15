@@ -4,7 +4,7 @@ strapped to a leather saddle pad.
 Writes models/item/ghast_rocket_engine.json and textures/item/ghast_rocket_engine.png (16x16 atlas, 1 texel per model
 pixel). Run from the repository root: python happy-ghast/tools/gen_rocket_engine.py
 
-Model space: z = 0 is the nose (points forward on the ghast), z = 16 the back; +x faces the ghast's body. The layer
+Model space: z = 0 is the nose (points forward on the ghast), z = 16 the back (the nozzle ends at z = 14); +x faces the ghast's body. The layer
 turns the left engine upside down, so keep the design symmetric top to bottom.
 """
 import json
@@ -20,7 +20,8 @@ REGIONS = {
     'paper': (0, 0, 8, 8),
     'cone': (8, 0, 6, 6),
     'collar': (14, 0, 2, 6),
-    'fuse': (8, 6, 2, 2),
+    'nozzle': (8, 6, 3, 2),
+    'soot': (11, 6, 2, 2),
     'leather': (0, 8, 8, 4),
     'leather_dark': (0, 12, 8, 2),
     'iron': (8, 8, 2, 2),
@@ -37,9 +38,12 @@ ELEMENTS = [
     ('cone', [5, 5, 3.5], [11, 11, 4.5]),
     ('cone', [6, 6, 2.5], [10, 10, 3.5]),
     ('cone', [7, 7, 1.5], [9, 9, 2.5]),
-    # dark fuse out of the back, curling to the outer side
-    ('fuse', [7.5, 7.5, 12.5], [8.5, 8.5, 14]),
-    ('fuse', [6.3, 7.5, 13.2], [7.5, 8.5, 14]),
+    # charred nozzle at the back: a square rim around a sooty opening
+    ('nozzle', [6.5, 8.75, 12.5], [9.5, 9.5, 14]),
+    ('nozzle', [6.5, 6.5, 12.5], [9.5, 7.25, 14]),
+    ('nozzle', [6.5, 7.25, 12.5], [7.25, 8.75, 14]),
+    ('nozzle', [8.75, 7.25, 12.5], [9.5, 8.75, 14]),
+    ('soot', [7.25, 7.25, 12.5], [8.75, 8.75, 12.6]),
     # saddle pad between rocket and harness
     ('leather', [10, 6.5, 5.5], [12, 9.5, 12]),
     ('leather_dark', [11.5, 6, 5.5], [12, 10, 12]),
@@ -94,7 +98,8 @@ def texture():
     fill('paper', lambda x, y: (244, 244, 244) if (x * 3 + y * 5) % 11 == 0 else ((178, 204, 209) if (x * 5 + y) % 13 == 0 else rnd.choice(red)))
     fill('cone', lambda x, y: (214, 42, 42) if x + y < 3 else ((109, 23, 23) if x + y > 8 else rnd.choice([(185, 41, 41), (153, 41, 41), (132, 27, 27)])))
     fill('collar', lambda x, y: (244, 244, 244) if y % 3 == 0 else (178, 204, 209))
-    fill('fuse', lambda x, y: (45, 20, 9) if (x + y) % 2 else (62, 30, 14))
+    fill('nozzle', lambda x, y: (96, 92, 88) if y == 0 else rnd.choice([(70, 66, 64), (60, 56, 54)]))
+    fill('soot', lambda x, y: (196, 92, 34) if (x, y) == (1, 1) else (28, 24, 22))
     fill('leather', lambda x, y: (176, 128, 84) if y == 1 and x % 2 == 0 else rnd.choice([(122, 76, 44), (112, 68, 40), (132, 84, 50)]))
     fill('leather_dark', lambda x, y: rnd.choice([(92, 56, 32), (84, 50, 30)]))
     fill('iron', lambda x, y: (214, 214, 220) if (x, y) == (0, 0) else (168, 168, 176))

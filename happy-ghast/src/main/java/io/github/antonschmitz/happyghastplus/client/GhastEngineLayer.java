@@ -29,7 +29,7 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
     static final float HEIGHT = 2.6F;
     /** The engines sit this far behind the ghast's centre, clear of the rope ladder on the right side. */
     static final float BACK_SHIFT = 1.4F;
-    /** How far behind the ghast's centre the fuse end is (model z 14, the model is centred on z 8). */
+    /** How far behind the ghast's centre the nozzle opening is (model z 14, the model is centred on z 8). */
     static final float NOZZLE_BACK = 6.0F / 16.0F * SCALE + BACK_SHIFT;
 
     private final ItemModelResolver itemModelResolver;
