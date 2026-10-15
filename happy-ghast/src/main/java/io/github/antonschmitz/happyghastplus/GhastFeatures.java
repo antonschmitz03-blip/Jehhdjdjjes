@@ -119,7 +119,11 @@ public final class GhastFeatures {
             GhastNests.wake(ghast);
             double dx = ghast.getX() - player.getX();
             double dz = ghast.getZ() - player.getZ();
-            if (dx * dx + dz * dz <= LADDER_DISTANCE * LADDER_DISTANCE) {
+            if (RopeLadders.isDeployed(ghast)) {
+                // Rope already down (the ghast is held still): pull it up and fly to the caller instead of staying put.
+                RopeLadders.retract(ghast.getUUID());
+                RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS));
+            } else if (dx * dx + dz * dz <= LADDER_DISTANCE * LADDER_DISTANCE) {
                 RECALLS.remove(ghast.getUUID());
                 RopeLadders.lower(ghast);
             } else {
