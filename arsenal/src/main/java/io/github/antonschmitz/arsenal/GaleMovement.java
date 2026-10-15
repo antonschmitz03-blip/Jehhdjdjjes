@@ -112,6 +112,11 @@ public final class GaleMovement {
     }
 
     private static void tickPlayer(ServerPlayer player, State state) {
+        // Jump is the air jump here; if an elytra opened anyway, fold it again.
+        if (player.isFallFlying()) {
+            player.stopFallFlying();
+        }
+
         Input input = player.getLastClientInput();
         boolean jumpPressed = input.jump() && !state.prevJump;
         state.prevJump = input.jump();
