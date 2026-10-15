@@ -2,11 +2,13 @@ package io.github.antonschmitz.happyghastplus;
 
 import io.github.antonschmitz.happyghastplus.item.GhastNestItem;
 import io.github.antonschmitz.happyghastplus.item.GhastWhistleItem;
+import java.util.Set;
 import java.util.function.Function;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -42,6 +44,8 @@ public class HappyGhastPlus implements ModInitializer {
     public static Item GHAST_NEST_ITEM;
     /** Only drawn over a sleeping ghast's face; not obtainable. */
     public static Item GHAST_EYELIDS;
+    public static Item GHAST_SEARCHLIGHT;
+    public static Block SEARCHLIGHT_LIGHT;
     /** Pieces of the rope ladder the ghast draws; not obtainable. */
     public static Item GHAST_ROPE_SEGMENT;
     public static Item GHAST_ROPE_TOP;
@@ -55,10 +59,15 @@ public class HappyGhastPlus implements ModInitializer {
         GHAST_NEST = Registry.register(BuiltInRegistries.BLOCK, nestKey, new GhastNestBlock(BlockBehaviour.Properties.of()
                 .setId(nestKey).strength(0.5F, 1200.0F).sound(SoundType.GRASS).noOcclusion().noLootTable()
                 .pushReaction(PushReaction.IMMOVEABLE)));
+        ResourceKey<Block> lightKey = ResourceKey.create(Registries.BLOCK, id("searchlight_light"));
+        SEARCHLIGHT_LIGHT = Registry.register(BuiltInRegistries.BLOCK, lightKey, new SearchlightLightBlock(BlockBehaviour.Properties.of()
+                .setId(lightKey).replaceable().noCollision().noLootTable().noOcclusion().strength(-1.0F, 3600000.0F)
+                .pushReaction(PushReaction.POPPED).lightLevel(state -> state.getValue(SearchlightLightBlock.LEVEL))));
         GHAST_SPEED_UPGRADE = register("ghast_speed_upgrade", Item::new);
         GHAST_WHISTLE = register("ghast_whistle", properties -> new GhastWhistleItem(properties.stacksTo(1)));
         GHAST_NEST_ITEM = register("ghast_nest", GhastNestItem::new);
         GHAST_EYELIDS = register("ghast_eyelids", Item::new);
+        GHAST_SEARCHLIGHT = register("ghast_searchlight", properties -> new Item(properties.stacksTo(16)));
         GHAST_ROPE_SEGMENT = register("ghast_rope_segment", Item::new);
         GHAST_ROPE_TOP = register("ghast_rope_top", Item::new);
 
@@ -71,12 +80,14 @@ public class HappyGhastPlus implements ModInitializer {
             output.accept(GHAST_SPEED_UPGRADE);
             output.accept(GHAST_WHISTLE);
             output.accept(GHAST_NEST_ITEM);
+            output.accept(GHAST_SEARCHLIGHT);
         });
 
         GhastChest.register();
         GhastFeatures.register();
         RopeLadders.register();
         GhastNests.register();
+        GhastSearchlight.register();
 
         if (Boolean.getBoolean("happyghastplus.selfTest")) {
             ServerLifecycleEvents.SERVER_STARTED.register(HappyGhastPlus::selfTest);
@@ -100,7 +111,9 @@ public class HappyGhastPlus implements ModInitializer {
         check(BuiltInRegistries.ITEM.getValue(id("ghast_eyelids")) == GHAST_EYELIDS, "ghast eyelids item");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_rope_top")) == GHAST_ROPE_TOP, "ghast rope item");
         check(BuiltInRegistries.BLOCK.getValue(id("ghast_nest")) == GHAST_NEST, "ghast nest block");
+        check(BuiltInRegistries.ITEM.getValue(id("ghast_searchlight")) == GHAST_SEARCHLIGHT, "searchlight item");
         nestSelfTest(server.overworld());
+        searchlightSelfTest(server.overworld());
         LOGGER.info("happyghastplus self test passed");
     }
 
@@ -115,6 +128,19 @@ public class HappyGhastPlus implements ModInitializer {
         GhastNestBlock.breakNest(level, broken, state, false);
         level.setBlock(broken, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         check(countNestCells(level, center) == 0, "broken ghast nest fully removed");
+    }
+
+    private static void searchlightSelfTest(ServerLevel level) {
+        BlockPos center = new BlockPos(32, level.getMaxY() - 8, 32);
+        Set<BlockPos> lights = GhastSearchlight.place(level, center, Direction.UP, Set.of());
+        check(lights.size() == GhastSearchlight.ringSize(), "searchlight ring placed " + lights.size() + " of " + GhastSearchlight.ringSize());
+        check(level.getBlockState(center).is(SEARCHLIGHT_LIGHT) && level.getBlockState(center).getValue(SearchlightLightBlock.LEVEL) == 15,
+                "searchlight centre light");
+        check(!GhastSearchlight.isClaimed(level, center), "unclaimed searchlight light");
+        GhastSearchlight.removeBlocks(level, lights, Set.of());
+        for (BlockPos pos : lights) {
+            check(!level.getBlockState(pos).is(SEARCHLIGHT_LIGHT), "searchlight light removed");
+        }
     }
 
     private static int countNestCells(ServerLevel level, BlockPos center) {

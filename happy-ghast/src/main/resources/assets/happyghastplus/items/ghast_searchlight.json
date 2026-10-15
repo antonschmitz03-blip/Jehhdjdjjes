@@ -1,0 +1,40 @@
+{
+ "model": {
+  "type": "minecraft:select",
+  "property": "minecraft:display_context",
+  "cases": [
+   {
+    "when": "none",
+    "model": {
+     "type": "minecraft:select",
+     "property": "minecraft:custom_model_data",
+     "index": 0,
+     "cases": [
+      {
+       "when": "head",
+       "model": {
+        "type": "minecraft:model",
+        "model": "happyghastplus:item/ghast_searchlight_head"
+       }
+      },
+      {
+       "when": "head_lit",
+       "model": {
+        "type": "minecraft:model",
+        "model": "happyghastplus:item/ghast_searchlight_head_lit"
+       }
+      }
+     ],
+     "fallback": {
+      "type": "minecraft:model",
+      "model": "happyghastplus:item/ghast_searchlight_base"
+     }
+    }
+   }
+  ],
+  "fallback": {
+   "type": "minecraft:model",
+   "model": "happyghastplus:item/ghast_searchlight"
+  }
+ }
+}

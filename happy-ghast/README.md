@@ -20,6 +20,11 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
   dismounting lets it down again. The ghast holds still while it is down, and it is pulled up after a minute with
   nobody near it.
 - **Protection:** players (and their arrows) can't hurt a harnessed happy ghast or the one they ride.
+- **Searchlight:** right-click a harnessed happy ghast with it to mount a swivelling spotlight on top of the harness
+  (sneak + shears takes it off). While riding, press G (rebindable: Toggle Ghast Searchlight) to switch it on. It
+  turns to wherever you look and lights that spot up to 48 blocks away with a round pool of real light (invisible
+  light blocks that follow the beam a few times a second and clean themselves up), plus a faint beam and a soft glow
+  drawn on screen. It switches off when nobody steers the ghast and drops when the ghast dies.
 - **Ghast nest:** a 6x6 straw nest (place it on the ground; it needs a free 6x6 area without the corners). A harnessed
   happy ghast that hovers slowly within 6 blocks above it and about 3 blocks of its middle settles in, and a few
   seconds later closes its eyes (the smile stays) and slowly heals. Riding it, hurting it or whistling wakes it up.
@@ -31,6 +36,7 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
 |---|---|
 | Ghast speed upgrade | `IFI` / `SRS` / `IFI` (iron ingot, firework rocket, sugar, redstone block) |
 | Ghast whistle | Iron ingot + snowball + string (shapeless) |
+| Ghast searchlight | `IPI` / `IGI` / ` I ` (iron ingot, glass pane, glowstone) |
 | Ghast nest | `HSH` / `SHS` / `HSH` (hay bale, stick) |
 
 ## Coming from Vanilla+ Tweaks 1.4.0

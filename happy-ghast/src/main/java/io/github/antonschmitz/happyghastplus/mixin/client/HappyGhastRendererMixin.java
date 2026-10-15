@@ -8,7 +8,9 @@ import io.github.antonschmitz.happyghastplus.client.GhastEngineLayer;
 import io.github.antonschmitz.happyghastplus.client.GhastEngineParticles;
 import io.github.antonschmitz.happyghastplus.RopeLadders;
 import io.github.antonschmitz.happyghastplus.client.GhastEyelidsLayer;
+import io.github.antonschmitz.happyghastplus.client.GhastSearchlightLayer;
 import io.github.antonschmitz.happyghastplus.client.GhastRopeLayer;
+import io.github.antonschmitz.happyghastplus.client.SearchlightAim;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.minecraft.client.renderer.entity.HappyGhastRenderer;
 import net.minecraft.client.renderer.entity.state.HappyGhastRenderState;
@@ -31,5 +33,6 @@ public abstract class HappyGhastRendererMixin {
         ((FabricRenderState) (Object) state).setData(GhastEngineLayer.THRUST, GhastEngineParticles.isThrusting(ghast));
         ((FabricRenderState) (Object) state).setData(GhastRopeLayer.ROPE, ghast.getAttachedOrElse(RopeLadders.ROPE, 0.0F));
         ((FabricRenderState) (Object) state).setData(GhastEyelidsLayer.SLEEPING, ghast.getAttachedOrElse(GhastNests.SLEEPING, false));
+        ((FabricRenderState) (Object) state).setData(GhastSearchlightLayer.AIM, SearchlightAim.of(ghast, partialTick));
     }
 }

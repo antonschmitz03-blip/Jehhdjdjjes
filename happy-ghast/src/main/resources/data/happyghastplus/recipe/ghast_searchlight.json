@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:glass_pane",
+    "G": "minecraft:glowstone"
+  },
+  "pattern": [
+    "IPI",
+    "IGI",
+    " I "
+  ],
+  "result": {
+    "id": "happyghastplus:ghast_searchlight"
+  }
+}

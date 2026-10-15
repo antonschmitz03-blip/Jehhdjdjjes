@@ -12,6 +12,8 @@ public class HappyGhastPlusClient implements ClientModInitializer {
     @SuppressWarnings("unchecked")
     public void onInitializeClient() {
         GhastEngineParticles.register();
+        SearchlightBeamRenderer.register();
+        SearchlightKey.register();
         LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
             if (renderer instanceof HappyGhastRenderer) {
                 helper.register(new GhastChestLayer(
@@ -24,6 +26,9 @@ public class HappyGhastPlusClient implements ClientModInitializer {
                         (RenderLayerParent<HappyGhastRenderState, HappyGhastModel>) (Object) renderer,
                         context.getItemModelResolver()));
                 helper.register(new GhastEyelidsLayer(
+                        (RenderLayerParent<HappyGhastRenderState, HappyGhastModel>) (Object) renderer,
+                        context.getItemModelResolver()));
+                helper.register(new GhastSearchlightLayer(
                         (RenderLayerParent<HappyGhastRenderState, HappyGhastModel>) (Object) renderer,
                         context.getItemModelResolver()));
             }
