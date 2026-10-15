@@ -32,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
  * on its right-hand side, turns with the ghast, and reaches from the ghast's back down to the ground. Climbing it is
  * handled by {@link #isOnRope}, which the {@code onClimbable} mixin asks. It comes down when the whistle calls a nearby
  * ghast or a rider dismounts, and is pulled back up when someone rides the ghast, the ghast moves, or nobody has used
- * it for a minute. The ghast holds still while it is down.
+ * it for a minute. The ghast holds still while it is down, position and facing.
  */
 public final class RopeLadders {
     public static final int MAX_LENGTH = 40;
@@ -53,7 +53,8 @@ public final class RopeLadders {
     private static final Map<UUID, Deployed> DEPLOYED = new HashMap<>();
     private static final Map<UUID, UUID> LAST_VEHICLE = new HashMap<>();
 
-    private record Deployed(ServerLevel level, Vec3 anchor, int idleTicks) {}
+    /** Where the ghast stood and which way it faced when the rope came down; it is held there, turning included. */
+    private record Deployed(ServerLevel level, Vec3 anchor, float yaw, float pitch, int idleTicks) {}
 
     private RopeLadders() {}
 
@@ -93,7 +94,7 @@ public final class RopeLadders {
         float length = (float) Mth.clamp(ghast.getY() - ground, 1.0, MAX_LENGTH);
         ghast.setAttached(ROPE, length);
         level.playSound(null, at.x, ghast.getY() + 2.0, at.z, SoundEvents.LADDER_PLACE, SoundSource.NEUTRAL, 1.0F, 0.8F);
-        DEPLOYED.put(ghast.getUUID(), new Deployed(level, ghast.position(), 0));
+        DEPLOYED.put(ghast.getUUID(), new Deployed(level, ghast.position(), ghast.getYRot(), ghast.getXRot(), 0));
     }
 
     public static boolean isDeployed(HappyGhast ghast) {
@@ -172,12 +173,21 @@ public final class RopeLadders {
             ghast.getNavigation().stop();
             ghast.setDeltaMovement(Vec3.ZERO);
             ghast.setPos(deployed.anchor());
+            // Freeze the facing too, otherwise the ghast's own look control turns it under a climbing player.
+            ghast.setYRot(deployed.yaw());
+            ghast.setXRot(deployed.pitch());
+            ghast.setYHeadRot(deployed.yaw());
+            ghast.setYBodyRot(deployed.yaw());
+            ghast.yRotO = deployed.yaw();
+            ghast.xRotO = deployed.pitch();
+            ghast.yHeadRotO = deployed.yaw();
+            ghast.yBodyRotO = deployed.yaw();
 
             Vec3 rope = ghast.position().add(offset(ghast.yBodyRot, ROPE_SIDE, 0));
             float length = ghast.getAttachedOrElse(ROPE, 0.0F);
             AABB column = new AABB(rope.x - 2, ghast.getY() - length - 1, rope.z - 2, rope.x + 2, ghast.getY() + GRAB_TOP + 2, rope.z + 2);
             List<ServerPlayer> near = deployed.level().getEntitiesOfClass(ServerPlayer.class, column, p -> true);
-            entry.setValue(new Deployed(deployed.level(), deployed.anchor(), near.isEmpty() ? deployed.idleTicks() + 1 : 0));
+            entry.setValue(new Deployed(deployed.level(), deployed.anchor(), deployed.yaw(), deployed.pitch(), near.isEmpty() ? deployed.idleTicks() + 1 : 0));
         }
     }
 }
