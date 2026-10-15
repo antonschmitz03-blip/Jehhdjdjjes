@@ -32,13 +32,11 @@ jobs:
       # Boots a dedicated server with Traveler's Backpack + Trinkets + this addon and force-loads all mixin targets.
       - name: Server smoke test
         run: |
-          mkdir -p run/mods
-          cp libs/*.jar run/mods/
-          cp mining-dimension/build/libs/mining-dimension-*.jar run/mods/
-          echo "eula=true" > run/eula.txt
-          printf 'online-mode=false\nlevel-type=minecraft\\:flat\n' > run/server.properties
+          mkdir -p mining-dimension/run
+          echo "eula=true" > mining-dimension/run/eula.txt
+          printf 'online-mode=false\nlevel-type=minecraft\\:flat\n' > mining-dimension/run/server.properties
           mkfifo stdin.pipe
-          (./gradlew runServer --console=plain < stdin.pipe > server.log 2>&1; echo "exit $?" >> server.log) &
+          (./gradlew :mining-dimension:runServer --console=plain < stdin.pipe > server.log 2>&1; echo "exit $?" >> server.log) &
           exec 3>stdin.pipe
           for i in $(seq 1 120); do
             if grep -qE 'Done \(|^exit |Incompatible mods found|BUILD FAILED' server.log; then break; fi
