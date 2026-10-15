@@ -29,6 +29,7 @@ public class KnockerModel extends EntityModel<KnockerRenderState> implements Arm
     private final ModelPart leftArm;
     private final ModelPart rightLeg;
     private final ModelPart leftLeg;
+    private final ModelPart[] accessories = new ModelPart[6];
 
     public KnockerModel(ModelPart root) {
         super(root);
@@ -40,6 +41,12 @@ public class KnockerModel extends EntityModel<KnockerRenderState> implements Arm
         this.leftArm = root.getChild("left_arm");
         this.rightLeg = root.getChild("right_leg");
         this.leftLeg = root.getChild("left_leg");
+        this.accessories[0] = this.body.getChild("scarf");
+        this.accessories[1] = this.leftEar.getChild("earring");
+        this.accessories[2] = this.head.getChild("hat").getChild("feather");
+        this.accessories[3] = this.body.getChild("pickaxe_handle");
+        this.accessories[4] = this.body.getChild("pickaxe_head");
+        this.accessories[5] = this.body.getChild("pouch");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -50,23 +57,33 @@ public class KnockerModel extends EntityModel<KnockerRenderState> implements Arm
                 .texOffs(20, 22).addBox(-1F, -4F, -5.5F, 2F, 2F, 2F)
                 .texOffs(0, 22).addBox(-3F, 0F, -3.5F, 6F, 1F, 4F),
                 PartPose.offset(0F, 12F, -1F));
-        head.addOrReplaceChild("hat", CubeListBuilder.create()
+        PartDefinition hat = head.addOrReplaceChild("hat", CubeListBuilder.create()
                 .texOffs(0, 12).addBox(-4.5F, -8F, -4.5F, 9F, 3F, 7F)
                 .texOffs(36, 22).addBox(-4.5F, -6F, -6F, 9F, 1F, 2F)
                 .texOffs(58, 22).addBox(-1F, -8.5F, -5.5F, 2F, 2F, 1F),
                 PartPose.offset(0F, 0F, 0F));
+        hat.addOrReplaceChild("feather", CubeListBuilder.create()
+                .texOffs(8, 37).addBox(-0.5F, -4F, -0.5F, 1F, 4F, 1F),
+                PartPose.offsetAndRotation(3F, -7.5F, 0F, 0F, 0F, 0.3F));
         head.addOrReplaceChild("right_ear", CubeListBuilder.create()
                 .texOffs(28, 22).addBox(-3F, -1.5F, 0F, 3F, 3F, 1F)
                 .texOffs(28, 22).addBox(-5F, -1F, 0F, 2F, 1F, 1F),
                 PartPose.offsetAndRotation(-4F, -4F, -1F, 0F, 0.45F, -0.25F));
-        head.addOrReplaceChild("left_ear", CubeListBuilder.create()
+        PartDefinition leftEar = head.addOrReplaceChild("left_ear", CubeListBuilder.create()
                 .texOffs(28, 22).addBox(0F, -1.5F, 0F, 3F, 3F, 1F)
                 .texOffs(28, 22).addBox(3F, -1F, 0F, 2F, 1F, 1F),
                 PartPose.offsetAndRotation(4F, -4F, -1F, 0F, -0.45F, 0.25F));
+        leftEar.addOrReplaceChild("earring", CubeListBuilder.create()
+                .texOffs(0, 37).addBox(4F, 0F, 0F, 1F, 2F, 1F),
+                PartPose.ZERO);
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
                 .texOffs(28, 0).addBox(-3F, 0F, -2F, 6F, 7F, 4F)
                 .texOffs(32, 12).addBox(-2.5F, 0.5F, 2F, 5F, 5F, 3F),
                 PartPose.offset(0F, 12F, 0F));
+        body.addOrReplaceChild("scarf", CubeListBuilder.create().texOffs(0, 29).addBox(-3.5F, -0.5F, -2.5F, 7F, 2F, 5F), PartPose.ZERO);
+        body.addOrReplaceChild("pickaxe_handle", CubeListBuilder.create().texOffs(14, 37).addBox(1.5F, -1F, 5F, 1F, 7F, 1F), PartPose.ZERO);
+        body.addOrReplaceChild("pickaxe_head", CubeListBuilder.create().texOffs(0, 46).addBox(-0.5F, -1F, 5F, 5F, 1F, 1F), PartPose.ZERO);
+        body.addOrReplaceChild("pouch", CubeListBuilder.create().texOffs(20, 37).addBox(3F, 5F, -1F, 1F, 2F, 2F), PartPose.ZERO);
         root.addOrReplaceChild("right_arm", CubeListBuilder.create()
                 .texOffs(48, 0).addBox(-0.5F, -1F, -1F, 1.5F, 9F, 2F),
                 PartPose.offset(-4F, 13F, 0F));
@@ -85,6 +102,9 @@ public class KnockerModel extends EntityModel<KnockerRenderState> implements Arm
     @Override
     public void setupAnim(KnockerRenderState state) {
         super.setupAnim(state);
+        for (int i = 0; i < this.accessories.length; i++) {
+            this.accessories[i].visible = (state.accessories >> i & 1) != 0;
+        }
         float deg = Mth.DEG_TO_RAD;
         this.head.yRot = state.yRot * deg;
         this.head.xRot = state.xRot * deg;

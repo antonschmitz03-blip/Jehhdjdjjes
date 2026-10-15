@@ -96,7 +96,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
 
     public Knocker(EntityType<? extends Knocker> type, Level level) {
         super(type, level);
-        this.entityData.set(DATA_LOOK, this.random.nextInt(SKINS) | this.random.nextInt(CLOTHES) << 2 | this.random.nextInt(LAMPS) << 5);
+        this.entityData.set(DATA_LOOK, this.random.nextInt(SKINS) | this.random.nextInt(CLOTHES) << 2 | this.random.nextInt(LAMPS) << 5 | this.randomAccessories() << 7);
         AttributeInstance scale = this.getAttribute(Attributes.SCALE);
         if (scale != null) scale.setBaseValue(0.9 + this.random.nextDouble() * 0.25);
         this.setDropChance(EquipmentSlot.MAINHAND, 2.0F);
@@ -107,6 +107,19 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         super.defineSynchedData(builder);
         builder.define(DATA_LOOK, 0);
     }
+
+    /** Each of the six small extras (scarf, earring, feather, pickaxe, pouch...) shows up on roughly a third of Knockers. */
+    private int randomAccessories() {
+        int bits = 0;
+        for (int i = 0; i < 6; i++) {
+            if (this.random.nextInt(3) == 0) bits |= 1 << i;
+        }
+        // the pickaxe is two parts
+        if ((bits >> 3 & 1) != 0) bits |= 1 << 4; else bits &= ~(1 << 4);
+        return bits;
+    }
+
+    public int getAccessories() { return this.entityData.get(DATA_LOOK) >> 7 & 63; }
 
     public int getSkin() { return this.entityData.get(DATA_LOOK) & 3; }
     public int getClothes() { return (this.entityData.get(DATA_LOOK) >> 2 & 7) % CLOTHES; }

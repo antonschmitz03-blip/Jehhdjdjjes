@@ -15,9 +15,9 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 public class KnockerRenderer extends MobRenderer<Knocker, KnockerRenderState, KnockerModel> {
-    private static final String[] SKINS = {"moss", "slate", "clay", "teal"};
-    private static final String[] CLOTHES = {"brown", "rust", "blue", "plum", "ash"};
-    private static final String[] LAMPS = {"amber", "orange", "pale"};
+    private static final String[] SKINS = {"moss", "olive", "cool", "grey"};
+    private static final String[] CLOTHES = {"brown", "dark", "rust", "ash", "sand"};
+    private static final String[] LAMPS = {"amber", "warm", "pale"};
     private static final Identifier[][] TEXTURES = new Identifier[SKINS.length][CLOTHES.length];
     /** Eyes and cap lamp, drawn like spider eyes so they glow in the dark and shader packs treat them as emissive. */
     private static final RenderType[] GLOW = new RenderType[LAMPS.length];
@@ -57,6 +57,7 @@ public class KnockerRenderer extends MobRenderer<Knocker, KnockerRenderState, Kn
         state.skin = entity.getSkin();
         state.clothes = entity.getClothes();
         state.lamp = entity.getLamp();
+        state.accessories = entity.getAccessories();
         ArmedEntityRenderState.extractArmedEntityRenderState(entity, state, this.itemModelResolver, partialTicks);
     }
 
