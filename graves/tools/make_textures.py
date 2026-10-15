@@ -60,24 +60,37 @@ def front(rng):
                 px[v][u] = shade(px[v][u], 14)
             elif not inside(u, v + 1) or not inside(u + 1, v):
                 px[v][u] = shade(px[v][u], -16)
-    # Engraved cross: dark groove, light lip below/right of it.
-    groove = {(u, v) for v in range(4, 11) for u in (7, 8)} | {(u, 6) for u in range(5, 11)}
-    for u, v in groove:
-        px[v][u] = GROOVE_DEEP if (u - 1, v) not in groove or (u, v - 1) not in groove else GROOVE
-    for u, v in groove:
-        for du, dv in ((1, 0), (0, 1)):
-            n = (u + du, v + dv)
-            if n not in groove and inside(*n):
-                px[n[1]][n[0]] = shade(px[n[1]][n[0]], 10)
+    # Carved skull in low relief: raised, lit top/left, shadowed bottom/right, with dark sockets.
+    skull = [
+        "..XXXX..",
+        ".XXXXXX.",
+        "XXXXXXXX",
+        "XEEXXEEX",
+        "XEEXXEEX",
+        "XXXNNXXX",
+        ".XXXXXX.",
+        "..TXTX..",
+    ]
+    cells = {(4 + c, 3 + r): ch for r, row in enumerate(skull) for c, ch in enumerate(row) if ch != "."}
+    for (u, v), ch in cells.items():
+        if ch in "ENT":
+            px[v][u] = GROOVE_DEEP if ch != "T" else GROOVE
+            continue
+        lit = (u - 1, v) not in cells or (u, v - 1) not in cells
+        dark = (u + 1, v) not in cells or (u, v + 1) not in cells
+        bone = tuple((a + b) // 2 for a, b in zip(px[v][u], (0xb4, 0xb1, 0xa8)))
+        px[v][u] = shade(bone, 14 if lit else -12 if dark else 0)
+    # Drop shadow under/right of the relief.
+    for (u, v) in list(cells):
+        for n in ((u + 1, v), (u, v + 1)):
+            if n not in cells and inside(*n):
+                px[n[1]][n[0]] = shade(px[n[1]][n[0]], -14)
     # Two short worn inscription lines under the cross.
-    for u in range(5, 11):
-        if rng.random() < 0.8:
-            px[11][u] = GROOVE
     for u in range(6, 10):
         if rng.random() < 0.7:
             px[12][u] = shade(GROOVE, 8)
-    # Hairline crack from the top right shoulder.
-    for u, v in ((11, 3), (11, 4), (10, 5), (10, 6)):
+    # Hairline crack down the right edge.
+    for u, v in ((12, 7), (12, 8), (11, 9), (11, 10)):
         px[v][u] = shade(px[v][u], -22)
     moss(rng, px, list(range(10, 13)), 0.12)
     return px
