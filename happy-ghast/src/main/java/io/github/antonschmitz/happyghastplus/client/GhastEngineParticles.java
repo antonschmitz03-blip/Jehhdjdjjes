@@ -21,6 +21,17 @@ public final class GhastEngineParticles {
 
     private GhastEngineParticles() {}
 
+    /** Blocks per tick the ghast moves along its heading this tick (negative when it backs up). */
+    static double forwardSpeed(HappyGhast ghast) {
+        double yaw = ghast.getYRot() * Mth.DEG_TO_RAD;
+        return (ghast.getX() - ghast.xo) * -Math.sin(yaw) + (ghast.getZ() - ghast.zo) * Math.cos(yaw);
+    }
+
+    /** Whether the engines fire: the nozzles glow and trail flames. */
+    public static boolean isThrusting(HappyGhast ghast) {
+        return forwardSpeed(ghast) >= MIN_FORWARD_SPEED;
+    }
+
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(GhastEngineParticles::tick);
     }
@@ -37,7 +48,7 @@ public final class GhastEngineParticles {
             double forwardX = -Math.sin(yaw);
             double forwardZ = Math.cos(yaw);
             Vec3 velocity = new Vec3(ghast.getX() - ghast.xo, ghast.getY() - ghast.yo, ghast.getZ() - ghast.zo);
-            double forwardSpeed = velocity.x * forwardX + velocity.z * forwardZ;
+            double forwardSpeed = forwardSpeed(ghast);
             if (forwardSpeed < MIN_FORWARD_SPEED) {
                 continue;
             }

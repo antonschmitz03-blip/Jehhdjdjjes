@@ -11,7 +11,7 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
   Contents and chest drop when the ghast dies.
 - **Speed upgrade:** right-click a happy ghast with it to double its flying speed (permanent; drops on death).
   An upgraded ghast wears a firework rocket (a 3D take on the vanilla item) on each side, strapped to a leather pad on the harness, that trails
-  small flames and smoke while it flies forward.
+  small flames and smoke, with a glowing nozzle, while it flies forward.
 - **Whistle:** calls every happy ghast you have ridden within 128 blocks to fly to you (3 s cooldown).
   Only ghasts in loaded chunks can hear it.
 - **Rope ladder:** use the whistle while a happy ghast is within 8 blocks sideways and it lets a rope ladder down on

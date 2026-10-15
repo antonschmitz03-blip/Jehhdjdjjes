@@ -1,8 +1,8 @@
 """Generates the rocket engine drawn on a speed-upgraded happy ghast: a 3D take on the vanilla firework rocket item,
 strapped to a leather saddle pad.
 
-Writes models/item/ghast_rocket_engine.json and textures/item/ghast_rocket_engine.png (16x16 atlas, 1 texel per model
-pixel). Run from the repository root: python happy-ghast/tools/gen_rocket_engine.py
+Writes models/item/ghast_rocket_engine.json (cold nozzle), models/item/ghast_rocket_engine_lit.json (glowing nozzle,
+drawn while the ghast flies forward) and textures/item/ghast_rocket_engine.png (16x16 atlas, 1 texel per model pixel). Run from the repository root: python happy-ghast/tools/gen_rocket_engine.py
 
 Model space: z = 0 is the nose (points forward on the ghast), z = 16 the back (the nozzle ends at z = 14); +x faces the ghast's body. The layer
 turns the left engine upside down, so keep the design symmetric top to bottom.
@@ -22,6 +22,7 @@ REGIONS = {
     'collar': (14, 0, 2, 6),
     'nozzle': (8, 6, 3, 2),
     'soot': (11, 6, 2, 2),
+    'glow': (13, 6, 2, 2),
     'leather': (0, 8, 8, 4),
     'leather_dark': (0, 12, 8, 2),
     'iron': (8, 8, 2, 2),
@@ -69,14 +70,16 @@ def face_uv(material, size, face):
     return [u, v, round(u + fw, 3), round(v + fh, 3)]
 
 
-def model():
+def model(lit):
     elements = []
     for material, a, b in ELEMENTS:
         size = [b[i] - a[i] for i in range(3)]
-        elements.append({
-            'from': a, 'to': b,
-            'faces': {f: {'uv': face_uv(material, size, f), 'texture': '#engine'} for f in FACE_SIZE},
-        })
+        element = {'from': a, 'to': b}
+        if lit and material == 'soot':
+            material = 'glow'
+            element['light_emission'] = 15
+        element['faces'] = {f: {'uv': face_uv(material, size, f), 'texture': '#engine'} for f in FACE_SIZE}
+        elements.append(element)
     return {
         'textures': {'engine': 'happyghastplus:item/ghast_rocket_engine', 'particle': 'happyghastplus:item/ghast_rocket_engine'},
         'elements': elements,
@@ -99,7 +102,8 @@ def texture():
     fill('cone', lambda x, y: (214, 42, 42) if x + y < 3 else ((109, 23, 23) if x + y > 8 else rnd.choice([(185, 41, 41), (153, 41, 41), (132, 27, 27)])))
     fill('collar', lambda x, y: (244, 244, 244) if y % 3 == 0 else (178, 204, 209))
     fill('nozzle', lambda x, y: (96, 92, 88) if y == 0 else rnd.choice([(70, 66, 64), (60, 56, 54)]))
-    fill('soot', lambda x, y: (196, 92, 34) if (x, y) == (1, 1) else (28, 24, 22))
+    fill('soot', lambda x, y: (28, 24, 22) if (x + y) % 2 else (36, 30, 28))
+    fill('glow', lambda x, y: (255, 228, 120) if (x, y) == (0, 0) else (255, 158, 48))
     fill('leather', lambda x, y: (176, 128, 84) if y == 1 and x % 2 == 0 else rnd.choice([(122, 76, 44), (112, 68, 40), (132, 84, 50)]))
     fill('leather_dark', lambda x, y: rnd.choice([(92, 56, 32), (84, 50, 30)]))
     fill('iron', lambda x, y: (214, 214, 220) if (x, y) == (0, 0) else (168, 168, 176))
@@ -119,8 +123,9 @@ def write_png(path, px):
 
 
 if __name__ == '__main__':
-    with open(os.path.join(ROOT, 'models', 'item', 'ghast_rocket_engine.json'), 'w', newline='\n') as f:
-        json.dump(model(), f, indent=1)
-        f.write('\n')
+    for name, lit in (('ghast_rocket_engine', False), ('ghast_rocket_engine_lit', True)):
+        with open(os.path.join(ROOT, 'models', 'item', name + '.json'), 'w', newline='\n') as f:
+            json.dump(model(lit), f, indent=1)
+            f.write('\n')
     write_png(os.path.join(ROOT, 'textures', 'item', 'ghast_rocket_engine.png'), texture())
-    print('wrote ghast_rocket_engine model and texture')
+    print('wrote ghast_rocket_engine models and texture')

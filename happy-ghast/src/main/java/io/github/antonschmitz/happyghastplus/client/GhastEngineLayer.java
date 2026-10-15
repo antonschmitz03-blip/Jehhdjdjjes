@@ -1,5 +1,7 @@
 package io.github.antonschmitz.happyghastplus.client;
 
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.antonschmitz.happyghastplus.HappyGhastPlus;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
@@ -12,6 +14,8 @@ import net.minecraft.client.renderer.entity.state.HappyGhastRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,6 +25,8 @@ import net.minecraft.world.item.ItemStack;
  */
 public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGhastModel> {
     public static final RenderStateDataKey<Boolean> ENGINES = RenderStateDataKey.create(() -> "happyghastplus:ghast_engines");
+    /** Set while the ghast flies forward: the nozzles glow (custom model data flag 0 picks the lit engine model). */
+    public static final RenderStateDataKey<Boolean> THRUST = RenderStateDataKey.create(() -> "happyghastplus:ghast_thrust");
 
     // Same model space as GhastChestLayer: y points down from 1.501 blocks above the feet, +z is the back.
     static final float SCALE = 1.75F;
@@ -35,6 +41,7 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
     private final ItemModelResolver itemModelResolver;
     private final ItemStackRenderState engine = new ItemStackRenderState();
     private ItemStack engineStack;
+    private ItemStack litEngineStack;
 
     public GhastEngineLayer(RenderLayerParent<HappyGhastRenderState, HappyGhastModel> parent, ItemModelResolver itemModelResolver) {
         super(parent);
@@ -49,8 +56,11 @@ public class GhastEngineLayer extends RenderLayer<HappyGhastRenderState, HappyGh
         }
         if (engineStack == null) {
             engineStack = new ItemStack(HappyGhastPlus.GHAST_SPEED_UPGRADE);
+            litEngineStack = new ItemStack(HappyGhastPlus.GHAST_SPEED_UPGRADE);
+            litEngineStack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of(), List.of(true), List.of(), List.of()));
         }
-        itemModelResolver.updateForTopItem(engine, engineStack, ItemDisplayContext.NONE, null, null, 0);
+        boolean thrust = Boolean.TRUE.equals(((FabricRenderState) (Object) state).getData(THRUST));
+        itemModelResolver.updateForTopItem(engine, thrust ? litEngineStack : engineStack, ItemDisplayContext.NONE, null, null, 0);
         for (int side : new int[] {1, -1}) {
             poseStack.pushPose();
             poseStack.translate(side * SIDE_OFFSET, 1.501F - HEIGHT, BACK_SHIFT);

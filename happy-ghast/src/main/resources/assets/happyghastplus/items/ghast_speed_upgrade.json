@@ -6,8 +6,17 @@
       {
         "when": "none",
         "model": {
-          "type": "minecraft:model",
-          "model": "happyghastplus:item/ghast_rocket_engine"
+          "type": "minecraft:condition",
+          "property": "minecraft:custom_model_data",
+          "index": 0,
+          "on_true": {
+            "type": "minecraft:model",
+            "model": "happyghastplus:item/ghast_rocket_engine_lit"
+          },
+          "on_false": {
+            "type": "minecraft:model",
+            "model": "happyghastplus:item/ghast_rocket_engine"
+          }
         }
       }
     ],
