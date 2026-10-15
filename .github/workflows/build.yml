@@ -62,3 +62,9 @@ jobs:
           grep -i 'miningdim' server.log | head -30
           grep -q 'miningdim self test passed' server.log
           if grep -iE 'tbaddons:|vplustweaks:|miningdim:' server.log | grep -iqE 'error|parsing|couldn.t'; then echo "tbaddons data failed to load"; exit 1; fi
+
+      - name: Server log
+        if: always()
+        run: |
+          grep -iE 'miningdim|exception|error|Done \(|Caused by|Encountered' server.log | head -80 || true
+          echo ----- tail; tail -60 server.log || true
