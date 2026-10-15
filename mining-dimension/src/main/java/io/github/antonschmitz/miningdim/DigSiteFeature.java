@@ -37,6 +37,14 @@ public class DigSiteFeature implements Feature {
         return level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
     }
 
+    /** The floor position at, one above or one below the given one, or null. */
+    private static BlockPos floorNear(WorldGenLevel level, BlockPos pos) {
+        for (int dy : new int[] {0, 1, -1}) {
+            if (floorAt(level, pos.above(dy))) return pos.above(dy);
+        }
+        return null;
+    }
+
     private static void set(WorldGenLevel level, BlockPos pos, BlockState state) {
         level.setBlock(pos, state, Block.UPDATE_CLIENTS);
     }
@@ -76,9 +84,9 @@ public class DigSiteFeature implements Feature {
 
         // A timber support with a lantern, a few blocks before the cave-in.
         BlockPos beam = origin.relative(dir, Math.max(1, length - 3));
-        BlockPos leftPost = beam.relative(left);
-        BlockPos rightPost = beam.relative(right);
-        if (floorAt(level, leftPost) && floorAt(level, rightPost)
+        BlockPos leftPost = floorNear(level, beam.relative(left));
+        BlockPos rightPost = floorNear(level, beam.relative(right));
+        if (leftPost != null && rightPost != null && level.getBlockState(leftPost.above()).isAir() && level.getBlockState(rightPost.above()).isAir()
                 && level.getBlockState(leftPost.above(2)).isAir() && level.getBlockState(rightPost.above(2)).isAir() && level.getBlockState(beam.above(2)).isAir()) {
             Block fence = Blocks.OAK_FENCE;
             set(level, leftPost, fence.defaultBlockState());
@@ -91,12 +99,15 @@ public class DigSiteFeature implements Feature {
         }
 
         // The supply chest next to the first rails, facing the track.
+        chest:
         for (Direction side : new Direction[] {left, right}) {
-            BlockPos chest = origin.relative(side, 2);
-            if (floorAt(level, chest)) {
-                set(level, chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, side.getOpposite()));
-                RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);
-                break;
+            for (int dist = 2; dist <= 3; dist++) {
+                BlockPos chest = floorNear(level, origin.relative(side, dist));
+                if (chest != null) {
+                    set(level, chest, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, side.getOpposite()));
+                    RandomizableContainer.setBlockEntityLootTable(level, random, chest, LOOT);
+                    break chest;
+                }
             }
         }
 

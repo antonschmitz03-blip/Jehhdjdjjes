@@ -7,6 +7,6 @@
     }
   },
   "mode": "floor",
-  "tries": 5,
+  "tries": 8,
   "radius": 5
 }

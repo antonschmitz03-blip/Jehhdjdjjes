@@ -87,7 +87,7 @@ public class UndergroundLakeFeature implements Feature {
         }
         // Sea pickles on the lake bed (they only glow underwater).
         for (BlockPos pos : water) {
-            if (!water.contains(pos.below()) && random.nextFloat() < 0.12F) {
+            if (!water.contains(pos.below()) && random.nextFloat() < 0.3F) {
                 level.setBlock(pos, Blocks.SEA_PICKLE.defaultBlockState().setValue(SeaPickleBlock.PICKLES, 1 + random.nextInt(4)).setValue(SeaPickleBlock.WATERLOGGED, true),
                         Block.UPDATE_CLIENTS);
             }
