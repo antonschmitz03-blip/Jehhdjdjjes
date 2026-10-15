@@ -11,7 +11,7 @@ import net.minecraft.world.entity.animal.happyghast.HappyGhast;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * A faint trail of flames and smoke from the rocket engines of a speed-upgraded happy ghast while it flies forward.
+ * A faint trail of small flames and smoke from the rocket engines of a speed-upgraded happy ghast while it flies forward.
  * Purely visual and client side: the upgrade flag is synced to every client that can see the ghast.
  */
 public final class GhastEngineParticles {
@@ -52,12 +52,12 @@ public final class GhastEngineParticles {
                 double jitter = 0.015;
                 double backX = velocity.x - forwardX * 0.12;
                 double backZ = velocity.z - forwardZ * 0.12;
-                if (random.nextDouble() < 0.5 + 0.3 * power) {
-                    level.addParticle(ParticleTypes.FLAME, x, y, z,
+                if (random.nextDouble() < 0.25 + 0.25 * power) {
+                    level.addParticle(ParticleTypes.SMALL_FLAME, x, y, z,
                             backX + random.nextGaussian() * jitter, velocity.y + random.nextGaussian() * jitter,
                             backZ + random.nextGaussian() * jitter);
                 }
-                if (random.nextDouble() < 0.25 + 0.2 * power) {
+                if (random.nextDouble() < 0.12 + 0.13 * power) {
                     level.addParticle(ParticleTypes.SMOKE, x - forwardX * 0.1, y, z - forwardZ * 0.1,
                             backX * 0.6 + random.nextGaussian() * jitter, velocity.y + 0.02,
                             backZ * 0.6 + random.nextGaussian() * jitter);

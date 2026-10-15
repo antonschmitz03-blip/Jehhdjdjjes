@@ -10,7 +10,8 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
   carry your ender chest; sneak + right-click to open it. The chest shows on top of the ghast, towards its back.
   Contents and chest drop when the ghast dies.
 - **Speed upgrade:** right-click a happy ghast with it to double its flying speed (permanent; drops on death).
-  An upgraded ghast wears a rocket engine on each side that trails a little fire and smoke while it flies forward.
+  An upgraded ghast wears a stubby firework rocket on each side, strapped to a leather pad on the harness, that trails
+  small flames and smoke while it flies forward.
 - **Whistle:** calls every happy ghast you have ridden within 128 blocks to fly to you (3 s cooldown).
   Only ghasts in loaded chunks can hear it.
 - **Rope ladder:** use the whistle while a happy ghast is within 8 blocks sideways and it lets a rope ladder down on
