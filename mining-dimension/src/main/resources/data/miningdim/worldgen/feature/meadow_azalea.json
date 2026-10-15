@@ -1,7 +1,7 @@
 {
   "type": "miningdim:scatter",
   "state": {
-    "Name": "minecraft:azalea"
+    "id": "minecraft:azalea"
   },
   "mode": "floor",
   "tries": 4,

@@ -1,7 +1,7 @@
 {
   "type": "miningdim:scatter",
   "state": {
-    "Name": "miningdim:glowcap"
+    "id": "miningdim:glowcap"
   },
   "mode": "floor",
   "tries": 9,

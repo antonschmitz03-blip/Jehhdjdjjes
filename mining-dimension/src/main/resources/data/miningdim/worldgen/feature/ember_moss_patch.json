@@ -1,7 +1,7 @@
 {
   "type": "miningdim:scatter",
   "state": {
-    "Name": "miningdim:ember_moss"
+    "id": "miningdim:ember_moss"
   },
   "mode": "replace_floor",
   "tries": 0,

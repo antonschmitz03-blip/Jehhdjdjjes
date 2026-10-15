@@ -1,7 +1,7 @@
 {
   "type": "miningdim:scatter",
   "state": {
-    "Name": "minecraft:fern"
+    "id": "minecraft:fern"
   },
   "mode": "floor",
   "tries": 14,
