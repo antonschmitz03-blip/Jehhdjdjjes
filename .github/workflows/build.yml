@@ -39,7 +39,7 @@ jobs:
           cp $(ls graves/build/libs/simple-graves-*.jar | grep -v sources) run/mods/
           for project in forge-config-api-port puzzles-lib enchanting-infuser; do
             url=$(curl -sSf "https://api.modrinth.com/v2/project/$project/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%2226.3%22%5D" \
-              | jq -r '.[0].files[] | select(.primary) | .url')
+              | jq -r '[.[] | .files[] | select(.primary)] | map(select(.filename | test("puzzleslib-v26\\.3\\.15") | not)) | .[0].url')
             echo "$project: $url"
             curl -sSfL -o "run/mods/$project.jar" "$url"
           done
