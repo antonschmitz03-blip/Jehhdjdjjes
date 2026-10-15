@@ -1,0 +1,23 @@
+name: Research
+on:
+  push:
+    paths: ['.github/workflows/research.yml']
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - run: |
+          for project in forge-config-api-port puzzles-lib enchanting-infuser; do
+            url=$(curl -sSf "https://api.modrinth.com/v2/project/$project/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%2226.3%22%5D" | jq -r '.[0].files[] | select(.primary) | .url')
+            curl -sSfL -o "$project.jar" "$url"
+          done
+          unzip -q -o enchanting-infuser.jar -d inf
+          echo "=== classes"; find inf -name '*.class' | grep -iE 'menu|screen|cost|infus' | head -60
+          echo "=== InfuserMenu members"
+          javap -p -cp inf fuzs.enchantinginfuser.common.world.inventory.InfuserMenu
+          echo "=== uses of cost in InfuserMenu bytecode"
+          javap -p -c -cp inf fuzs.enchantinginfuser.common.world.inventory.InfuserMenu | grep -nE "^  [a-z].*\(|Cost|cost|getEnchantmentCost|invokestatic|Level" | head -250
