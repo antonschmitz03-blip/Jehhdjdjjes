@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * What the Gale Bow does while it is held (all server side, so the mod needs no client code):
  * <ul>
- * <li>Long hop: jump while sneaking and walking forward on the ground to leap about 7 blocks.</li>
+ * <li>Long hop: jump while sneaking to be thrown where you look (about 7 blocks when looking level).</li>
  * <li>Air jump: one extra jump per time in the air.</li>
  * <li>Focus: while airborne, drawing the bow holds you in place and slows nearby mobs and projectiles for up to
  * 3 seconds; arrows loosed meanwhile do +50% damage. Once per time in the air.</li>
@@ -35,9 +35,9 @@ import net.minecraft.world.phys.Vec3;
 public final class GaleMovement {
     static final int FOCUS_TICKS = 60;
     static final double FOCUS_RADIUS = 12.0;
-    static final double HOP_SPEED = 0.9;
-    static final double HOP_LIFT = 0.5;
-    static final double AIR_JUMP_LIFT = 0.55;
+    static final double HOP_SPEED = 1.0;
+    static final double HOP_LIFT = 0.3;
+    static final double AIR_JUMP_LIFT = 0.75;
     static final int HOP_COOLDOWN_TICKS = 20;
     static final double FOCUS_ARROW_BONUS = 1.5;
 
@@ -116,6 +116,14 @@ public final class GaleMovement {
         boolean jumpPressed = input.jump() && !state.prevJump;
         state.prevJump = input.jump();
 
+        // The client jumps on its own, so by the time the server sees the jump key the player has usually already
+        // left the ground: a jump press on the first tick in the air still counts as a ground jump.
+        boolean groundJump = jumpPressed && (player.onGround() || state.airTicks == 0);
+        if (groundJump && input.shift()
+                && player.level().getGameTime() >= state.hopReadyAt) {
+            longHop(player, state);
+        }
+
         boolean grounded = player.onGround() || player.isInWater() || player.isInLava() || player.onClimbable()
                 || player.isPassenger() || player.isFallFlying() || player.getAbilities().flying;
         if (grounded) {
@@ -125,19 +133,16 @@ public final class GaleMovement {
             if (state.focusing()) {
                 endFocus(player);
             }
-            if (jumpPressed && player.onGround() && input.shift() && input.forward() && !input.backward()
-                    && player.level().getGameTime() >= state.hopReadyAt) {
-                longHop(player, state);
-            }
             return;
         }
         state.airTicks++;
 
         // The first air tick the jump key is still held from the ground jump; a fresh press is needed.
-        if (jumpPressed && !state.airJumpUsed && !state.focusing() && state.airTicks > 1) {
+        if (jumpPressed && !groundJump && !state.airJumpUsed && !state.focusing() && state.airTicks > 1) {
             state.airJumpUsed = true;
-            Vec3 motion = player.getDeltaMovement();
-            player.setDeltaMovement(motion.x, AIR_JUMP_LIFT, motion.z);
+            // The server's velocity for a player is stale, so keep the horizontal speed the client actually moved at.
+            Vec3 moved = clientMotion(player);
+            player.setDeltaMovement(moved.x, AIR_JUMP_LIFT, moved.z);
             player.fallDistance = 0;
             sync(player);
         }
@@ -153,14 +158,15 @@ public final class GaleMovement {
         }
     }
 
+    /** How far the player moved this tick, as reported by their client. */
+    private static Vec3 clientMotion(ServerPlayer player) {
+        return new Vec3(player.getX() - player.xo, player.getY() - player.yo, player.getZ() - player.zo);
+    }
+
+    /** Throws the player where they look, with a little extra lift so a level look still clears gaps. */
     private static void longHop(ServerPlayer player, State state) {
-        Vec3 look = player.getLookAngle();
-        Vec3 flat = new Vec3(look.x, 0, look.z);
-        if (flat.lengthSqr() < 1.0E-4) {
-            return;
-        }
-        flat = flat.normalize().scale(HOP_SPEED);
-        player.setDeltaMovement(flat.x, HOP_LIFT, flat.z);
+        Vec3 push = player.getLookAngle().scale(HOP_SPEED).add(0, HOP_LIFT, 0);
+        player.setDeltaMovement(push);
         state.hopReadyAt = player.level().getGameTime() + HOP_COOLDOWN_TICKS;
         sync(player);
     }
