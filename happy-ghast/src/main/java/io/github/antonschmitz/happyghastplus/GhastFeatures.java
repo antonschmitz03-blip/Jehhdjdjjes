@@ -36,6 +36,10 @@ public final class GhastFeatures {
     private static final double SPEED_BONUS = 1.0; // +100% = double speed
     private static final int RECALL_TICKS = 20 * 45;
     private static final double ARRIVE_DISTANCE = 6.0;
+    /** How far ahead (blocks) a recalled ghast looks for something in its way, and how long it climbs when it finds one. */
+    private static final double LOOK_AHEAD = 3.0;
+    private static final int CLIMB_TICKS = 12;
+    private static final double CLIMB_SPEED = 0.4;
     /** A ghast this close (sideways) to the whistling player lets its rope ladder down instead of flying over. */
     private static final double LADDER_DISTANCE = 8.0;
 
@@ -52,7 +56,8 @@ public final class GhastFeatures {
 
     private static final Map<UUID, Recall> RECALLS = new HashMap<>();
 
-    private record Recall(ServerLevel level, UUID player, int ticksLeft) {}
+    /** climbTicks: how much longer the ghast flies straight up to get over something that blocked its way. */
+    private record Recall(ServerLevel level, UUID player, int ticksLeft, int climbTicks) {}
 
     private GhastFeatures() {}
 
@@ -122,12 +127,12 @@ public final class GhastFeatures {
             if (RopeLadders.isDeployed(ghast)) {
                 // Rope already down (the ghast is held still): pull it up and fly to the caller instead of staying put.
                 RopeLadders.retract(ghast.getUUID());
-                RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS));
+                RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS, 0));
             } else if (dx * dx + dz * dz <= LADDER_DISTANCE * LADDER_DISTANCE) {
                 RECALLS.remove(ghast.getUUID());
                 RopeLadders.lower(ghast);
             } else {
-                RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS));
+                RECALLS.put(ghast.getUUID(), new Recall(level, player.getUUID(), RECALL_TICKS, 0));
             }
             count++;
         }
@@ -163,12 +168,17 @@ public final class GhastFeatures {
             }
             ghast.getNavigation().stop();
             double speed = Math.min(0.6, distance * 0.08);
-            ghast.setDeltaMovement(toPlayer.normalize().scale(speed));
+            Vec3 direction = toPlayer.normalize();
+            // Something in the way: fly straight up for a few blocks, and keep climbing until the way ahead is clear.
+            double look = Math.min(LOOK_AHEAD, distance - ARRIVE_DISTANCE);
+            boolean blocked = look > 0.5 && !ghast.level().noCollision(ghast, ghast.getBoundingBox().move(direction.scale(look)));
+            int climb = blocked ? CLIMB_TICKS : Math.max(0, recall.climbTicks() - 1);
+            ghast.setDeltaMovement(blocked || recall.climbTicks() > 0 ? new Vec3(0, CLIMB_SPEED, 0) : direction.scale(speed));
             float yaw = (float) (Mth.atan2(toPlayer.z, toPlayer.x) * Mth.RAD_TO_DEG) - 90.0F;
             ghast.setYRot(yaw);
             ghast.setYHeadRot(yaw);
             ghast.yBodyRot = yaw;
-            entry.setValue(new Recall(recall.level(), recall.player(), recall.ticksLeft() - 1));
+            entry.setValue(new Recall(recall.level(), recall.player(), recall.ticksLeft() - 1, climb));
         }
     }
 }
