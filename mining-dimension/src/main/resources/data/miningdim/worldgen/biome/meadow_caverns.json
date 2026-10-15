@@ -203,7 +203,10 @@
       "miningdim:meadow_fern",
       "miningdim:meadow_large_fern",
       "miningdim:meadow_berries",
-      "miningdim:meadow_azalea"
+      "miningdim:meadow_azalea",
+      "miningdim:shroomlight_meadow_more",
+      "miningdim:cave_vines_sparse",
+      "miningdim:glowcap_floor"
     ],
     []
   ],

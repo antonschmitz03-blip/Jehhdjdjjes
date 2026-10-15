@@ -81,6 +81,10 @@ public class KnockerDenFeature implements Feature {
             level.setBlock(spots.get(i++), Blocks.CANDLE.defaultBlockState()
                     .setValue(CandleBlock.CANDLES, 1 + random.nextInt(3)).setValue(CandleBlock.LIT, true), Block.UPDATE_CLIENTS);
         }
+        // A lit lantern standing on the ground.
+        if (random.nextInt(3) != 0 && i < spots.size()) {
+            level.setBlock(spots.get(i++), Blocks.LANTERN.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
         if (random.nextBoolean() && i < spots.size()) {
             level.setBlock(spots.get(i++), Blocks.RAIL.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
