@@ -182,6 +182,7 @@ public class Knocker extends PathfinderMob implements RangedAttackMob {
         this.setGuaranteedDrop(EquipmentSlot.MAINHAND);
         this.victim = player.getUUID();
         this.setPersistenceRequired();
+        if (this.den != null) KnockerDenBlock.addLoot(level, this.den);
         this.swingForAttack(InteractionHand.MAIN_HAND);
         this.playSound(SoundEvents.ITEM_PICKUP, 0.8F, 1.6F);
         this.playSound(SoundEvents.WITCH_CELEBRATE, 1.0F, 1.9F);

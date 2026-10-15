@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +86,9 @@ public class MiningDimension implements ModInitializer {
     public static final ResourceKey<Item> KNOCKER_DEN_ITEM_KEY = ResourceKey.create(Registries.ITEM, id("knocker_den"));
     public static final Item KNOCKER_DEN_ITEM = Registry.register(BuiltInRegistries.ITEM, KNOCKER_DEN_ITEM_KEY,
             new BlockItem(KNOCKER_DEN, new Item.Properties().useBlockDescriptionPrefix().setId(KNOCKER_DEN_ITEM_KEY)));
+
+    public static final KnockerDenFeature KNOCKER_DEN_FEATURE = Registry.register(BuiltInRegistries.FEATURE, id("knocker_den"),
+            new KnockerDenFeature(NoneFeatureConfiguration.CODEC));
 
     public static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);

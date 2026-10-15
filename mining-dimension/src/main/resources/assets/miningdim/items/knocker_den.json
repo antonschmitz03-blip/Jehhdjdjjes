@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "miningdim:block/knocker_den"
+    "model": "miningdim:block/knocker_den_1"
   }
 }

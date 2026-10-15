@@ -33,7 +33,8 @@ final class SelfTest {
     private static final int CHUNKS = 6;
     private static final Set<String> DECOR = Set.of("shroomlight", "glow_lichen", "cave_vines", "cave_vines_plant", "moss_block",
             "azalea", "flowering_azalea", "spore_blossom", "dripstone_block", "pointed_dripstone", "amethyst_block", "amethyst_cluster", "basalt", "blackstone", "smooth_basalt", "magma_block", "clay", "big_dripleaf", "small_dripleaf",
-            "grass_block", "short_grass", "firefly_bush", "wildflowers", "knocker_den");
+            "grass_block", "short_grass", "firefly_bush", "wildflowers", "knocker_den",
+            "campfire", "candle", "hay_block", "coarse_dirt");
 
     private SelfTest() {
     }
@@ -275,8 +276,10 @@ final class SelfTest {
         player.getInventory().setItem(0, new ItemStack(Items.IRON_PICKAXE));
         player.getInventory().setItem(1, new ItemStack(Items.IRON_INGOT, 5));
         player.getInventory().setItem(4, new ItemStack(Items.DIAMOND, 3));
+        mining.setBlock(den, mining.getBlockState(den).setValue(KnockerDenBlock.FILL, 0), 2);
         knocker.steal(mining, player);
-        boolean stoleDiamonds = knocker.getMainHandItem().is(Items.DIAMOND) && player.getInventory().getItem(4).isEmpty()
+        int fill = mining.getBlockState(den).getValue(KnockerDenBlock.FILL);
+        boolean stoleDiamonds = knocker.getMainHandItem().is(Items.DIAMOND) && player.getInventory().getItem(4).isEmpty() && fill == 1
                 && player.getInventory().getItem(0).is(Items.IRON_PICKAXE);
         knocker.eat(mining, bread(mining, player));
         boolean gaveBack = !knocker.hasLoot();
@@ -284,7 +287,7 @@ final class SelfTest {
             knocker.eat(mining, bread(mining, player));
         }
         boolean appeased = residents.stream().allMatch(k -> k.isAppeasedBy(player)) && !knocker.canRob(player);
-        MiningDimension.LOGGER.info("miningdim self test: knocker stole diamonds {}, gave them back {}, den appeased {}", stoleDiamonds, gaveBack, appeased);
+        MiningDimension.LOGGER.info("miningdim self test: knocker stole diamonds {} (sack fill now {}), gave them back {}, den appeased {}", stoleDiamonds, fill, gaveBack, appeased);
         if (!stoleDiamonds || !gaveBack || !appeased) {
             throw new IllegalStateException("miningdim self test: knocker behaviour broken");
         }
