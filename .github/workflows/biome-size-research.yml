@@ -1,0 +1,32 @@
+name: Biome Size research
+on:
+  push:
+    branches: [claude/project-thread-fo0ef3]
+    paths: ['.github/workflows/biome-size-research.yml']
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - run: cd biome-size && chmod +x gradlew && ./gradlew compileJava -q || true
+      - shell: bash {0}
+        run: |
+          MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1); [ -z "$MC" ] && MC=$(find ~/.gradle biome-size/.gradle -name 'minecraft-client*.jar' | head -1)
+          echo "MC=$MC"
+          unzip -l "$MC" | awk '{print $4}' > files.txt
+          grep -iE 'worldselection/|levelgen/(Noise|DensityFunction|WorldDimensions|WorldOptions|presets|NoiseRouter)|levelgen/synth/NormalNoise|LevelStem|WorldGenSettings|PrimaryLevelData' files.txt | grep -v '\$.*\$' | head -150
+          grep -iE 'worldgen/(noise|noise_settings|world_preset)' files.txt | head -20
+          curl -sSLo vf.jar https://github.com/Vineflower/vineflower/releases/download/1.11.1/vineflower-1.11.1.jar
+          mkdir cls out; cd cls
+          unzip -q "$MC" $(grep -E '/(NoiseRouterData|NoiseGeneratorSettings|Noises|NoiseRouter|WorldDimensions|WorldCreationContext|WorldCreationUiState|CreateWorldScreen|WorldPresets|DensityFunctions|LevelStem|WorldGenSettings|PrimaryLevelData)(\$[A-Za-z0-9]+)?\.class$' ../files.txt | tr '\n' ' ')
+          cd ..
+          java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
+          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f"; done > dump.txt
+          for n in NoiseRouterData Noises NoiseGeneratorSettings WorldDimensions WorldCreationContext WorldCreationUiState LevelStem WorldGenSettings; do echo "##### $n"; awk "/##### .*\\/$n.java/{p=1;next} /^##### /{p=0} p" dump.txt | head -500; done
+          echo "##### CreateWorldScreen"; awk '/##### .*\/CreateWorldScreen.java/{p=1;next} /^##### /{p=0} p' dump.txt | head -900
+          echo "##### DensityFunctions shifted"; grep -n -iE 'class ShiftedNoise|record ShiftedNoise|shiftedNoise2d|xzScale|class Noise\b|record Noise\(' dump.txt | head -40
+          awk '/record ShiftedNoise/{p=1} p{print; if (++c>60) exit}' dump.txt
+          echo "##### PrimaryLevelData worldgen"; grep -n -iE 'worldGenSettings|WorldGenSettings|dimensions' dump.txt | grep -i primarylevel | head; awk '/##### .*\/PrimaryLevelData.java/{p=1;next} /^##### /{p=0} p' dump.txt | grep -n -iE 'worldgen|dimension|parse|codec' | head -40
