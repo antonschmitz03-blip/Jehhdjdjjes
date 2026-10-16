@@ -1,0 +1,41 @@
+name: Research
+on:
+  push:
+    branches: [claude/project-thread-su7uqz]
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '25' }
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew compileJava -q
+      - shell: bash {0}
+        run: |
+          MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
+          LIFE=$(find ~/.gradle -name 'fabric-lifecycle-events-v1*.jar' | grep -v sources | head -1)
+          CP="$MC:$LIFE"
+          p() { echo "##### $1"; javap -p -cp "$CP" "$1" | grep -vE '^\s*$|lambda\$|access\$' | head -${2:-120}; }
+          echo "##### DataFixTypes values"; javap -p -cp "$CP" net.minecraft.util.datafix.DataFixTypes | grep -E 'static final'
+          javap -p -cp "$CP" net.minecraft.world.entity.EntityType | grep -E 'loadEntityRecursive|loadEntitiesRecursive|public .* create\(|loadStaticEntity|by\(|getKey|isSerializable|canSerialize|fromValueInput'
+          p net.minecraft.world.entity.EntitySpawnReason 30
+          javap -p -cp "$CP" net.minecraft.server.level.ServerLevel | grep -E 'addFreshEntity|addWithUUID|tryAddFreshEntityWithPassengers|addEntity|getEntity\('
+          javap -p -cp "$CP" net.minecraft.world.entity.Entity | grep -E 'snapTo|setPos\(|teleportTo|setUUID|getUUID|setYRot|setDeltaMovement|stopRiding|ejectPassengers|load\(|save\(|getPassengers|setLeashedTo|dropLeash|setOldPosAndRot|restoreFrom|isRemoved|setNoGravity|snapToBlock'
+          p net.minecraft.world.level.chunk.storage.RegionFileVersion 60
+          p net.minecraft.world.level.chunk.storage.RegionFile 80
+          p net.minecraft.world.level.chunk.storage.RegionStorageInfo 20
+          p net.minecraft.world.level.ChunkPos 60
+          p net.minecraft.nbt.IntArrayTag 30
+          p net.minecraft.nbt.ListTag 50
+          p net.minecraft.core.UUIDUtil 40
+          javap -p -cp "$CP" net.minecraft.world.level.storage.TagValueInput | grep -E 'create'
+          javap -p -cp "$CP" net.minecraft.nbt.NbtUtils | grep -E 'DataVersion|createUUID|loadUUID'
+          javap -p -cp "$CP" net.minecraft.world.entity.TamableAnimal | grep -iE 'owner'
+          javap -p -cp "$CP" net.minecraft.world.entity.animal.equine.AbstractHorse | grep -iE 'owner'
+          javap -p -cp "$CP" net.minecraft.world.entity.OwnableEntity 2>/dev/null | head -10
+          javap -p -cp "$CP" net.minecraft.world.entity.EntityReference 2>/dev/null | head -30
+          javap -c -p -cp "$CP" net.minecraft.world.entity.TamableAnimal | grep -E 'String (Owner|owner)|Sitting|ldc.*Owner' | head
+          javap -p -cp "$CP" net.minecraft.world.entity.TamableAnimal | grep -iE 'addAdditional|readAdditional|setOrderedToSit'
+          javap -c -p -cp "$CP" net.minecraft.world.entity.TamableAnimal | awk '/addAdditionalSaveData/{f=1} f' | grep -E 'ldc|Method.*(store|put)' | head -20
+          javap -p -cp "$CP" net.minecraft.server.level.ServerPlayer | grep -E 'snapTo|nameAndId'
