@@ -143,7 +143,8 @@ for x in range(6):
         v = {"model": f"happyghastplus:block/ghast_nest_{model}"}
         if rot:
             v["y"] = rot
-        variants[f"x={x},z={z}"] = v
+        for facing in ("north", "east", "south", "west"):   # facing only matters to the ghast, the look is the same
+            variants[f"x={x},z={z},facing={facing}"] = v
 json.dump({"variants": variants}, open(f"{A}/blockstates/ghast_nest.json", "w"), indent=1)
 
 # ---------------------------------------------------------------- item models

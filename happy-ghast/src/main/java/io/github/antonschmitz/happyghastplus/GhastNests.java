@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -52,7 +53,7 @@ public final class GhastNests {
     private static final Map<UUID, Integer> COOLDOWN = new HashMap<>();
     private static int ticks;
 
-    /** {@code origin} is cell (0, 0) of the nest; {@code restTicks} counts ticks spent at rest on its floor; {@code yaw} is the facing it keeps. */
+    /** {@code origin} is cell (0, 0) of the nest; {@code restTicks} counts ticks spent at rest on its floor; {@code yaw} is the facing the nest gives it. */
     private record Rest(Level level, BlockPos origin, int restTicks, float yaw) {}
 
     private GhastNests() {}
@@ -112,7 +113,7 @@ public final class GhastNests {
                     // A ghast that was held still by its rope ladder (the rider just dismounted over the nest) settles too:
                     // the rope is pulled up so the two holds don't fight over its position.
                     RopeLadders.retract(ghast.getUUID());
-                    RESTING.put(ghast.getUUID(), new Rest(ghast.level(), origin, 0, ghast.getYRot()));
+                    RESTING.put(ghast.getUUID(), new Rest(ghast.level(), origin, 0, nestYaw(ghast.level(), origin)));
                 }
             }
         }
@@ -166,6 +167,12 @@ public final class GhastNests {
         return new Vec3(origin.getX() + GhastNestBlock.SIZE / 2.0, origin.getY() + GhastNestBlock.FLOOR, origin.getZ() + GhastNestBlock.SIZE / 2.0);
     }
 
+    /** The direction a ghast faces on this nest, as a yaw: the way its placer looked. */
+    private static float nestYaw(Level level, BlockPos origin) {
+        BlockState middle = level.getBlockState(origin.offset(3, 0, 3));
+        return middle.is(HappyGhastPlus.GHAST_NEST) ? middle.getValue(GhastNestBlock.FACING).toYRot() : 0.0F;
+    }
+
     private static boolean nestIntact(Level level, BlockPos origin) {
         BlockState middle = level.getBlockState(origin.offset(3, 0, 3));
         return middle.is(HappyGhastPlus.GHAST_NEST) && GhastNestBlock.origin(origin.offset(3, 0, 3), middle).equals(origin);
@@ -184,9 +191,10 @@ public final class GhastNests {
         double z = ghast.getZ() + (target.z - ghast.getZ()) * CENTRE_EASING;
         double y = Math.max(target.y, ghast.getY() - SINK_SPEED);
         // Once it has landed it stays landed: the ghast's own AI nudges it a little every tick, and counting that
-        // as "not at rest" kept resetting the timer, so it never closed its eyes.
+        // as "not at rest" kept resetting the timer, so it never closed its eyes. Landing needs it to face the nest's way.
         boolean atRest = rest.restTicks() > 0
-                || (Math.abs(target.x - x) < 0.02 && Math.abs(target.z - z) < 0.02 && y - target.y < 0.01);
+                || (Math.abs(target.x - x) < 0.02 && Math.abs(target.z - z) < 0.02 && y - target.y < 0.01
+                && Math.abs(Mth.wrapDegrees(rest.yaw() - ghast.getYRot())) < 1.0F);
         if (atRest) {
             x = target.x;
             y = target.y;
@@ -195,15 +203,16 @@ public final class GhastNests {
         ghast.getNavigation().stop();
         ghast.setDeltaMovement(Vec3.ZERO);
         ghast.setPos(x, y, z);
-        // Keep the facing too, otherwise the ghast's own look control keeps turning it on the nest.
-        ghast.setYRot(rest.yaw());
+        // Turn to the nest's direction and hold it, otherwise the ghast's own look control keeps turning it.
+        float yaw = Mth.approachDegrees(ghast.getYRot(), rest.yaw(), 5.0F);
+        ghast.setYRot(yaw);
         ghast.setXRot(0.0F);
-        ghast.setYHeadRot(rest.yaw());
-        ghast.setYBodyRot(rest.yaw());
-        ghast.yRotO = rest.yaw();
+        ghast.setYHeadRot(yaw);
+        ghast.setYBodyRot(yaw);
+        ghast.yRotO = yaw;
         ghast.xRotO = 0.0F;
-        ghast.yHeadRotO = rest.yaw();
-        ghast.yBodyRotO = rest.yaw();
+        ghast.yHeadRotO = yaw;
+        ghast.yBodyRotO = yaw;
 
         int restTicks = atRest ? rest.restTicks() + 1 : 0;
         RESTING.put(ghast.getUUID(), new Rest(rest.level(), rest.origin(), restTicks, rest.yaw()));

@@ -1,6 +1,7 @@
 package io.github.antonschmitz.happyghastplus;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -9,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -23,6 +26,8 @@ public class GhastNestBlock extends Block {
     public static final int CELLS = SIZE * SIZE - 4;
     public static final IntegerProperty X = IntegerProperty.create("x", 0, SIZE - 1);
     public static final IntegerProperty Z = IntegerProperty.create("z", 0, SIZE - 1);
+    /** The way a ghast faces when it settles on the nest: the way the player looked when placing it. Same on every cell. */
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     /** Height of the collision floor in blocks; a settled ghast rests on it. */
     public static final double FLOOR = 4.0 / 16.0;
 
@@ -31,12 +36,12 @@ public class GhastNestBlock extends Block {
 
     public GhastNestBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(X, 3).setValue(Z, 3));
+        registerDefaultState(stateDefinition.any().setValue(X, 3).setValue(Z, 3).setValue(FACING, Direction.NORTH));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(X, Z);
+        builder.add(X, Z, FACING);
     }
 
     @Override
@@ -73,6 +78,11 @@ public class GhastNestBlock extends Block {
      * not free.
      */
     public static boolean placeNest(Level level, BlockPos center) {
+        return placeNest(level, center, Direction.NORTH);
+    }
+
+    /** Same, with the direction a settled ghast will face. */
+    public static boolean placeNest(Level level, BlockPos center, Direction facing) {
         BlockPos origin = center.offset(-3, 0, -3);
         for (int x = 0; x < SIZE; x++) {
             for (int z = 0; z < SIZE; z++) {
@@ -85,7 +95,7 @@ public class GhastNestBlock extends Block {
         for (int x = 0; x < SIZE; x++) {
             for (int z = 0; z < SIZE; z++) {
                 if (isCell(x, z)) {
-                    level.setBlock(origin.offset(x, 0, z), nest.setValue(X, x).setValue(Z, z), Block.UPDATE_ALL);
+                    level.setBlock(origin.offset(x, 0, z), nest.setValue(X, x).setValue(Z, z).setValue(FACING, facing), Block.UPDATE_ALL);
                 }
             }
         }

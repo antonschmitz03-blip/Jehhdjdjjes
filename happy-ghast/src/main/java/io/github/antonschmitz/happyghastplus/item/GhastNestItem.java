@@ -12,7 +12,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 
-/** Places a 6x6 ghast nest on top of the clicked block, centred on the block above it. */
+/** Places a 6x6 ghast nest on top of the clicked block, centred on the block above it, facing the way the player looks. */
 public class GhastNestItem extends Item {
     public GhastNestItem(Properties properties) {
         super(properties);
@@ -29,7 +29,7 @@ public class GhastNestItem extends Item {
         }
         Player player = context.getPlayer();
         BlockPos center = context.getClickedPos().above();
-        if (!GhastNestBlock.placeNest(level, center)) {
+        if (!GhastNestBlock.placeNest(level, center, context.getHorizontalDirection())) {
             if (player != null) {
                 player.sendOverlayMessage(Component.translatable("message.happyghastplus.ghast_nest.no_room"));
             }
