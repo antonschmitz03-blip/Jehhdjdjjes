@@ -46,7 +46,7 @@ final class SelfTest {
             int[] oldOwner = {1, 2, 3, 4};
             read.putIntArray("UUID", oldOwner);
             wipe(player);
-            player.setPos(100.5, 80, -40.5);
+            player.setPos(8.5, 80, 9.5);
             NbtIo.writeCompressed(new ImportData("Old World", read, true, true, false, true, List.of(wolf(oldOwner))).toTag(), NewGamePlus.pendingFile(server));
             Importer.onFirstJoin(server, player);
 
@@ -56,7 +56,7 @@ final class SelfTest {
             check(player.getItemBySlot(EquipmentSlot.OFFHAND).is(Items.TORCH), "offhand not imported");
             check(player.experienceLevel == 5, "expected level 5, got " + player.experienceLevel);
             check(player.getEnderChestInventory().isEmpty(), "ender chest imported although it was off");
-            check(player.getX() == 100.5 && player.getZ() == -40.5, "position changed: " + player.position());
+            check(player.getX() == 8.5 && player.getZ() == 9.5, "position changed: " + player.position());
             check(!NewGamePlus.hasPending(server), "pending import not used up");
             Files.deleteIfExists(NewGamePlus.pendingFile(server).resolveSibling("newgameplus_applied.dat"));
 
@@ -90,9 +90,9 @@ final class SelfTest {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", "minecraft:wolf");
         ListTag pos = new ListTag();
-        pos.add(DoubleTag.valueOf(100.5));
+        pos.add(DoubleTag.valueOf(8.5));
         pos.add(DoubleTag.valueOf(80));
-        pos.add(DoubleTag.valueOf(-40.5));
+        pos.add(DoubleTag.valueOf(9.5));
         tag.put("Pos", pos);
         tag.put("Owner", new IntArrayTag(owner));
         return tag;
