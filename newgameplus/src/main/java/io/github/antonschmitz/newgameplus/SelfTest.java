@@ -43,6 +43,9 @@ final class SelfTest {
             CompoundTag read = readThroughWorldFolder(source);
             check(read.get("Inventory").equals(source.get("Inventory")), "inventory changed while reading the world folder");
 
+            // Entities only exist in loaded chunks, and nobody is online to load them.
+            level.setChunkForced(0, 0, true);
+            level.getChunk(0, 0);
             int[] oldOwner = {1, 2, 3, 4};
             read.putIntArray("UUID", oldOwner);
             wipe(player);
@@ -80,6 +83,7 @@ final class SelfTest {
                 wolf.discard();
             }
             Files.deleteIfExists(NewGamePlus.mobsFile(server).resolveSibling("newgameplus_mobs_applied.dat"));
+            level.setChunkForced(0, 0, false);
             NewGamePlus.LOGGER.info("newgameplus self test: mobs ok");
 
             // Other mods' self tests reuse the same fake player.
