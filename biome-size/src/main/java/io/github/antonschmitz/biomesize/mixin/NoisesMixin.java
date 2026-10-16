@@ -2,6 +2,7 @@ package io.github.antonschmitz.biomesize.mixin;
 
 import io.github.antonschmitz.biomesize.BiomeSize;
 import io.github.antonschmitz.biomesize.AmplifiedNoise;
+import io.github.antonschmitz.biomesize.OffsetNoise;
 import io.github.antonschmitz.biomesize.ScaledNoise;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
@@ -21,6 +22,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Noises.class)
 public abstract class NoisesMixin {
+    /** How far the erosion noise moves per 100% of the Mountains slider. */
+    private static final float MOUNTAIN_SHIFT = 0.3F;
+
     @Inject(method = "instantiate", at = @At("RETURN"), cancellable = true)
     private static void biomesize$scale(HolderGetter<NormalNoise> noises, PositionalRandomFactory random,
                                         ResourceKey<NormalNoise> name, CallbackInfoReturnable<Noise> cir) {
@@ -35,6 +39,11 @@ public abstract class NoisesMixin {
         } else if (name == Noises.CONTINENTALNESS || name == Noises.EROSION
                 || name == Noises.CONTINENTALNESS_LARGE || name == Noises.EROSION_LARGE) {
             noise = stretch(noise, s.terrainPercent());
+            if (name == Noises.EROSION || name == Noises.EROSION_LARGE) {
+                // Low erosion is where the tall mountains are: shifting it down makes them cover more of the world.
+                float shift = -MOUNTAIN_SHIFT * (s.mountainPercent() - BiomeSize.DEFAULT_PERCENT) / 100.0F;
+                noise = shift == 0.0F ? noise : new OffsetNoise(noise, shift);
+            }
         } else if (name == Noises.JAGGED) {
             // Strength of mountain peaks and cliffs.
             noise = amplify(noise, s.dramaticPercent() / 100.0F);

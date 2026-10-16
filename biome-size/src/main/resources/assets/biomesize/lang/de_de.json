@@ -6,5 +6,7 @@
   "biomesize.slider.dramatic": "Dramatisches Gelände: %s%%",
   "biomesize.slider.dramatic.info": "Wie hoch und zerklüftet Berggipfel und Klippen werden. 100% ist Vanilla, 0% entfernt die zerklüfteten Gipfel.",
   "biomesize.slider.cave_size": "Höhlengröße: %s%%",
-  "biomesize.slider.cave_size.info": "Verhältnis von großen Höhlen zu kleinen Tunneln. Über 100% gibt mehr und größere Hallen und dünnere Tunnel, darunter weniger Hallen und breitere Tunnel."
+  "biomesize.slider.cave_size.info": "Verhältnis von großen Höhlen zu kleinen Tunneln. Über 100% gibt mehr und größere Hallen und dünnere Tunnel, darunter weniger Hallen und breitere Tunnel.",
+  "biomesize.slider.mountains": "Berge: %s%%",
+  "biomesize.slider.mountains.info": "Wie viel der Welt aus hohen Bergen besteht. 100% ist Vanilla, 0% ist fast flach, über 200% ist Gebirgsland."
 }

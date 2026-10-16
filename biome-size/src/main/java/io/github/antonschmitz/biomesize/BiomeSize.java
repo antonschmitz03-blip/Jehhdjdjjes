@@ -21,6 +21,8 @@ public class BiomeSize implements ModInitializer {
     public static final int MAX_SIZE = 400;
     public static final int MIN_DRAMATIC = 0;
     public static final int MAX_DRAMATIC = 300;
+    public static final int MIN_MOUNTAINS = 0;
+    public static final int MAX_MOUNTAINS = 300;
     public static final int MIN_CAVE = 25;
     public static final int MAX_CAVE = 300;
 
@@ -34,8 +36,8 @@ public class BiomeSize implements ModInitializer {
             Path file = server.getWorldPath(LevelResource.ROOT).resolve(FILE_NAME);
             active = read(file);
             if (!active.isDefault()) {
-                LOGGER.info("Biome Size: biome size {}%, terrain scale {}%, dramatic terrain {}%, cave size {}%",
-                        active.biomePercent(), active.terrainPercent(), active.dramaticPercent(), active.cavePercent());
+                LOGGER.info("Biome Size: biome size {}%, terrain scale {}%, dramatic terrain {}%, mountains {}%, cave size {}%",
+                        active.biomePercent(), active.terrainPercent(), active.dramaticPercent(), active.mountainPercent(), active.cavePercent());
             }
         });
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> active = Settings.DEFAULT);
@@ -49,8 +51,8 @@ public class BiomeSize implements ModInitializer {
         return Math.max(min, Math.min(max, percent));
     }
 
-    public record Settings(int biomePercent, int terrainPercent, int dramaticPercent, int cavePercent) {
-        public static final Settings DEFAULT = new Settings(DEFAULT_PERCENT, DEFAULT_PERCENT, DEFAULT_PERCENT, DEFAULT_PERCENT);
+    public record Settings(int biomePercent, int terrainPercent, int dramaticPercent, int mountainPercent, int cavePercent) {
+        public static final Settings DEFAULT = new Settings(DEFAULT_PERCENT, DEFAULT_PERCENT, DEFAULT_PERCENT, DEFAULT_PERCENT, DEFAULT_PERCENT);
 
         public boolean isDefault() {
             return this.equals(DEFAULT);
@@ -67,6 +69,7 @@ public class BiomeSize implements ModInitializer {
                     clamp(intOr(json, "biome_size"), MIN_SIZE, MAX_SIZE),
                     clamp(intOr(json, "terrain_scale"), MIN_SIZE, MAX_SIZE),
                     clamp(intOr(json, "dramatic_terrain"), MIN_DRAMATIC, MAX_DRAMATIC),
+                    clamp(intOr(json, "mountains"), MIN_MOUNTAINS, MAX_MOUNTAINS),
                     clamp(intOr(json, "cave_size"), MIN_CAVE, MAX_CAVE));
         } catch (IOException | RuntimeException e) {
             LOGGER.error("Biome Size: could not read {}, using vanilla sizes", file, e);
@@ -86,6 +89,7 @@ public class BiomeSize implements ModInitializer {
         json.addProperty("biome_size", settings.biomePercent());
         json.addProperty("terrain_scale", settings.terrainPercent());
         json.addProperty("dramatic_terrain", settings.dramaticPercent());
+        json.addProperty("mountains", settings.mountainPercent());
         json.addProperty("cave_size", settings.cavePercent());
         try {
             Files.writeString(worldDir.resolve(FILE_NAME), json.toString());

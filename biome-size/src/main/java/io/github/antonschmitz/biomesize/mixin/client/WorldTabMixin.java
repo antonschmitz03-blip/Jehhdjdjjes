@@ -9,10 +9,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Adds four sliders in two rows under the switches of the World tab (rows 0-2 are vanilla's). */
+/** Adds five sliders in three rows under the switches of the World tab (rows 0-2 are vanilla's). */
 @Mixin(targets = "net.minecraft.client.gui.screens.worldselection.CreateWorldScreen$WorldTab")
 public abstract class WorldTabMixin {
     private static final int WIDTH = 150;
+    private static final int FULL_WIDTH = 310;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void biomesize$addSliders(CallbackInfo ci) {
@@ -26,8 +27,11 @@ public abstract class WorldTabMixin {
         layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_DRAMATIC, BiomeSize.MAX_DRAMATIC,
                 "biomesize.slider.dramatic", "biomesize.slider.dramatic.info",
                 BiomeSizeClient.dramaticPercent, p -> BiomeSizeClient.dramaticPercent = p), 4, 0);
-        layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_CAVE, BiomeSize.MAX_CAVE,
+        layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_MOUNTAINS, BiomeSize.MAX_MOUNTAINS,
+                "biomesize.slider.mountains", "biomesize.slider.mountains.info",
+                BiomeSizeClient.mountainPercent, p -> BiomeSizeClient.mountainPercent = p), 4, 1);
+        layout.addChild(new PercentSlider(FULL_WIDTH, BiomeSize.MIN_CAVE, BiomeSize.MAX_CAVE,
                 "biomesize.slider.cave_size", "biomesize.slider.cave_size.info",
-                BiomeSizeClient.cavePercent, p -> BiomeSizeClient.cavePercent = p), 4, 1);
+                BiomeSizeClient.cavePercent, p -> BiomeSizeClient.cavePercent = p), 5, 0, 1, 2);
     }
 }
