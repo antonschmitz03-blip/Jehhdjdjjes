@@ -57,6 +57,7 @@ jobs:
           javap -p -cp "$JAR" 'net.minecraft.client.gui.screens.worldselection.CreateWorldScreen' | grep -E 'createNewWorldDirectory'
           javap -p -cp "$JAR" 'net.minecraft.client.gui.screens.worldselection.CreateWorldScreen$WorldTab' | grep -E 'WorldTab\('
           javap -p -cp "$JAR" 'net.minecraft.client.gui.components.tabs.GridLayoutTab' | grep -E 'GridLayout layout'
+          javap -p -cp "$JAR" 'net.minecraft.client.gui.screens.worldselection.CreateWorldScreen$WorldTab' | grep -E 'CreateWorldScreen this\$0'
       - uses: actions/upload-artifact@v4
         with:
           name: biome-size
