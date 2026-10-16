@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
  * <li>Long hop: jump while sneaking to be thrown where you look (about 7 blocks when looking level).</li>
  * <li>Air jump: one extra jump per time in the air.</li>
  * <li>Focus: while airborne, drawing the bow holds you in place and slows nearby mobs and projectiles for up to
- * 6 seconds, however many arrows you loose; they do +50% damage. Once per time in the air.</li>
+ * 6 seconds, however many arrows you loose (between draws you sink slowly); they do +50% damage. Once per time in the air.</li>
  * </ul>
  */
 public final class GaleMovement {
@@ -55,6 +55,7 @@ public final class GaleMovement {
         int airJumps;
         boolean focusUsed;
         int focusTicksLeft;
+        boolean hovering;
         long hopReadyAt;
         int airTicks;
         /** The player's last few positions, newest first, to tell how fast their client really moves. */
@@ -206,6 +207,7 @@ public final class GaleMovement {
 
     private static void startFocus(ServerPlayer player, State state) {
         state.focusUsed = true;
+        state.hovering = true;
         state.focusTicksLeft = FOCUS_TICKS + 20 * ArsenalEnchantments.level(player, player.getUseItem(), ArsenalEnchantments.TAILWIND);
         player.setNoGravity(true);
         player.setDeltaMovement(Vec3.ZERO);
@@ -219,6 +221,20 @@ public final class GaleMovement {
             return;
         }
         player.fallDistance = 0;
+        if (drawingGaleBow(player)) {
+            if (!state.hovering) {
+                // Drawing again: stop where you are.
+                state.hovering = true;
+                player.setNoGravity(true);
+                player.setDeltaMovement(Vec3.ZERO);
+                sync(player);
+            }
+        } else {
+            // Between shots you sink slowly instead of hovering.
+            state.hovering = false;
+            player.setNoGravity(false);
+            player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 3, 0, false, false, false));
+        }
         AABB area = player.getBoundingBox().inflate(FOCUS_RADIUS);
         for (Mob mob : player.level().getEntitiesOfClass(Mob.class, area)) {
             mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 3, MOB_SLOWNESS, false, false, false));
