@@ -183,7 +183,10 @@ public final class GhastNests {
         double x = ghast.getX() + (target.x - ghast.getX()) * CENTRE_EASING;
         double z = ghast.getZ() + (target.z - ghast.getZ()) * CENTRE_EASING;
         double y = Math.max(target.y, ghast.getY() - SINK_SPEED);
-        boolean atRest = Math.abs(target.x - x) < 0.02 && Math.abs(target.z - z) < 0.02 && y - target.y < 0.01;
+        // Once it has landed it stays landed: the ghast's own AI nudges it a little every tick, and counting that
+        // as "not at rest" kept resetting the timer, so it never closed its eyes.
+        boolean atRest = rest.restTicks() > 0
+                || (Math.abs(target.x - x) < 0.02 && Math.abs(target.z - z) < 0.02 && y - target.y < 0.01);
         if (atRest) {
             x = target.x;
             y = target.y;
