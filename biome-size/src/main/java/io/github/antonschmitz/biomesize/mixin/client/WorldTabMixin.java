@@ -1,37 +1,34 @@
 package io.github.antonschmitz.biomesize.mixin.client;
 
-import io.github.antonschmitz.biomesize.BiomeSize;
-import io.github.antonschmitz.biomesize.client.BiomeSizeClient;
-import io.github.antonschmitz.biomesize.client.PercentSlider;
+import io.github.antonschmitz.biomesize.client.BiomeSizeScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
+import net.minecraft.network.chat.Component;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Adds five sliders in three rows under the switches of the World tab (rows 0-2 are vanilla's). */
+/** Adds a "World Shape..." button under the switches of the World tab (rows 0-2 are vanilla's). */
 @Mixin(targets = "net.minecraft.client.gui.screens.worldselection.CreateWorldScreen$WorldTab")
 public abstract class WorldTabMixin {
-    private static final int WIDTH = 150;
-    private static final int FULL_WIDTH = 310;
+    @Shadow
+    @Final
+    CreateWorldScreen this$0;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void biomesize$addSliders(CallbackInfo ci) {
+    private void biomesize$addButton(CallbackInfo ci) {
         GridLayout layout = ((GridLayoutTabAccessor) this).biomesize$layout();
-        layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_SIZE, BiomeSize.MAX_SIZE,
-                "biomesize.slider.biome_size", "biomesize.slider.biome_size.info",
-                BiomeSizeClient.biomePercent, p -> BiomeSizeClient.biomePercent = p), 3, 0);
-        layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_SIZE, BiomeSize.MAX_SIZE,
-                "biomesize.slider.terrain_scale", "biomesize.slider.terrain_scale.info",
-                BiomeSizeClient.terrainPercent, p -> BiomeSizeClient.terrainPercent = p), 3, 1);
-        layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_DRAMATIC, BiomeSize.MAX_DRAMATIC,
-                "biomesize.slider.dramatic", "biomesize.slider.dramatic.info",
-                BiomeSizeClient.dramaticPercent, p -> BiomeSizeClient.dramaticPercent = p), 4, 0);
-        layout.addChild(new PercentSlider(WIDTH, BiomeSize.MIN_MOUNTAINS, BiomeSize.MAX_MOUNTAINS,
-                "biomesize.slider.mountains", "biomesize.slider.mountains.info",
-                BiomeSizeClient.mountainPercent, p -> BiomeSizeClient.mountainPercent = p), 4, 1);
-        layout.addChild(new PercentSlider(FULL_WIDTH, BiomeSize.MIN_CAVE, BiomeSize.MAX_CAVE,
-                "biomesize.slider.cave_size", "biomesize.slider.cave_size.info",
-                BiomeSizeClient.cavePercent, p -> BiomeSizeClient.cavePercent = p), 5, 0, 1, 2);
+        CreateWorldScreen parent = this$0;
+        layout.addChild(Button.builder(Component.translatable("biomesize.button"),
+                        button -> Minecraft.getInstance().gui.setScreen(new BiomeSizeScreen(parent)))
+                .width(310)
+                .tooltip(Tooltip.create(Component.translatable("biomesize.button.info")))
+                .build(), 3, 0, 1, 2);
     }
 }

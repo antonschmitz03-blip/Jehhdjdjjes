@@ -24,6 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class NoisesMixin {
     /** How far the erosion noise moves per 100% of the Mountains slider. */
     private static final float MOUNTAIN_SHIFT = 0.3F;
+    /** How far the aquifer floodedness noise moves per 100% of the Underground Water slider. */
+    private static final float WATER_SHIFT = 0.4F;
 
     @Inject(method = "instantiate", at = @At("RETURN"), cancellable = true)
     private static void biomesize$scale(HolderGetter<NormalNoise> noises, PositionalRandomFactory random,
@@ -44,6 +46,13 @@ public abstract class NoisesMixin {
                 float shift = -MOUNTAIN_SHIFT * (s.mountainPercent() - BiomeSize.DEFAULT_PERCENT) / 100.0F;
                 noise = shift == 0.0F ? noise : new OffsetNoise(noise, shift);
             }
+        } else if (name == Noises.AQUIFER_FLUID_LEVEL_FLOODEDNESS) {
+            // Higher floodedness fills more underground pools with water.
+            float shift = WATER_SHIFT * (s.waterPercent() - BiomeSize.DEFAULT_PERCENT) / 100.0F;
+            noise = shift == 0.0F ? noise : new OffsetNoise(noise, shift);
+        } else if (name == Noises.AQUIFER_LAVA) {
+            // Deep pools turn to lava where this is above a threshold, so a stronger noise gives more lava.
+            noise = amplify(noise, s.lavaPercent() / 100.0F);
         } else if (name == Noises.JAGGED) {
             // Strength of mountain peaks and cliffs.
             noise = amplify(noise, s.dramaticPercent() / 100.0F);

@@ -8,5 +8,12 @@
   "biomesize.slider.cave_size": "Cave Size: %s%%",
   "biomesize.slider.cave_size.info": "Ratio of big caves to small tunnels. Above 100% gives more and bigger caverns and thinner tunnels, below 100% fewer caverns and wider tunnels.",
   "biomesize.slider.mountains": "Mountains: %s%%",
-  "biomesize.slider.mountains.info": "How much of the world is tall mountains. 100% is vanilla, 0% is mostly flat, above 200% is mountain country."
+  "biomesize.slider.mountains.info": "How much of the world is tall mountains. 100% is vanilla, 0% is mostly flat, above 200% is mountain country.",
+  "biomesize.button": "World Shape...",
+  "biomesize.button.info": "Biome size, terrain, mountains, caves and underground water and lava. Saved with the new world.",
+  "biomesize.screen.title": "World Shape",
+  "biomesize.slider.water": "Underground Water: %s%%",
+  "biomesize.slider.water.info": "How many underground water pools and single-block water springs (waterfalls in cave walls) there are. 100% is vanilla, 0% is almost none. Overworld only.",
+  "biomesize.slider.lava": "Underground Lava: %s%%",
+  "biomesize.slider.lava.info": "How many deep lava pools and single-block lava springs (lavafalls in cave walls) there are. 100% is vanilla, 0% is none. Overworld only."
 }

@@ -9,6 +9,8 @@ public final class BiomeSizeClient {
     public static int dramaticPercent = BiomeSize.DEFAULT_PERCENT;
     public static int mountainPercent = BiomeSize.DEFAULT_PERCENT;
     public static int cavePercent = BiomeSize.DEFAULT_PERCENT;
+    public static int waterPercent = BiomeSize.DEFAULT_PERCENT;
+    public static int lavaPercent = BiomeSize.DEFAULT_PERCENT;
 
     private BiomeSizeClient() {
     }
@@ -19,9 +21,11 @@ public final class BiomeSizeClient {
         dramaticPercent = BiomeSize.DEFAULT_PERCENT;
         mountainPercent = BiomeSize.DEFAULT_PERCENT;
         cavePercent = BiomeSize.DEFAULT_PERCENT;
+        waterPercent = BiomeSize.DEFAULT_PERCENT;
+        lavaPercent = BiomeSize.DEFAULT_PERCENT;
     }
 
     public static BiomeSize.Settings settings() {
-        return new BiomeSize.Settings(biomePercent, terrainPercent, dramaticPercent, mountainPercent, cavePercent);
+        return new BiomeSize.Settings(biomePercent, terrainPercent, dramaticPercent, mountainPercent, cavePercent, waterPercent, lavaPercent);
     }
 }
