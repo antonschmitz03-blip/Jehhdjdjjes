@@ -15,22 +15,11 @@ jobs:
       - shell: bash {0}
         run: |
           MC=$(find ~/.gradle -name 'minecraft-merged.jar' | head -1)
-          unzip -l "$MC" | awk '{print $4}' > files.txt
           curl -sSLo vf.jar https://github.com/Vineflower/vineflower/releases/download/1.11.1/vineflower-1.11.1.jar
           mkdir cls out; cd cls
-          unzip -q "$MC" 'net/minecraft/world/level/levelgen/RandomState*.class' 'net/minecraft/world/level/levelgen/DensityFunctions*.class' 'net/minecraft/world/level/levelgen/Noises*.class'
+          unzip -q "$MC" 'net/minecraft/world/level/levelgen/densityfunction/generator/NoiseFunction*.class' 'net/minecraft/world/level/levelgen/synth/Noise.class' 'net/minecraft/world/level/levelgen/densityfunction/generator/ShiftNoiseFunction*.class'
           cd ..
           java -jar vf.jar -log=ERROR cls out >/dev/null 2>&1
-          echo "##### RandomState imports"; grep '^import' $(find out -name RandomState.java)
-          D=$(find out -name DensityFunctions.java)
-          echo "##### DensityFunctions imports"; grep '^import' $D
-          echo "##### DensityFunctions records"; grep -nE '^   (public |protected |private )?(static )?(final )?(record|class|interface|enum) ' $D
-          echo "##### noise-related"; grep -nE 'Noise[A-Za-z]*\(|xzScale' $D | head -60
-          echo "##### Noises.instantiate"; grep -n -A12 'static .*instantiate' $(find out -name Noises.java)
-          NOISE=$(grep '^import .*\.Noise;' $(find out -name RandomState.java) | sed 's/import //; s/;//')
-          echo "##### Noise type: $NOISE"; javap -p -cp "$MC" "$NOISE"
-          echo "##### Implementations of it"
-          grep -E 'synth/|densityfunction/' files.txt | grep '\.class$' | sed 's/\.class$//; s#/#.#g' > cands.txt
-          for c in $(cat cands.txt); do javap -cp "$MC" "$c" 2>/dev/null | head -3 | grep -q "$NOISE" && echo "IMPL $c"; done
-          grep -E 'densityfunction/' files.txt | head -80
-          for c in $(grep -E 'levelgen/densityfunction/(DensityFunctionCompiler|NoiseSampler|DfRewriteRule)' files.txt | sed 's/\.class$//; s#/#.#g'); do echo "=== $c"; javap -p -cp "$MC" "$c" | head -40; done
+          for f in $(find out -name '*.java' | sort); do echo "##### $f"; grep -v '^import' "$f"; done
+          echo "##### KeyEvent"; javap -cp "$MC" net.minecraft.client.input.KeyEvent | grep -iE 'isLeft|isRight|isSelection'
+          echo "##### Noises.instantiate callers"; javap -c -p -cp "$MC" net.minecraft.world.level.levelgen.RandomState | grep -n 'Noises.instantiate'
