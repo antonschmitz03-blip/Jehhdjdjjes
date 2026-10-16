@@ -1,4 +1,10 @@
 {
+  "fabric:load_conditions": [
+    {
+      "condition": "vplustweaks:feature_enabled",
+      "feature": "recipe_undye"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {

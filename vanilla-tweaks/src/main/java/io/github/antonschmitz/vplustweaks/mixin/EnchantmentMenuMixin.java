@@ -2,6 +2,7 @@ package io.github.antonschmitz.vplustweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.antonschmitz.vplustweaks.EnchantingCosts;
+import io.github.antonschmitz.vplustweaks.TweaksConfig;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +20,6 @@ public abstract class EnchantmentMenuMixin {
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/EnchantmentMenu;costs:[I", opcode = Opcodes.GETFIELD)
     )
     private int[] vplustweaks$halveRequiredLevels(int[] costs) {
-        return EnchantingCosts.halve(costs);
+        return TweaksConfig.enabled(TweaksConfig.CHEAPER_ENCHANTING_TABLE) ? EnchantingCosts.halve(costs) : costs;
     }
 }

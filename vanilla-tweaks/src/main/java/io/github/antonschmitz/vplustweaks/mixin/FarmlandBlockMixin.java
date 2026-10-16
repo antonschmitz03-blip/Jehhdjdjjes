@@ -1,6 +1,7 @@
 package io.github.antonschmitz.vplustweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import io.github.antonschmitz.vplustweaks.TweaksConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -17,6 +18,6 @@ public abstract class FarmlandBlockMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/FarmlandBlock;turnToBaseBlock(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V")
     )
     private boolean vplustweaks$preventTrampling(FarmlandBlock block, Entity entity, BlockState state, Level level, BlockPos pos) {
-        return false;
+        return !TweaksConfig.enabled(TweaksConfig.NO_CROP_TRAMPLING);
     }
 }

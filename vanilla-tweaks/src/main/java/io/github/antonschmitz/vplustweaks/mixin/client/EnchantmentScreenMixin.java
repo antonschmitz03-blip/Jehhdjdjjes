@@ -2,6 +2,7 @@ package io.github.antonschmitz.vplustweaks.mixin.client;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.antonschmitz.vplustweaks.EnchantingCosts;
+import io.github.antonschmitz.vplustweaks.TweaksConfig;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +17,6 @@ public abstract class EnchantmentScreenMixin {
             require = 0 // display only: never crash the client over it
     )
     private int[] vplustweaks$showHalvedLevels(int[] costs) {
-        return EnchantingCosts.halve(costs);
+        return TweaksConfig.enabled(TweaksConfig.CHEAPER_ENCHANTING_TABLE) ? EnchantingCosts.halve(costs) : costs;
     }
 }

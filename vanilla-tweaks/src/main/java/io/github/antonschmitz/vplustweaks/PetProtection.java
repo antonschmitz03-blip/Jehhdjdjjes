@@ -9,6 +9,9 @@ public final class PetProtection {
     private PetProtection() {}
 
     public static void register() {
+        if (!TweaksConfig.enabled(TweaksConfig.SAFE_PETS)) {
+            return;
+        }
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
             if (entity instanceof OwnableEntity pet) {
                 Entity attacker = source.getEntity();

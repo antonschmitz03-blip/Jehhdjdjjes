@@ -26,6 +26,15 @@ Install on the server too when playing multiplayer.
 
 The happy ghast features (chest, speed upgrade, whistle, rope ladder, protection) now live in their own mod, [Happy Ghast+](../happy-ghast/README.md). The two work alone or together.
 
+## Config
+
+`config/vplustweaks.json` is created on first launch with one on/off switch per feature, all on by default
+(`double_doors`, `no_crop_trampling`, `no_anvil_too_expensive_limit`, `cheaper_enchanting_table`,
+`cheaper_enchanting_infuser`, `free_enchantment_combining`, `safe_tamed_pets`, `max_stat_horses`,
+`fast_ladder_placement`, `floating_ladders`, and `recipe_*` switches for the extra recipes). Set one to `false`
+and restart the game to turn that feature off. New switches are added to the file when the mod gets new
+features. In multiplayer, set them on the server and on the clients.
+
 ## Recipes
 
 | Result | Recipe |
@@ -33,6 +42,7 @@ The happy ghast features (chest, speed upgrade, whistle, rope ladder, protection
 | Leather | Smelt / smoke / campfire-cook rotten flesh |
 | Saddle | `LLL` / `LIL` (leather, iron ingot) |
 | Gunpowder (x2) | Coal or charcoal + sugar + flint (shapeless) |
+| Trident | `SSS` / ` N ` / ` S ` (prismarine shard, nautilus shell) |
 | Name tag | Paper + string + iron nugget (shapeless) |
 | Iron / gold / diamond horse armor | `X X` / `XWX` / `X X` (material, any wool) |
 | Chainmail armor | Armor shapes made of iron chains |

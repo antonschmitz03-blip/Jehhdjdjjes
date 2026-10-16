@@ -21,6 +21,9 @@ public final class FastLadders {
     private FastLadders() {}
 
     public static void register() {
+        if (!TweaksConfig.enabled(TweaksConfig.FAST_LADDERS)) {
+            return;
+        }
         UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
             ItemStack stack = player.getItemInHand(hand);
             if (!(stack.getItem() instanceof BlockItem item) || !(item.getBlock() instanceof LadderBlock ladder)) {

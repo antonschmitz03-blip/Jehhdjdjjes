@@ -1,0 +1,22 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "vplustweaks:feature_enabled",
+      "feature": "recipe_trident"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:prismarine_shard",
+    "N": "minecraft:nautilus_shell"
+  },
+  "pattern": [
+    "SSS",
+    " N ",
+    " S "
+  ],
+  "result": {
+    "id": "minecraft:trident"
+  }
+}

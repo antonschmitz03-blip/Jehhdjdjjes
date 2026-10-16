@@ -17,6 +17,9 @@ public final class DoubleDoors {
     }
 
     public static void register() {
+        if (!TweaksConfig.enabled(TweaksConfig.DOUBLE_DOORS)) {
+            return;
+        }
         UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
             if (!level.isClientSide() && hand == InteractionHand.MAIN_HAND && !player.isSecondaryUseActive()) {
                 toggleNeighbour(player, level, hitResult.getBlockPos());

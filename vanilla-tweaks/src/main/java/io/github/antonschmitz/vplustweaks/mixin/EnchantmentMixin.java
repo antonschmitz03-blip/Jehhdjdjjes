@@ -1,5 +1,6 @@
 package io.github.antonschmitz.vplustweaks.mixin;
 
+import io.github.antonschmitz.vplustweaks.TweaksConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -16,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EnchantmentMixin {
     @Inject(method = "areCompatible", at = @At("HEAD"), cancellable = true)
     private static void vplustweaks$allowCombinations(Holder<Enchantment> first, Holder<Enchantment> second, CallbackInfoReturnable<Boolean> cir) {
+        if (!TweaksConfig.enabled(TweaksConfig.FREE_ENCHANTMENT_COMBINING)) {
+            return;
+        }
         // An enchantment is never "compatible" with itself, and the Riptide clash keeps the vanilla answer (false).
         if (first.equals(second) || vplustweaks$riptideClash(first, second) || vplustweaks$riptideClash(second, first)) {
             return;

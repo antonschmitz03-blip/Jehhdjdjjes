@@ -16,6 +16,9 @@ public final class HorseStats {
     private HorseStats() {}
 
     public static void register() {
+        if (!TweaksConfig.enabled(TweaksConfig.BEST_HORSES)) {
+            return;
+        }
         ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
             if (entity instanceof Horse horse) {
                 boolean healthChanged = set(horse.getAttribute(Attributes.MAX_HEALTH), MAX_HEALTH);

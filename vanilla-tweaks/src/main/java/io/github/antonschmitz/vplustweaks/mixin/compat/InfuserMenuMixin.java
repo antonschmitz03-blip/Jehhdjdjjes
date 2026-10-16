@@ -2,6 +2,7 @@ package io.github.antonschmitz.vplustweaks.mixin.compat;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.antonschmitz.vplustweaks.EnchantingCosts;
+import io.github.antonschmitz.vplustweaks.TweaksConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class InfuserMenuMixin {
     @ModifyReturnValue(method = "calculateEnchantingCost", at = @At("RETURN"))
     private int vplustweaks$quarterCost(int cost) {
-        return EnchantingCosts.quarter(cost);
+        return TweaksConfig.enabled(TweaksConfig.CHEAPER_INFUSER) ? EnchantingCosts.quarter(cost) : cost;
     }
 }

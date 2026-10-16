@@ -1,5 +1,6 @@
 package io.github.antonschmitz.vplustweaks;
 
+import io.github.antonschmitz.vplustweaks.config.FeatureEnabledCondition;
 import java.util.Arrays;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Holder;
@@ -19,6 +20,7 @@ public class VanillaPlusTweaks implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        FeatureEnabledCondition.register();
         DoubleDoors.register();
         PetProtection.register();
         HorseStats.register();
@@ -49,7 +51,9 @@ public class VanillaPlusTweaks implements ModInitializer {
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
-        checkEnchantmentCombinations(server);
+        if (TweaksConfig.enabled(TweaksConfig.FREE_ENCHANTMENT_COMBINING)) {
+            checkEnchantmentCombinations(server);
+        }
         LOGGER.info("vplustweaks self test passed");
     }
 
