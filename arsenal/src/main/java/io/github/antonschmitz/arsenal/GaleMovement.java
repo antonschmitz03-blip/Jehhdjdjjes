@@ -1,5 +1,6 @@
 package io.github.antonschmitz.arsenal;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,6 +40,7 @@ public final class GaleMovement {
     /** Slowness 7 stops a walking mob; the velocity multiplier covers falling and flung ones. */
     static final int MOB_SLOWNESS = 6;
     static final double MOB_MOTION = 0.3;
+    static final int POSITION_HISTORY = 4;
     static final double FOCUS_RADIUS = 12.0;
     static final double HOP_SPEED = 1.0;
     static final double HOP_LIFT = 0.3;
@@ -55,6 +57,8 @@ public final class GaleMovement {
         int focusTicksLeft;
         long hopReadyAt;
         int airTicks;
+        /** The player's last few positions, newest first, to tell how fast their client really moves. */
+        final ArrayDeque<Vec3> positions = new ArrayDeque<>();
         /** Projectiles slowed by this player's focus, with the gravity flag they had. */
         final Map<Projectile, Boolean> slowed = new HashMap<>();
 
@@ -129,6 +133,11 @@ public final class GaleMovement {
             player.stopFallFlying();
         }
 
+        state.positions.addFirst(player.position());
+        while (state.positions.size() > POSITION_HISTORY) {
+            state.positions.removeLast();
+        }
+
         Input input = player.getLastClientInput();
         boolean jumpPressed = input.jump() && !state.prevJump;
         state.prevJump = input.jump();
@@ -158,7 +167,7 @@ public final class GaleMovement {
         if (jumpPressed && !groundJump && state.airJumps < 1 + skybound(player) && !state.focusing() && state.airTicks > 1) {
             state.airJumps++;
             // The server's velocity for a player is stale, so keep the horizontal speed the client actually moved at.
-            Vec3 moved = clientMotion(player);
+            Vec3 moved = clientMotion(state);
             player.setDeltaMovement(moved.x, AIR_JUMP_LIFT, moved.z);
             player.fallDistance = 0;
             sync(player);
@@ -174,9 +183,17 @@ public final class GaleMovement {
         }
     }
 
-    /** How far the player moved this tick, as reported by their client. */
-    private static Vec3 clientMotion(ServerPlayer player) {
-        return new Vec3(player.getX() - player.xo, player.getY() - player.yo, player.getZ() - player.zo);
+    /**
+     * How far the player moves per tick, averaged over the last few ticks. A single tick is unreliable because the
+     * client's position packets do not line up with server ticks: one tick can see none and the next two.
+     */
+    private static Vec3 clientMotion(State state) {
+        if (state.positions.size() < 2) {
+            return Vec3.ZERO;
+        }
+        Vec3 newest = state.positions.peekFirst();
+        Vec3 oldest = state.positions.peekLast();
+        return newest.subtract(oldest).scale(1.0 / (state.positions.size() - 1));
     }
 
     /** Throws the player where they look, with a little extra lift so a level look still clears gaps. */
