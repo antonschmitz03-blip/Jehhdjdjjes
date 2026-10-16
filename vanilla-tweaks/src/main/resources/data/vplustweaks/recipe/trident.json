@@ -8,13 +8,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "S": "minecraft:prismarine_shard",
-    "N": "minecraft:nautilus_shell"
+    "C": "minecraft:prismarine_crystals",
+    "H": "minecraft:heart_of_the_sea",
+    "I": "minecraft:iron_ingot"
   },
   "pattern": [
-    "SSS",
-    " N ",
-    " S "
+    "CHC",
+    " I ",
+    " I "
   ],
   "result": {
     "id": "minecraft:trident"

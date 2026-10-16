@@ -42,7 +42,7 @@ features. In multiplayer, set them on the server and on the clients.
 | Leather | Smelt / smoke / campfire-cook rotten flesh |
 | Saddle | `LLL` / `LIL` (leather, iron ingot) |
 | Gunpowder (x2) | Coal or charcoal + sugar + flint (shapeless) |
-| Trident | `SSS` / ` N ` / ` S ` (prismarine shard, nautilus shell) |
+| Trident | `CHC` / ` I ` / ` I ` (prismarine crystal, heart of the sea, iron ingot) |
 | Name tag | Paper + string + iron nugget (shapeless) |
 | Iron / gold / diamond horse armor | `X X` / `XWX` / `X X` (material, any wool) |
 | Chainmail armor | Armor shapes made of iron chains |
