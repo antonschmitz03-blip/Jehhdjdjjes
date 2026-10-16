@@ -1,6 +1,7 @@
 package io.github.antonschmitz.biomesize.mixin;
 
 import io.github.antonschmitz.biomesize.BiomeSize;
+import io.github.antonschmitz.biomesize.AmplifiedNoise;
 import io.github.antonschmitz.biomesize.ScaledNoise;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
@@ -23,18 +24,40 @@ public abstract class NoisesMixin {
     @Inject(method = "instantiate", at = @At("RETURN"), cancellable = true)
     private static void biomesize$scale(HolderGetter<NormalNoise> noises, PositionalRandomFactory random,
                                         ResourceKey<NormalNoise> name, CallbackInfoReturnable<Noise> cir) {
-        int percent;
-        if (name == Noises.TEMPERATURE || name == Noises.VEGETATION
-                || name == Noises.TEMPERATURE_LARGE || name == Noises.VEGETATION_LARGE) {
-            percent = BiomeSize.activeBiomePercent();
-        } else if (name == Noises.CONTINENTALNESS || name == Noises.EROSION
-                || name == Noises.CONTINENTALNESS_LARGE || name == Noises.EROSION_LARGE) {
-            percent = BiomeSize.activeTerrainPercent();
-        } else {
+        BiomeSize.Settings s = BiomeSize.active();
+        if (s.isDefault()) {
             return;
         }
-        if (percent != BiomeSize.DEFAULT_PERCENT) {
-            cir.setReturnValue(new ScaledNoise(cir.getReturnValue(), BiomeSize.DEFAULT_PERCENT / (double) percent));
+        Noise noise = cir.getReturnValue();
+        if (name == Noises.TEMPERATURE || name == Noises.VEGETATION
+                || name == Noises.TEMPERATURE_LARGE || name == Noises.VEGETATION_LARGE) {
+            noise = stretch(noise, s.biomePercent());
+        } else if (name == Noises.CONTINENTALNESS || name == Noises.EROSION
+                || name == Noises.CONTINENTALNESS_LARGE || name == Noises.EROSION_LARGE) {
+            noise = stretch(noise, s.terrainPercent());
+        } else if (name == Noises.JAGGED) {
+            // Strength of mountain peaks and cliffs.
+            noise = amplify(noise, s.dramaticPercent() / 100.0F);
+        } else if (name == Noises.CAVE_CHEESE) {
+            // Big open caves: a stronger noise reaches the cave threshold more often.
+            noise = amplify(noise, s.cavePercent() / 100.0F);
+        } else if (name == Noises.CAVE_LAYER) {
+            // The layered caverns are carved where this is small, so a weaker noise means more of them.
+            noise = amplify(noise, 100.0F / s.cavePercent());
+        } else if (name == Noises.SPAGHETTI_2D || name == Noises.SPAGHETTI_3D_1 || name == Noises.SPAGHETTI_3D_2) {
+            // Tunnels are carved where the noise is near zero, so a stronger noise gives thinner tunnels.
+            noise = amplify(noise, s.cavePercent() / 100.0F);
         }
+        if (noise != cir.getReturnValue()) {
+            cir.setReturnValue(noise);
+        }
+    }
+
+    private static Noise stretch(Noise noise, int percent) {
+        return percent == BiomeSize.DEFAULT_PERCENT ? noise : new ScaledNoise(noise, BiomeSize.DEFAULT_PERCENT / (double) percent);
+    }
+
+    private static Noise amplify(Noise noise, float amplitude) {
+        return amplitude == 1.0F ? noise : new AmplifiedNoise(noise, amplitude);
     }
 }

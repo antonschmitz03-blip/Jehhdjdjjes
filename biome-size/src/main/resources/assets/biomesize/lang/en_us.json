@@ -2,5 +2,9 @@
   "biomesize.slider.biome_size": "Biome Size: %s%%",
   "biomesize.slider.biome_size.info": "Size of land biomes like forest, plains and desert. 100% is vanilla.",
   "biomesize.slider.terrain_scale": "Terrain Scale: %s%%",
-  "biomesize.slider.terrain_scale.info": "Size of continents, oceans and mountain ranges. 100% is vanilla. Low values make steep, narrow mountains."
+  "biomesize.slider.terrain_scale.info": "Size of continents, oceans and mountain ranges. 100% is vanilla. Low values make steep, narrow mountains.",
+  "biomesize.slider.dramatic": "Dramatic Terrain: %s%%",
+  "biomesize.slider.dramatic.info": "How tall and jagged mountain peaks and cliffs get. 100% is vanilla, 0% takes the jagged peaks away.",
+  "biomesize.slider.cave_size": "Cave Size: %s%%",
+  "biomesize.slider.cave_size.info": "Ratio of big caves to small tunnels. Above 100% gives more and bigger caverns and thinner tunnels, below 100% fewer caverns and wider tunnels."
 }

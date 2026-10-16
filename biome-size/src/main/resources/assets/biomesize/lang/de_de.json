@@ -2,5 +2,9 @@
   "biomesize.slider.biome_size": "Biomgröße: %s%%",
   "biomesize.slider.biome_size.info": "Größe der Landbiome wie Wald, Ebene und Wüste. 100% ist Vanilla.",
   "biomesize.slider.terrain_scale": "Geländegröße: %s%%",
-  "biomesize.slider.terrain_scale.info": "Größe von Kontinenten, Ozeanen und Gebirgen. 100% ist Vanilla. Niedrige Werte ergeben steile, schmale Berge."
+  "biomesize.slider.terrain_scale.info": "Größe von Kontinenten, Ozeanen und Gebirgen. 100% ist Vanilla. Niedrige Werte ergeben steile, schmale Berge.",
+  "biomesize.slider.dramatic": "Dramatisches Gelände: %s%%",
+  "biomesize.slider.dramatic.info": "Wie hoch und zerklüftet Berggipfel und Klippen werden. 100% ist Vanilla, 0% entfernt die zerklüfteten Gipfel.",
+  "biomesize.slider.cave_size": "Höhlengröße: %s%%",
+  "biomesize.slider.cave_size.info": "Verhältnis von großen Höhlen zu kleinen Tunneln. Über 100% gibt mehr und größere Hallen und dünnere Tunnel, darunter weniger Hallen und breitere Tunnel."
 }

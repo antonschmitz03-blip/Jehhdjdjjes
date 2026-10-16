@@ -28,14 +28,14 @@ jobs:
           grep -E -A2 'error:|What went wrong' build.log | head -60 || true
           exit ${status:-0}
       # The Noises mixin only shows up at runtime, so boot one dedicated server with only this mod and a
-      # world that already has a biomesize.json (50% biomes, 150% terrain).
+      # world that already has a biomesize.json (50% biomes, 150% terrain, 150% dramatic, 150% caves).
       - name: Server smoke test
         shell: bash
         run: |
           mkdir -p run/world
           echo "eula=true" > run/eula.txt
           printf 'online-mode=false\nlevel-type=minecraft\\:normal\n' > run/server.properties
-          echo '{"biome_size":50,"terrain_scale":150}' > run/world/biomesize.json
+          echo '{"biome_size":50,"terrain_scale":150,"dramatic_terrain":150,"cave_size":150}' > run/world/biomesize.json
           mkfifo stdin.pipe
           (./gradlew runServer --console=plain < stdin.pipe > server.log 2>&1; echo "exit $?" >> server.log) &
           exec 3>stdin.pipe
@@ -48,7 +48,7 @@ jobs:
           exec 3>&-
           grep -iE 'biome size|biomesize|mixin|error|exception|Done \(' server.log | head -50
           grep -q 'Done (' server.log
-          grep -q 'Biome Size: biome size 50%, terrain scale 150%' server.log
+          grep -q 'Biome Size: biome size 50%, terrain scale 150%, dramatic terrain 150%, cave size 150%' server.log
           if grep -iE 'mixin.*(fail|error)|InvalidInjection|critical injection' server.log; then exit 1; fi
       - name: Client mixin target check
         shell: bash
