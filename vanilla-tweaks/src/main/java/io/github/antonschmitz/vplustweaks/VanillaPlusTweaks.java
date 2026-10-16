@@ -2,6 +2,12 @@ package io.github.antonschmitz.vplustweaks;
 
 import java.util.Arrays;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
@@ -18,12 +24,12 @@ public class VanillaPlusTweaks implements ModInitializer {
         HorseStats.register();
         FastLadders.register();
         if (Boolean.getBoolean("vplustweaks.selfTest")) {
-            ServerLifecycleEvents.SERVER_STARTED.register(server -> selfTest());
+            ServerLifecycleEvents.SERVER_STARTED.register(VanillaPlusTweaks::selfTest);
         }
     }
 
     /** CI smoke test: force-load every server-side mixin target so a broken injection fails the run. */
-    private static void selfTest() {
+    private static void selfTest(MinecraftServer server) {
         try {
             Class.forName("net.minecraft.world.inventory.AnvilMenu");
             Class.forName("net.minecraft.world.inventory.EnchantmentMenu");
@@ -43,6 +49,27 @@ public class VanillaPlusTweaks implements ModInitializer {
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
+        checkEnchantmentCombinations(server);
         LOGGER.info("vplustweaks self test passed");
+    }
+
+    private static void checkEnchantmentCombinations(MinecraftServer server) {
+        HolderGetter<Enchantment> enchantments = server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        Holder<Enchantment> sharpness = enchantments.getOrThrow(Enchantments.SHARPNESS);
+        Holder<Enchantment> smite = enchantments.getOrThrow(Enchantments.SMITE);
+        Holder<Enchantment> fortune = enchantments.getOrThrow(Enchantments.FORTUNE);
+        Holder<Enchantment> silkTouch = enchantments.getOrThrow(Enchantments.SILK_TOUCH);
+        Holder<Enchantment> riptide = enchantments.getOrThrow(Enchantments.RIPTIDE);
+        Holder<Enchantment> loyalty = enchantments.getOrThrow(Enchantments.LOYALTY);
+        Holder<Enchantment> channeling = enchantments.getOrThrow(Enchantments.CHANNELING);
+        boolean ok = Enchantment.areCompatible(sharpness, smite)
+                && Enchantment.areCompatible(fortune, silkTouch)
+                && !Enchantment.areCompatible(riptide, loyalty)
+                && !Enchantment.areCompatible(channeling, riptide)
+                && !Enchantment.areCompatible(sharpness, sharpness);
+        if (!ok) {
+            throw new IllegalStateException("Enchantment combination rules are wrong");
+        }
+        LOGGER.info("vplustweaks self test: enchantment combinations ok");
     }
 }

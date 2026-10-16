@@ -14,6 +14,9 @@ Install on the server too when playing multiplayer.
     in vanilla, and the levels/lapis spent (1–3) are unchanged.
   - Enchanting Infuser: its level cost is cut to a quarter (rounded up, so a cost of 1 stays 1). Refunds for
     removing enchantments are unchanged.
+- **Any enchantments combine:** Sharpness with Smite, Fortune with Silk Touch, all Protections and so on, on the
+  anvil, at the enchanting table and in the Enchanting Infuser. Only Riptide with Loyalty or Channeling stays
+  blocked, because a Riptide trident is never thrown.
 - **Pets are safe from you:** you (and your arrows) can't damage your own tamed wolves, cats, horses and
   other pets.
 - **Best horses:** every horse spawns and loads with maximum health (30), speed and jump strength.

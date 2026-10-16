@@ -6,6 +6,7 @@
   "mixins": [
     "AnvilMenuMixin",
     "EnchantmentMenuMixin",
+    "EnchantmentMixin",
     "FarmlandBlockMixin",
     "LadderBlockMixin"
   ],
