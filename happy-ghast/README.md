@@ -29,6 +29,7 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
   happy ghast that hovers slowly within 6 blocks above it and about 3 blocks of its middle settles in, and a few
   seconds later closes its eyes (the smile stays) and slowly heals. Riding it, hurting it or whistling wakes it up.
   Only the low straw floor is solid; you walk through the rim. Breaking any part removes the whole nest and drops it.
+  A bucket of powder snow on the rim marks the front of the nest.
 
 ## Recipes
 

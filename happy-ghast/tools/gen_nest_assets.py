@@ -143,9 +143,11 @@ for x in range(6):
         v = {"model": f"happyghastplus:block/ghast_nest_{model}"}
         if rot:
             v["y"] = rot
-        for facing in ("north", "east", "south", "west"):   # facing only matters to the ghast, the look is the same
-            variants[f"x={x},z={z},facing={facing}"] = v
-json.dump({"variants": variants}, open(f"{A}/blockstates/ghast_nest.json", "w"), indent=1)
+        variants[(x, z)] = v
+# multipart, with the powder snow bucket marking the front: see gen_nest_marker.py
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import gen_nest_marker
+gen_nest_marker.write(variants)
 
 # ---------------------------------------------------------------- item models
 disp = {

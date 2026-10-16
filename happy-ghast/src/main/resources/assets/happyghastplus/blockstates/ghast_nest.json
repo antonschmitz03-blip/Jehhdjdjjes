@@ -1,544 +1,398 @@
 {
- "variants": {
-  "x=0,z=0,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=0,z=0,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=0,z=0,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=0,z=0,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=0,z=1,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=0,z=1,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=0,z=1,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=0,z=1,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=0,z=2,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=2,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=2,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=2,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=3,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=3,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=3,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=3,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 270
-  },
-  "x=0,z=4,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=0,z=4,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=0,z=4,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=0,z=4,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=0,z=5,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=0,z=5,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=0,z=5,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=0,z=5,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=1,z=0,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=1,z=0,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=1,z=0,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=1,z=0,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner"
-  },
-  "x=1,z=1,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=1,z=1,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=1,z=1,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=1,z=1,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=1,z=2,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=1,z=2,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=1,z=2,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=1,z=2,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=1,z=3,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=1,z=3,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=1,z=3,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=1,z=3,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=1,z=4,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=1,z=4,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=1,z=4,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=1,z=4,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=1,z=5,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=1,z=5,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=1,z=5,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=1,z=5,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 270
-  },
-  "x=2,z=0,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=2,z=0,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=2,z=0,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=2,z=0,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=2,z=1,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=2,z=1,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=2,z=1,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=2,z=1,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=2,z=2,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=2,z=2,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=2,z=2,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=2,z=2,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=2,z=3,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=2,z=3,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=2,z=3,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=2,z=3,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=2,z=4,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=2,z=4,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=2,z=4,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=2,z=4,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=2,z=5,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=2,z=5,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=2,z=5,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=2,z=5,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=3,z=0,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=3,z=0,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=3,z=0,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=3,z=0,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge"
-  },
-  "x=3,z=1,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=3,z=1,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=3,z=1,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=3,z=1,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=3,z=2,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=3,z=2,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=3,z=2,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=3,z=2,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=3,z=3,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=3,z=3,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=3,z=3,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=3,z=3,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=3,z=4,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=3,z=4,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=3,z=4,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=3,z=4,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=3,z=5,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=3,z=5,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=3,z=5,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=3,z=5,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 180
-  },
-  "x=4,z=0,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=4,z=0,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=4,z=0,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=4,z=0,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=4,z=1,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=4,z=1,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=4,z=1,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=4,z=1,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=4,z=2,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=4,z=2,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=4,z=2,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=4,z=2,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=4,z=3,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=4,z=3,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=4,z=3,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=4,z=3,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 90
-  },
-  "x=4,z=4,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=4,z=4,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=4,z=4,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=4,z=4,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center"
-  },
-  "x=4,z=5,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=4,z=5,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=4,z=5,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=4,z=5,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=5,z=0,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=5,z=0,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=5,z=0,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=5,z=0,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 270
-  },
-  "x=5,z=1,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=5,z=1,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=5,z=1,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=5,z=1,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 90
-  },
-  "x=5,z=2,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=2,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=2,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=2,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=3,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=3,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=3,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=3,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_edge",
-   "y": 90
-  },
-  "x=5,z=4,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=5,z=4,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=5,z=4,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=5,z=4,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_corner",
-   "y": 180
-  },
-  "x=5,z=5,facing=north": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=5,z=5,facing=east": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=5,z=5,facing=south": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
-  },
-  "x=5,z=5,facing=west": {
-   "model": "happyghastplus:block/ghast_nest_center",
-   "y": 180
+ "multipart": [
+  {
+   "when": {
+    "x": "0",
+    "z": "0"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center"
+   }
+  },
+  {
+   "when": {
+    "x": "0",
+    "z": "1"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner"
+   }
+  },
+  {
+   "when": {
+    "x": "0",
+    "z": "2"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "0",
+    "z": "3"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "0",
+    "z": "4"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "0",
+    "z": "5"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "1",
+    "z": "0"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner"
+   }
+  },
+  {
+   "when": {
+    "x": "1",
+    "z": "1"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "1",
+    "z": "2"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "1",
+    "z": "3"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center"
+   }
+  },
+  {
+   "when": {
+    "x": "1",
+    "z": "4"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "1",
+    "z": "5"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "0"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge"
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "1"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "2"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center"
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "3"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "4"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "5"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "0"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge"
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "1"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center"
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "2"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "3"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "4"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "5"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "4",
+    "z": "0"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "4",
+    "z": "1"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "4",
+    "z": "2"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "4",
+    "z": "3"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "4",
+    "z": "4"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center"
+   }
+  },
+  {
+   "when": {
+    "x": "4",
+    "z": "5"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "0"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "1"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "2"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "3"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_edge",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "4"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_corner",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "5"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_center",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "3",
+    "z": "0",
+    "facing": "north"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_marker"
+   }
+  },
+  {
+   "when": {
+    "x": "5",
+    "z": "3",
+    "facing": "east"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_marker",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "x": "2",
+    "z": "5",
+    "facing": "south"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_marker",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "x": "0",
+    "z": "2",
+    "facing": "west"
+   },
+   "apply": {
+    "model": "happyghastplus:block/ghast_nest_marker",
+    "y": 270
+   }
   }
- }
+ ]
 }
