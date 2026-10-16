@@ -24,12 +24,20 @@ jobs:
           javap -cp "$cp" net.minecraft.world.entity.LivingEntity | grep causeFallDamage | tee sig.txt
           grep -q 'causeFallDamage(double, float, net.minecraft.world.damagesource.DamageSource)' sig.txt
           javap -cp "$cp" net.minecraft.world.entity.player.Player | grep tryToStartFallFlying
-      - name: Vanilla bow model (reference)
+      - name: Vanilla bow texture (reference)
         run: |
+          pip install -q pillow
           for j in $(find ~/.gradle/caches/fabric-loom -name '*.jar'); do
-            for f in assets/minecraft/models/item/bow.json assets/minecraft/items/bow.json assets/minecraft/models/item/crossbow.json; do
-              unzip -p "$j" "$f" 2>/dev/null | sed "s|^|[$f] |"
-            done
+            unzip -p "$j" assets/minecraft/textures/item/bow.png > /tmp/bow.png 2>/dev/null || continue
+            [ -s /tmp/bow.png ] || continue
+            python3 -c "
+          from PIL import Image
+          im=Image.open('/tmp/bow.png').convert('RGBA')
+          print('VANILLA_BOW', im.size)
+          for y in range(im.size[1]):
+              print('VB|'+''.join('#' if im.getpixel((x,y))[3]>0 else '.' for x in range(im.size[0])))
+          "
+            break
           done
       - uses: actions/upload-artifact@v4
         with:
