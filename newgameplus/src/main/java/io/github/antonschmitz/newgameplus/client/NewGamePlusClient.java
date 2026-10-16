@@ -62,8 +62,12 @@ public class NewGamePlusClient implements ClientModInitializer {
     }
 
     static Component label(ImportData data) {
-        return data == null
-                ? Component.translatable("newgameplus.button.import")
-                : Component.translatable("newgameplus.button.importing", data.sourceName());
+        if (data == null) {
+            return Component.translatable("newgameplus.button.import");
+        }
+        int mobs = data.mobsToImport().size();
+        return mobs == 0
+                ? Component.translatable("newgameplus.button.importing", data.sourceName())
+                : Component.translatable("newgameplus.button.importing_mobs", data.sourceName(), mobs);
     }
 }

@@ -71,5 +71,6 @@ jobs:
           grep -q 'simplegraves self test: chest screen ok' server.log
           grep -q 'simplegraves self test passed' server.log
           grep -q 'newgameplus self test: import ok' server.log
+          grep -q 'newgameplus self test: mobs ok' server.log
           grep -q 'newgameplus self test passed' server.log
           if grep -iE 'tbaddons:|vplustweaks:|simplegraves:' server.log | grep -iqE 'error|parsing|couldn.t'; then echo "tbaddons data failed to load"; exit 1; fi

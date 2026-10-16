@@ -24,4 +24,9 @@ public abstract class PlayerListMixin {
     private void newgameplus$importPlayer(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
         Importer.onFirstJoin(server, player);
     }
+
+    @Inject(method = "placeNewPlayer", at = @At("TAIL"))
+    private void newgameplus$spawnMobs(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
+        Importer.spawnMobs(server, player);
+    }
 }

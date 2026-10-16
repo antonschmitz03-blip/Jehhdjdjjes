@@ -10,5 +10,7 @@
   "newgameplus.screen.none": "Don't Import",
   "newgameplus.option.items": "Items",
   "newgameplus.option.xp": "XP",
-  "newgameplus.option.ender_chest": "Ender Chest"
+  "newgameplus.option.ender_chest": "Ender Chest",
+  "newgameplus.button.importing_mobs": "Import: %s (+%s mobs)",
+  "newgameplus.option.mobs": "Tamed Mobs"
 }

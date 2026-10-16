@@ -45,6 +45,10 @@ public class NewGamePlus implements ModInitializer {
         return server.getWorldPath(LevelResource.ROOT).resolve("newgameplus_pending.dat");
     }
 
+    public static Path mobsFile(MinecraftServer server) {
+        return server.getWorldPath(LevelResource.ROOT).resolve("newgameplus_mobs.dat");
+    }
+
     static boolean hasPending(MinecraftServer server) {
         return Files.isRegularFile(pendingFile(server));
     }

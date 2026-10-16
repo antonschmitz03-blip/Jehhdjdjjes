@@ -3,18 +3,23 @@ package io.github.antonschmitz.newgameplus;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -38,9 +43,11 @@ final class SelfTest {
             CompoundTag read = readThroughWorldFolder(source);
             check(read.get("Inventory").equals(source.get("Inventory")), "inventory changed while reading the world folder");
 
+            int[] oldOwner = {1, 2, 3, 4};
+            read.putIntArray("UUID", oldOwner);
             wipe(player);
             player.setPos(100.5, 80, -40.5);
-            NbtIo.writeCompressed(new ImportData("Old World", read, true, true, false).toTag(), NewGamePlus.pendingFile(server));
+            NbtIo.writeCompressed(new ImportData("Old World", read, true, true, false, true, List.of(wolf(oldOwner))).toTag(), NewGamePlus.pendingFile(server));
             Importer.onFirstJoin(server, player);
 
             check(player.getInventory().getItem(0).is(Items.DIAMOND) && player.getInventory().getItem(0).getCount() == 5, "diamonds not imported");
@@ -53,6 +60,22 @@ final class SelfTest {
             check(!NewGamePlus.hasPending(server), "pending import not used up");
             Files.deleteIfExists(NewGamePlus.pendingFile(server).resolveSibling("newgameplus_applied.dat"));
 
+            check(Files.exists(NewGamePlus.mobsFile(server)), "mobs file not written");
+            Importer.spawnMobs(server, player);
+            List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, player.getBoundingBox().inflate(20));
+            check(!wolves.isEmpty(), "tamed wolf not spawned");
+            int[] newId = UUIDUtil.uuidToIntArray(player.getUUID());
+            for (Wolf wolf : wolves) {
+                try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(NewGamePlus.LOGGER)) {
+                    TagValueOutput out = TagValueOutput.createWithContext(reporter, level.registryAccess());
+                    wolf.saveWithoutId(out);
+                    check(MobScanner.ownedBy(out.buildResult(), newId), "wolf not owned by the new player");
+                }
+                wolf.discard();
+            }
+            Files.deleteIfExists(NewGamePlus.mobsFile(server).resolveSibling("newgameplus_mobs_applied.dat"));
+            NewGamePlus.LOGGER.info("newgameplus self test: mobs ok");
+
             // Other mods' self tests reuse the same fake player.
             wipe(player);
             NewGamePlus.LOGGER.info("newgameplus self test: import ok");
@@ -61,6 +84,18 @@ final class SelfTest {
             return;
         }
         NewGamePlus.LOGGER.info("newgameplus self test passed");
+    }
+
+    private static CompoundTag wolf(int[] owner) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("id", "minecraft:wolf");
+        ListTag pos = new ListTag();
+        pos.add(DoubleTag.valueOf(100.5));
+        pos.add(DoubleTag.valueOf(80));
+        pos.add(DoubleTag.valueOf(-40.5));
+        tag.put("Pos", pos);
+        tag.put("Owner", new IntArrayTag(owner));
+        return tag;
     }
 
     private static CompoundTag sourcePlayer(FakePlayer player) {

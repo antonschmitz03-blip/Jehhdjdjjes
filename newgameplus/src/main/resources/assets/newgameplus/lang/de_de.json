@@ -10,5 +10,7 @@
   "newgameplus.screen.none": "Nicht importieren",
   "newgameplus.option.items": "Items",
   "newgameplus.option.xp": "XP",
-  "newgameplus.option.ender_chest": "Endertruhe"
+  "newgameplus.option.ender_chest": "Endertruhe",
+  "newgameplus.button.importing_mobs": "Import: %s (+%s Tiere)",
+  "newgameplus.option.mobs": "Gezähmte Tiere"
 }

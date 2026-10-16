@@ -1,8 +1,10 @@
 package io.github.antonschmitz.newgameplus.client;
 
 import io.github.antonschmitz.newgameplus.ImportData;
+import io.github.antonschmitz.newgameplus.MobScanner;
 import io.github.antonschmitz.newgameplus.NewGamePlus;
 import io.github.antonschmitz.newgameplus.SourceReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.storage.LevelStorageSource;
@@ -29,6 +32,7 @@ public class ImportPlayerScreen extends Screen {
     private boolean items = true;
     private boolean xp = true;
     private boolean enderChest;
+    private boolean mobs = true;
     private Component status = Component.empty();
     private int statusColor = GRAY;
 
@@ -40,6 +44,7 @@ public class ImportPlayerScreen extends Screen {
             items = current.items();
             xp = current.xp();
             enderChest = current.enderChest();
+            mobs = current.mobsEnabled();
         }
     }
 
@@ -94,11 +99,13 @@ public class ImportPlayerScreen extends Screen {
 
         int optionsY = pagerY + 26;
         addRenderableWidget(Checkbox.builder(Component.translatable("newgameplus.option.items"), font)
-                .pos(centerX - 150, optionsY).selected(items).onValueChange((box, value) -> items = value).build());
+                .pos(centerX - 160, optionsY).selected(items).onValueChange((box, value) -> items = value).build());
         addRenderableWidget(Checkbox.builder(Component.translatable("newgameplus.option.xp"), font)
-                .pos(centerX - 50, optionsY).selected(xp).onValueChange((box, value) -> xp = value).build());
+                .pos(centerX - 100, optionsY).selected(xp).onValueChange((box, value) -> xp = value).build());
         addRenderableWidget(Checkbox.builder(Component.translatable("newgameplus.option.ender_chest"), font)
-                .pos(centerX + 30, optionsY).selected(enderChest).onValueChange((box, value) -> enderChest = value).build());
+                .pos(centerX - 55, optionsY).selected(enderChest).onValueChange((box, value) -> enderChest = value).build());
+        addRenderableWidget(Checkbox.builder(Component.translatable("newgameplus.option.mobs"), font)
+                .pos(centerX + 40, optionsY).selected(mobs).onValueChange((box, value) -> mobs = value).build());
 
         int footerY = height - 28;
         addRenderableWidget(Button.builder(Component.translatable("newgameplus.screen.none"), button -> {
@@ -111,13 +118,16 @@ public class ImportPlayerScreen extends Screen {
 
     private void pick(LevelSummary summary) {
         try {
-            Optional<CompoundTag> player = SourceReader.readPlayer(minecraft.getLevelSource().getLevelPath(summary.getLevelId()),
-                    minecraft.getUser().getProfileId());
+            Path worldDir = minecraft.getLevelSource().getLevelPath(summary.getLevelId());
+            Optional<CompoundTag> player = SourceReader.readPlayer(worldDir, minecraft.getUser().getProfileId());
             if (player.isEmpty()) {
                 setStatus(Component.translatable("newgameplus.screen.no_player", summary.getLevelName()), RED);
                 return;
             }
-            NewGamePlusClient.select(parent, new ImportData(summary.getLevelName(), player.get(), items, xp, enderChest));
+            int[] owner = player.get().getIntArray("UUID")
+                    .orElseGet(() -> UUIDUtil.uuidToIntArray(minecraft.getUser().getProfileId()));
+            List<CompoundTag> found = mobs ? MobScanner.findOwned(worldDir, owner) : List.of();
+            NewGamePlusClient.select(parent, new ImportData(summary.getLevelName(), player.get(), items, xp, enderChest, mobs, found));
             onClose();
         } catch (Exception e) {
             NewGamePlus.LOGGER.error("New Game Plus: could not read the player from {}", summary.getLevelId(), e);

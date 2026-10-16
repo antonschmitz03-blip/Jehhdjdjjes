@@ -18,6 +18,9 @@ The source world is only read, never changed.
   attachments (that's where Traveler's Backpack keeps the worn backpack and its contents).
 - **XP**: level, progress and score.
 - **Ender Chest** (optional): the ender chest contents.
+- **Tamed Mobs** (optional, up to 64): every mob owned by your player (wolves, cats, parrots, horses, happy
+  ghasts ...) with all its saved data: armor, saddle, chest contents, upgrades from mods. They spawn around you
+  on first join. Parrots on your shoulders come along too.
 
 Position, dimension, spawn point, health, hunger, effects, game mode, recipes, advancements and stats stay
 behind; you start fresh at the new world's spawn.
