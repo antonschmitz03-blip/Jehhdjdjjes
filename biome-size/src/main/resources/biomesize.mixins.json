@@ -4,7 +4,8 @@
   "package": "io.github.antonschmitz.biomesize.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "NoisesMixin",
+    "RandomStateMixin",
+    "ChunkMapMixin",
     "SpringFeatureMixin"
   ],
   "client": [

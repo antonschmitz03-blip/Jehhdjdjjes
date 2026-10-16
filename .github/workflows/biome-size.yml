@@ -48,6 +48,7 @@ jobs:
           exec 3>&-
           grep -iE 'biome size|biomesize|mixin|error|exception|Done \(' server.log | head -50
           grep -q 'Done (' server.log
+          grep -q 'Biome Size: scaling the overworld noises' server.log
           grep -q 'Biome Size: biome size 50%, terrain scale 150%, dramatic terrain 150%, mountains 200%, cave size 150%, water 200%, lava 0%' server.log
           if grep -iE 'mixin.*(fail|error)|InvalidInjection|critical injection' server.log; then exit 1; fi
       - name: Client mixin target check
