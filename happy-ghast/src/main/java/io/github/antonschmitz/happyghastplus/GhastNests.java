@@ -52,8 +52,8 @@ public final class GhastNests {
     private static final Map<UUID, Integer> COOLDOWN = new HashMap<>();
     private static int ticks;
 
-    /** {@code origin} is cell (0, 0) of the nest; {@code restTicks} counts ticks spent at rest on its floor. */
-    private record Rest(Level level, BlockPos origin, int restTicks) {}
+    /** {@code origin} is cell (0, 0) of the nest; {@code restTicks} counts ticks spent at rest on its floor; {@code yaw} is the facing it keeps. */
+    private record Rest(Level level, BlockPos origin, int restTicks, float yaw) {}
 
     private GhastNests() {}
 
@@ -109,7 +109,10 @@ public final class GhastNests {
             } else if ((ticks + ghast.getId()) % SEARCH_INTERVAL == 0 && canSettle(ghast)) {
                 BlockPos origin = findNest(ghast);
                 if (origin != null) {
-                    RESTING.put(ghast.getUUID(), new Rest(ghast.level(), origin, 0));
+                    // A ghast that was held still by its rope ladder (the rider just dismounted over the nest) settles too:
+                    // the rope is pulled up so the two holds don't fight over its position.
+                    RopeLadders.retract(ghast.getUUID());
+                    RESTING.put(ghast.getUUID(), new Rest(ghast.level(), origin, 0, ghast.getYRot()));
                 }
             }
         }
@@ -119,7 +122,7 @@ public final class GhastNests {
         return ghast.isAlive() && !ghast.isBaby() && !ghast.isVehicle()
                 && !ghast.getItemBySlot(EquipmentSlot.BODY).isEmpty()
                 && !COOLDOWN.containsKey(ghast.getUUID())
-                && !GhastFeatures.isRecalled(ghast) && !RopeLadders.isDeployed(ghast)
+                && !GhastFeatures.isRecalled(ghast)
                 && ghast.getDeltaMovement().length() < MAX_SPEED;
     }
 
@@ -171,7 +174,7 @@ public final class GhastNests {
     private static void tickResting(HappyGhast ghast, Rest rest) {
         if (!ghast.isAlive() || ghast.isVehicle() || ghast.level() != rest.level()
                 || ghast.getItemBySlot(EquipmentSlot.BODY).isEmpty()
-                || GhastFeatures.isRecalled(ghast) || RopeLadders.isDeployed(ghast)
+                || GhastFeatures.isRecalled(ghast)
                 || !nestIntact(rest.level(), rest.origin())) {
             wake(ghast);
             return;
@@ -189,9 +192,18 @@ public final class GhastNests {
         ghast.getNavigation().stop();
         ghast.setDeltaMovement(Vec3.ZERO);
         ghast.setPos(x, y, z);
+        // Keep the facing too, otherwise the ghast's own look control keeps turning it on the nest.
+        ghast.setYRot(rest.yaw());
+        ghast.setXRot(0.0F);
+        ghast.setYHeadRot(rest.yaw());
+        ghast.setYBodyRot(rest.yaw());
+        ghast.yRotO = rest.yaw();
+        ghast.xRotO = 0.0F;
+        ghast.yHeadRotO = rest.yaw();
+        ghast.yBodyRotO = rest.yaw();
 
         int restTicks = atRest ? rest.restTicks() + 1 : 0;
-        RESTING.put(ghast.getUUID(), new Rest(rest.level(), rest.origin(), restTicks));
+        RESTING.put(ghast.getUUID(), new Rest(rest.level(), rest.origin(), restTicks, rest.yaw()));
         if (restTicks == SLEEP_AFTER) {
             ghast.setAttached(SLEEPING, true);
         }
