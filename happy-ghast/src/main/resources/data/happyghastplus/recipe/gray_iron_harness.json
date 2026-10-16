@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "equipment",
+ "group": "iron_harness",
+ "key": {
+  "#": "minecraft:gray_harness",
+  "M": "minecraft:iron_ingot"
+ },
+ "pattern": [
+  " M ",
+  "M#M",
+  " M "
+ ],
+ "result": {
+  "id": "happyghastplus:gray_iron_harness"
+ }
+}

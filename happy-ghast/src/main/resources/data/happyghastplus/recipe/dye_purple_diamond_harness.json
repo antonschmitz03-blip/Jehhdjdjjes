@@ -1,0 +1,28 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "group": "diamond_harness_dye",
+ "ingredients": [
+  "minecraft:purple_dye",
+  [
+   "happyghastplus:white_diamond_harness",
+   "happyghastplus:orange_diamond_harness",
+   "happyghastplus:magenta_diamond_harness",
+   "happyghastplus:light_blue_diamond_harness",
+   "happyghastplus:yellow_diamond_harness",
+   "happyghastplus:lime_diamond_harness",
+   "happyghastplus:pink_diamond_harness",
+   "happyghastplus:gray_diamond_harness",
+   "happyghastplus:light_gray_diamond_harness",
+   "happyghastplus:cyan_diamond_harness",
+   "happyghastplus:blue_diamond_harness",
+   "happyghastplus:brown_diamond_harness",
+   "happyghastplus:green_diamond_harness",
+   "happyghastplus:red_diamond_harness",
+   "happyghastplus:black_diamond_harness"
+  ]
+ ],
+ "result": {
+  "id": "happyghastplus:purple_diamond_harness"
+ }
+}

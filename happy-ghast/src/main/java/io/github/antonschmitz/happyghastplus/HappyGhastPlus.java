@@ -18,7 +18,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -70,6 +73,7 @@ public class HappyGhastPlus implements ModInitializer {
         GHAST_SEARCHLIGHT = register("ghast_searchlight", properties -> new Item(properties.stacksTo(16)));
         GHAST_ROPE_SEGMENT = register("ghast_rope_segment", Item::new);
         GHAST_ROPE_TOP = register("ghast_rope_top", Item::new);
+        ArmoredHarnesses.register(HappyGhastPlus::register);
 
         for (String name : new String[] {"ghast_speed_upgrade", "ghast_whistle"}) {
             ((MappedRegistry<Item>) BuiltInRegistries.ITEM).addAlias(Identifier.fromNamespaceAndPath(LEGACY_ID, name), id(name));
@@ -81,6 +85,7 @@ public class HappyGhastPlus implements ModInitializer {
             output.accept(GHAST_WHISTLE);
             output.accept(GHAST_NEST_ITEM);
             output.accept(GHAST_SEARCHLIGHT);
+            ArmoredHarnesses.all().forEach(output::accept);
         });
 
         GhastChest.register();
@@ -112,6 +117,9 @@ public class HappyGhastPlus implements ModInitializer {
         check(BuiltInRegistries.ITEM.getValue(id("ghast_rope_top")) == GHAST_ROPE_TOP, "ghast rope item");
         check(BuiltInRegistries.BLOCK.getValue(id("ghast_nest")) == GHAST_NEST, "ghast nest block");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_searchlight")) == GHAST_SEARCHLIGHT, "searchlight item");
+        check(BuiltInRegistries.ITEM.getValue(id("red_netherite_harness")) == ArmoredHarnesses.get(ArmoredHarnesses.Tier.NETHERITE, DyeColor.RED),
+                "netherite harness item");
+        check(new ItemStack(ArmoredHarnesses.get(ArmoredHarnesses.Tier.IRON, DyeColor.WHITE)).is(ItemTags.HARNESSES), "armored harness tag");
         nestSelfTest(server.overworld());
         searchlightSelfTest(server.overworld());
         LOGGER.info("happyghastplus self test passed");
@@ -159,7 +167,7 @@ public class HappyGhastPlus implements ModInitializer {
         }
     }
 
-    private static Identifier id(String name) {
+    static Identifier id(String name) {
         return Identifier.fromNamespaceAndPath(MOD_ID, name);
     }
 

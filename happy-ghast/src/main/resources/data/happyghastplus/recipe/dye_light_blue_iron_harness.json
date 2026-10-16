@@ -1,0 +1,28 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "group": "iron_harness_dye",
+ "ingredients": [
+  "minecraft:light_blue_dye",
+  [
+   "happyghastplus:white_iron_harness",
+   "happyghastplus:orange_iron_harness",
+   "happyghastplus:magenta_iron_harness",
+   "happyghastplus:yellow_iron_harness",
+   "happyghastplus:lime_iron_harness",
+   "happyghastplus:pink_iron_harness",
+   "happyghastplus:gray_iron_harness",
+   "happyghastplus:light_gray_iron_harness",
+   "happyghastplus:cyan_iron_harness",
+   "happyghastplus:purple_iron_harness",
+   "happyghastplus:blue_iron_harness",
+   "happyghastplus:brown_iron_harness",
+   "happyghastplus:green_iron_harness",
+   "happyghastplus:red_iron_harness",
+   "happyghastplus:black_iron_harness"
+  ]
+ ],
+ "result": {
+  "id": "happyghastplus:light_blue_iron_harness"
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "equipment",
+ "group": "iron_harness",
+ "key": {
+  "#": "minecraft:light_blue_harness",
+  "M": "minecraft:iron_ingot"
+ },
+ "pattern": [
+  " M ",
+  "M#M",
+  " M "
+ ],
+ "result": {
+  "id": "happyghastplus:light_blue_iron_harness"
+ }
+}

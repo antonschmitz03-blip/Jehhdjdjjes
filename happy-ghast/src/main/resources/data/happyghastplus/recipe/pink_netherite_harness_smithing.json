@@ -1,0 +1,9 @@
+{
+ "type": "minecraft:smithing_transform",
+ "addition": "minecraft:netherite_ingot",
+ "base": "happyghastplus:pink_diamond_harness",
+ "result": {
+  "id": "happyghastplus:pink_netherite_harness"
+ },
+ "template": "minecraft:netherite_upgrade_smithing_template"
+}
