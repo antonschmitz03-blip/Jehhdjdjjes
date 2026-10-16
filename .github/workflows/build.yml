@@ -18,6 +18,12 @@ jobs:
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
       - run: chmod +x gradlew && ./gradlew :arsenal:build --stacktrace
+      - name: Mixin target check
+        run: |
+          cp=$(find ~/.gradle/caches/fabric-loom -name '*.jar' | tr '\n' ':')
+          javap -cp "$cp" net.minecraft.world.entity.LivingEntity | grep causeFallDamage | tee sig.txt
+          grep -q 'causeFallDamage(double, float, net.minecraft.world.damagesource.DamageSource)' sig.txt
+          javap -cp "$cp" net.minecraft.world.entity.player.Player | grep tryToStartFallFlying
       - uses: actions/upload-artifact@v4
         with:
           name: vanilla-arsenal

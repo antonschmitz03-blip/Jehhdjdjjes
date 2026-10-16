@@ -4,6 +4,7 @@
   "package": "io.github.antonschmitz.arsenal.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "LivingEntityMixin",
     "PlayerMixin"
   ],
   "injectors": {

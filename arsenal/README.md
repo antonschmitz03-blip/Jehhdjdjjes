@@ -20,6 +20,7 @@ it for the item and its textures). Starts with the sling.
   - **Focus:** while airborne, drawing the bow holds you in place and slows mobs and projectiles within 12 blocks to
     a near stop (a tenth of their speed) for up to 6 s. Arrows loosed meanwhile do +50% damage. Once per time in the air.
   While the bow is in your hand the jump key never opens an elytra, so the two don't fight.
+  Landing with the bow in hand takes half the fall damage.
   The movement runs on the server; the elytra rule is a small mixin on both sides.
 
 ## Enchantments
