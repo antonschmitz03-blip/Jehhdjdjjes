@@ -1,0 +1,46 @@
+name: Probe (temporary)
+
+on:
+  push:
+    paths: ['.github/workflows/probe.yml']
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew :happy-ghast:compileJava --stacktrace -q
+      - name: Vanilla harness probe
+        run: |
+          set +e
+          echo "== jars"; find ~/.gradle /home/runner/work -name '*.jar' -path '*loom*' 2>/dev/null | grep -i -E 'minecraft|26.3' | head -40
+          NAMED=$(find ~/.gradle /home/runner/work -name '*.jar' -path '*loom*' 2>/dev/null | grep -i -E 'minecraft-(merged|common|clientOnly)' | grep -v sources | head -3)
+          echo "named: $NAMED"
+          ASSETS=""
+          for j in $(find ~/.gradle /home/runner/work -name '*.jar' 2>/dev/null); do
+            if unzip -l "$j" 2>/dev/null | grep -q 'equipment/white_harness.json'; then ASSETS="$ASSETS $j"; fi
+          done
+          echo "assets jars: $ASSETS"
+          A=$(echo $ASSETS | awk '{print $1}')
+          unzip -l "$A" | grep -i harness
+          for f in $(unzip -l "$A" | awk '{print $4}' | grep -i harness | grep -E '\.json$' | grep -E 'white|harnesses|dye' ); do echo "== $f"; unzip -p "$A" "$f"; echo; done
+          for f in $(unzip -l "$A" | awk '{print $4}' | grep -E 'textures/entity/equipment/happy_ghast_body/(white|red)_harness.png|textures/item/(white|red)_harness.png'); do echo "== PNG $f"; unzip -p "$A" "$f" | base64 -w0; echo; done
+          DATA=""
+          for j in $(find ~/.gradle /home/runner/work -name '*.jar' 2>/dev/null); do
+            if unzip -l "$j" 2>/dev/null | grep -q 'data/minecraft/recipe/white_harness.json'; then DATA="$j"; break; fi
+          done
+          echo "data jar: $DATA"
+          for f in $(unzip -l "$DATA" | awk '{print $4}' | grep -E 'harness' | grep -E '\.json$'); do echo "== $f"; unzip -p "$DATA" "$f"; echo; done
+          for j in $NAMED; do
+            for c in net.minecraft.world.item.equipment.Equippable net.minecraft.world.item.equipment.Equippable\$Builder net.minecraft.world.item.equipment.EquipmentAssets net.minecraft.world.item.equipment.EquipmentAsset net.minecraft.world.item.Item\$Properties net.minecraft.world.entity.animal.happyghast.HappyGhast net.minecraft.tags.ItemTags net.minecraft.world.item.crafting.SmithingTransformRecipe net.minecraft.world.item.DyeColor net.minecraft.core.component.DataComponents net.minecraft.world.item.component.ItemAttributeModifiers net.minecraft.world.item.component.ItemAttributeModifiers\$Builder net.minecraft.world.entity.EquipmentSlotGroup net.minecraft.world.entity.ai.attributes.AttributeModifier; do
+              echo "== $c"; javap -cp "$j" "$c" 2>&1 | grep -v -E '^\s*$' | head -120
+            done
+            echo "== Items harness"; javap -c -p -cp "$j" net.minecraft.world.item.Items 2>/dev/null | grep -n -i -A12 'String white_harness' | head -40
+            echo "== Equippable harness body"; javap -c -p -cp "$j" net.minecraft.world.item.equipment.Equippable 2>/dev/null | grep -n -A60 'harness(' | head -80
+          done
