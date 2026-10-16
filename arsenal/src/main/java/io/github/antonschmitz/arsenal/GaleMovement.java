@@ -50,7 +50,7 @@ public final class GaleMovement {
 
     private static final class State {
         boolean prevJump;
-        boolean airJumpUsed;
+        int airJumps;
         boolean focusUsed;
         int focusTicksLeft;
         long hopReadyAt;
@@ -90,6 +90,13 @@ public final class GaleMovement {
     private static boolean holdsGaleBow(ServerPlayer player) {
         return player.getMainHandItem().getItem() instanceof GaleBowItem
                 || player.getOffhandItem().getItem() instanceof GaleBowItem;
+    }
+
+    /** Skybound on the held Gale Bow: one extra air jump per level. */
+    private static int skybound(ServerPlayer player) {
+        ItemStack bow = player.getMainHandItem().getItem() instanceof GaleBowItem ? player.getMainHandItem()
+                : player.getOffhandItem();
+        return ArsenalEnchantments.level(player, bow, ArsenalEnchantments.SKYBOUND);
     }
 
     private static boolean drawingGaleBow(ServerPlayer player) {
@@ -138,7 +145,7 @@ public final class GaleMovement {
                 || player.isPassenger() || player.isFallFlying() || player.getAbilities().flying;
         if (grounded) {
             state.airTicks = 0;
-            state.airJumpUsed = false;
+            state.airJumps = 0;
             state.focusUsed = false;
             if (state.focusing()) {
                 endFocus(player);
@@ -148,8 +155,8 @@ public final class GaleMovement {
         state.airTicks++;
 
         // The first air tick the jump key is still held from the ground jump; a fresh press is needed.
-        if (jumpPressed && !groundJump && !state.airJumpUsed && !state.focusing() && state.airTicks > 1) {
-            state.airJumpUsed = true;
+        if (jumpPressed && !groundJump && state.airJumps < 1 + skybound(player) && !state.focusing() && state.airTicks > 1) {
+            state.airJumps++;
             // The server's velocity for a player is stale, so keep the horizontal speed the client actually moved at.
             Vec3 moved = clientMotion(player);
             player.setDeltaMovement(moved.x, AIR_JUMP_LIFT, moved.z);
@@ -183,7 +190,7 @@ public final class GaleMovement {
 
     private static void startFocus(ServerPlayer player, State state) {
         state.focusUsed = true;
-        state.focusTicksLeft = FOCUS_TICKS;
+        state.focusTicksLeft = FOCUS_TICKS + 20 * ArsenalEnchantments.level(player, player.getUseItem(), ArsenalEnchantments.TAILWIND);
         player.setNoGravity(true);
         player.setDeltaMovement(Vec3.ZERO);
         player.fallDistance = 0;

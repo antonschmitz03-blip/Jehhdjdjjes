@@ -1,0 +1,21 @@
+{
+  "description": {
+    "translate": "enchantment.vanillaarsenal.skybound"
+  },
+  "supported_items": "#vanillaarsenal:enchantable/gale_bow",
+  "weight": 1,
+  "max_level": 2,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 15
+  },
+  "max_cost": {
+    "base": 35,
+    "per_level_above_first": 15
+  },
+  "anvil_cost": 6,
+  "slots": [
+    "mainhand"
+  ],
+  "effects": {}
+}

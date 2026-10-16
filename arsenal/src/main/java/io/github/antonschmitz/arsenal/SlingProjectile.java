@@ -22,6 +22,8 @@ public class SlingProjectile extends Snowball {
     private float damage;
     private float knockback;
     private boolean flaming;
+    private int shrapnel;
+    private boolean pellet;
     private final boolean explosive;
 
     public SlingProjectile(Level level, LivingEntity owner, ItemStack ammo, SlingAmmo type, float power) {
@@ -32,8 +34,9 @@ public class SlingProjectile extends Snowball {
     }
 
     /** Power, Punch and Flame from the sling, applied like the bow enchantments. */
-    void enchant(int power, int punch, boolean flame) {
-        this.damage *= 1.0F + 0.1F * power;
+    void enchant(int power, int punch, boolean flame, float whirl, int shrapnel) {
+        this.damage *= (1.0F + 0.1F * power) * (1.0F + whirl);
+        this.shrapnel = shrapnel;
         if (!explosive) {
             this.knockback += 0.4F * punch;
         }
@@ -61,7 +64,25 @@ public class SlingProjectile extends Snowball {
             discard();
             return;
         }
+        if (shrapnel > 0 && !pellet && level() instanceof ServerLevel serverLevel) {
+            burst(serverLevel);
+        }
         super.onHit(hitResult);
+    }
+
+    /** Shrapnel: the stone bursts into small fast pellets (4, 6 or 8) that fly out in all directions. */
+    private void burst(ServerLevel serverLevel) {
+        if (!(getOwner() instanceof LivingEntity owner)) {
+            return;
+        }
+        for (int i = 0; i < 2 + 2 * shrapnel; i++) {
+            SlingProjectile piece = new SlingProjectile(serverLevel, owner, getItem(), SlingAmmo.GRAVEL, 0.75F);
+            piece.pellet = true;
+            piece.setPos(getX(), getY(), getZ());
+            Vec3 dir = new Vec3(random.nextGaussian(), random.nextGaussian() * 0.6 + 0.2, random.nextGaussian()).normalize();
+            piece.setDeltaMovement(dir.scale(1.2));
+            serverLevel.addFreshEntity(piece);
+        }
     }
 
     @Override

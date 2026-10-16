@@ -1,4 +1,9 @@
 {
   "item.vanillaarsenal.sling": "Steinschleuder",
-  "item.vanillaarsenal.gale_bow": "Sturmbogen"
+  "item.vanillaarsenal.gale_bow": "Sturmbogen",
+  "enchantment.vanillaarsenal.shrapnel": "Splitterwirkung",
+  "enchantment.vanillaarsenal.whirl": "Wirbel",
+  "enchantment.vanillaarsenal.tailwind": "Rückenwind",
+  "enchantment.vanillaarsenal.skybound": "Himmelsstürmer",
+  "enchantment.vanillaarsenal.steady_hand": "Ruhige Hand"
 }

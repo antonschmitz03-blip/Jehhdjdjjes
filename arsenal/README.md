@@ -21,3 +21,13 @@ it for the item and its textures). Starts with the sling.
     a near stop (a tenth of their speed) for up to 6 s. Arrows loosed meanwhile do +50% damage. Once per time in the air.
   While the bow is in your hand the jump key never opens an elytra, so the two don't fight.
   The movement runs on the server; the elytra rule is a small mixin on both sides.
+
+## Enchantments
+
+- **Shrapnel** (sling, I-III): the stone bursts into 4, 6 or 8 pellets on impact.
+- **Whirl** (sling, I-III): holding the draw past full power adds up to +20% damage per level after one more second.
+- **Tailwind** (Gale Bow, I-III): focus lasts 1 second longer per level.
+- **Skybound** (Gale Bow, I-II): one extra air jump per level.
+- **Steady Hand** (both, I-III): draws 25% faster per level.
+
+All are normal enchantments (enchanting table, books, Enchanting Infuser).

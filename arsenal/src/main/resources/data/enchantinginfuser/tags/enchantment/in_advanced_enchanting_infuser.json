@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "vanillaarsenal:shrapnel",
+      "required": false
+    },
+    {
+      "id": "vanillaarsenal:whirl",
+      "required": false
+    },
+    {
+      "id": "vanillaarsenal:tailwind",
+      "required": false
+    },
+    {
+      "id": "vanillaarsenal:skybound",
+      "required": false
+    },
+    {
+      "id": "vanillaarsenal:steady_hand",
+      "required": false
+    }
+  ]
+}

@@ -56,6 +56,7 @@ public class SlingItem extends Item {
             return false;
         }
         int drawn = getUseDuration(stack, user) - remainingUseTicks;
+        drawn = (int) (drawn * (1.0F + 0.25F * ArsenalEnchantments.level(player, stack, ArsenalEnchantments.STEADY_HAND)));
         float power = power(drawn);
         if (power < 0.1F) {
             return false;
@@ -69,7 +70,7 @@ public class SlingItem extends Item {
         }
         if (!level.isClientSide()) {
             SlingAmmo type = SlingAmmo.of(ammoStack);
-            fire(level, player, ammoStack, type, power, stack);
+            fire(level, player, ammoStack, type, power, stack, drawn);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW,
                     SoundSource.PLAYERS, 0.9F, 0.6F + 0.4F * power);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),
@@ -94,7 +95,7 @@ public class SlingItem extends Item {
 
     /** Throws the ammo (several pellets for gravel). */
     public static void fire(Level level, Player player, ItemStack ammoStack, SlingAmmo type, float power) {
-        fire(level, player, ammoStack, type, power, ItemStack.EMPTY);
+        fire(level, player, ammoStack, type, power, ItemStack.EMPTY, 0);
     }
 
     /** Level of an enchantment on the stack, 0 when it has none. */
@@ -103,14 +104,21 @@ public class SlingItem extends Item {
                 .map(holder -> EnchantmentHelper.getItemEnchantmentLevel(holder, stack)).orElse(0);
     }
 
-    /** Throws the ammo; Power, Punch and Flame on the sling add to every pellet. */
-    public static void fire(Level level, Player player, ItemStack ammoStack, SlingAmmo type, float power, ItemStack sling) {
+    /**
+     * Throws the ammo; Power, Punch, Flame, Whirl and Shrapnel on the sling add to every pellet. Whirl rewards
+     * holding the draw past full power: its full bonus is reached a second after that.
+     */
+    public static void fire(Level level, Player player, ItemStack ammoStack, SlingAmmo type, float power, ItemStack sling,
+            int drawnTicks) {
+        float whirl = ArsenalEnchantments.level(player, sling, ArsenalEnchantments.WHIRL) * 0.2F
+                * Mth.clamp((drawnTicks - FULL_DRAW_TICKS) / (float) FULL_DRAW_TICKS, 0.0F, 1.0F);
+        int shrapnel = ArsenalEnchantments.level(player, sling, ArsenalEnchantments.SHRAPNEL);
         int powerLevel = enchantLevel(level, sling, Enchantments.POWER);
         int punchLevel = enchantLevel(level, sling, Enchantments.PUNCH);
         boolean flame = enchantLevel(level, sling, Enchantments.FLAME) > 0;
         for (int i = 0; i < type.pellets(); i++) {
             SlingProjectile projectile = new SlingProjectile(level, player, ammoStack, type, power);
-            projectile.enchant(powerLevel, punchLevel, flame);
+            projectile.enchant(powerLevel, punchLevel, flame, whirl, shrapnel);
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F,
                     MAX_SPEED * Mth.clamp(power, 0.1F, 1.0F), type.spread() * (1.5F - power));
             level.addFreshEntity(projectile);

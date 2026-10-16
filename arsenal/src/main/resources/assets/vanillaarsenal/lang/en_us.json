@@ -1,4 +1,9 @@
 {
   "item.vanillaarsenal.sling": "Sling",
-  "item.vanillaarsenal.gale_bow": "Gale Bow"
+  "item.vanillaarsenal.gale_bow": "Gale Bow",
+  "enchantment.vanillaarsenal.shrapnel": "Shrapnel",
+  "enchantment.vanillaarsenal.whirl": "Whirl",
+  "enchantment.vanillaarsenal.tailwind": "Tailwind",
+  "enchantment.vanillaarsenal.skybound": "Skybound",
+  "enchantment.vanillaarsenal.steady_hand": "Steady Hand"
 }
