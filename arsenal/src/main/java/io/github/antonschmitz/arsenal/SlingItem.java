@@ -1,5 +1,7 @@
 package io.github.antonschmitz.arsenal;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -11,6 +13,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 /**
@@ -64,13 +69,16 @@ public class SlingItem extends Item {
         }
         if (!level.isClientSide()) {
             SlingAmmo type = SlingAmmo.of(ammoStack);
-            fire(level, player, ammoStack, type, power);
+            fire(level, player, ammoStack, type, power, stack);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW,
                     SoundSource.PLAYERS, 0.9F, 0.6F + 0.4F * power);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),
                     SoundSource.PLAYERS, 0.3F, 1.4F);
             if (!player.hasInfiniteMaterials()) {
-                ammoStack.shrink(1);
+                // Infinity keeps the stone, but never a TNT block.
+                if (type == SlingAmmo.TNT || enchantLevel(level, stack, Enchantments.INFINITY) == 0) {
+                    ammoStack.shrink(1);
+                }
                 stack.hurtAndBreak(1, player, player.getUsedItemHand());
             }
         }
@@ -86,8 +94,23 @@ public class SlingItem extends Item {
 
     /** Throws the ammo (several pellets for gravel). */
     public static void fire(Level level, Player player, ItemStack ammoStack, SlingAmmo type, float power) {
+        fire(level, player, ammoStack, type, power, ItemStack.EMPTY);
+    }
+
+    /** Level of an enchantment on the stack, 0 when it has none. */
+    public static int enchantLevel(Level level, ItemStack stack, ResourceKey<Enchantment> key) {
+        return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(key)
+                .map(holder -> EnchantmentHelper.getItemEnchantmentLevel(holder, stack)).orElse(0);
+    }
+
+    /** Throws the ammo; Power, Punch and Flame on the sling add to every pellet. */
+    public static void fire(Level level, Player player, ItemStack ammoStack, SlingAmmo type, float power, ItemStack sling) {
+        int powerLevel = enchantLevel(level, sling, Enchantments.POWER);
+        int punchLevel = enchantLevel(level, sling, Enchantments.PUNCH);
+        boolean flame = enchantLevel(level, sling, Enchantments.FLAME) > 0;
         for (int i = 0; i < type.pellets(); i++) {
             SlingProjectile projectile = new SlingProjectile(level, player, ammoStack, type, power);
+            projectile.enchant(powerLevel, punchLevel, flame);
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F,
                     MAX_SPEED * Mth.clamp(power, 0.1F, 1.0F), type.spread() * (1.5F - power));
             level.addFreshEntity(projectile);

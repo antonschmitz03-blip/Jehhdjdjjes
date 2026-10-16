@@ -19,8 +19,9 @@ import net.minecraft.world.phys.Vec3;
 public class SlingProjectile extends Snowball {
     private static final int MAX_AGE = 100;
 
-    private final float damage;
-    private final float knockback;
+    private float damage;
+    private float knockback;
+    private boolean flaming;
     private final boolean explosive;
 
     public SlingProjectile(Level level, LivingEntity owner, ItemStack ammo, SlingAmmo type, float power) {
@@ -28,6 +29,15 @@ public class SlingProjectile extends Snowball {
         this.damage = type.damage() * power;
         this.knockback = type.knockback() * power;
         this.explosive = type.explosive();
+    }
+
+    /** Power, Punch and Flame from the sling, applied like the bow enchantments. */
+    void enchant(int power, int punch, boolean flame) {
+        this.damage *= 1.0F + 0.1F * power;
+        if (!explosive) {
+            this.knockback += 0.4F * punch;
+        }
+        this.flaming = flame;
     }
 
     /** Stones fly flat: a snowball falls at 0.03, an arrow at 0.05. */
@@ -59,6 +69,9 @@ public class SlingProjectile extends Snowball {
         Entity target = hitResult.getEntity();
         if (level() instanceof ServerLevel serverLevel) {
             target.hurtServer(serverLevel, damageSources().thrown(this, getOwner()), damage);
+            if (flaming && damage > 0) {
+                target.igniteForSeconds(5.0F);
+            }
             if (knockback > 0) {
                 Vec3 push = getDeltaMovement().multiply(1, 0, 1).normalize().scale(knockback);
                 target.push(push.x, 0.1, push.z);
