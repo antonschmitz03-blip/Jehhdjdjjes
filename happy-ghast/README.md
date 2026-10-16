@@ -17,7 +17,7 @@ playing multiplayer, and on the client to see the chest and rocket engines. It s
 - **Rope ladder:** use the whistle while a happy ghast is within 8 blocks sideways and it lets a rope ladder down on
   its right-hand side, from its back to the ground (a farther ghast flies over and drops it on arrival). The ladder is
   drawn on the ghast, turns with it and has no blocks; hold jump to climb up, sneak to hold on. Riding pulls it up,
-  dismounting lets it down again. The ghast holds still while it is down, and it is pulled up after a minute with
+  dismounting lets it down again. The ghast holds still while it is down, and it is pulled up after 10 seconds with
   nobody near it.
 - **Protection:** players (and their arrows) can't hurt a harnessed happy ghast or the one they ride.
 - **Searchlight:** right-click a harnessed happy ghast with it to mount a swivelling spotlight on top of the harness

@@ -32,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
  * on its right-hand side, turns with the ghast, and reaches from the ghast's back down to the ground. Climbing it is
  * handled by {@link #isOnRope}, which the {@code onClimbable} mixin asks. It comes down when the whistle calls a nearby
  * ghast or a rider dismounts, and is pulled back up when someone rides the ghast, the ghast moves, or nobody has used
- * it for a minute. The ghast holds still while it is down, position and facing.
+ * it for 10 seconds. The ghast holds still while it is down, position and facing.
  */
 public final class RopeLadders {
     public static final int MAX_LENGTH = 40;
@@ -43,7 +43,7 @@ public final class RopeLadders {
     private static final double GRAB_HALF_WIDTH = 0.4;
     private static final double GRAB_HALF_DEPTH = 0.7;
     private static final double GRAB_TOP = 4.7;
-    private static final int IDLE_TICKS = 20 * 60;
+    private static final int IDLE_TICKS = 20 * 10;
 
     /** How far the rope reaches below the ghast's feet (0 when it is pulled up). Synced so clients can draw it. */
     public static final AttachmentType<Float> ROPE = AttachmentRegistry.create(
