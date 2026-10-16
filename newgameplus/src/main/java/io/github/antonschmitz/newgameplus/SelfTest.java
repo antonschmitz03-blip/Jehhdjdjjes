@@ -64,17 +64,11 @@ final class SelfTest {
             Files.deleteIfExists(NewGamePlus.pendingFile(server).resolveSibling("newgameplus_applied.dat"));
 
             check(Files.exists(NewGamePlus.mobsFile(server)), "mobs file not written");
-            Importer.spawnMobs(server, player);
-            List<Wolf> wolves = new java.util.ArrayList<>();
-            for (net.minecraft.world.entity.Entity entity : level.getAllEntities()) {
-                if (entity instanceof Wolf found) {
-                    wolves.add(found);
-                }
-            }
-            NewGamePlus.LOGGER.info("newgameplus self test: wolves in level {}", wolves.size());
-            check(!wolves.isEmpty(), "tamed wolf not spawned");
+            // The level adds entities to a chunk that was only just loaded on a later tick, so check the spawned objects.
+            List<net.minecraft.world.entity.Entity> spawned = Importer.spawnMobs(server, player);
+            check(spawned.size() == 1 && spawned.get(0) instanceof Wolf, "tamed wolf not spawned");
             int[] newId = UUIDUtil.uuidToIntArray(player.getUUID());
-            for (Wolf wolf : wolves) {
+            for (net.minecraft.world.entity.Entity wolf : spawned) {
                 try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(NewGamePlus.LOGGER)) {
                     TagValueOutput out = TagValueOutput.createWithContext(reporter, level.registryAccess());
                     wolf.saveWithoutId(out);

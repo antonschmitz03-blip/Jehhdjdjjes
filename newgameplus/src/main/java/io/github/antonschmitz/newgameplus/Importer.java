@@ -1,10 +1,11 @@
 package io.github.antonschmitz.newgameplus;
 
 import java.io.IOException;
-import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -74,10 +75,11 @@ public final class Importer {
     }
 
     /** Called once the player is in the world: spawns the imported mobs around them. */
-    public static void spawnMobs(MinecraftServer server, ServerPlayer player) {
+    public static List<Entity> spawnMobs(MinecraftServer server, ServerPlayer player) {
+        List<Entity> spawned = new ArrayList<>();
         Path file = NewGamePlus.mobsFile(server);
         if (!Files.isRegularFile(file)) {
-            return;
+            return spawned;
         }
         try {
             CompoundTag root = NbtIo.readCompressed(file, NbtAccounter.unlimitedHeap());
@@ -85,19 +87,20 @@ public final class Importer {
             int[] from = root.getIntArray("source_uuid").orElseGet(() -> UUIDUtil.uuidToIntArray(player.getUUID()));
             int[] to = UUIDUtil.uuidToIntArray(player.getUUID());
             ListTag list = root.getListOrEmpty("mobs");
-            int spawned = 0;
             for (int i = 0; i < list.size(); i++) {
-                if (spawnMob(player, list.getCompoundOrEmpty(i).copy(), from, to, i)) {
-                    spawned++;
+                Entity entity = spawnMob(player, list.getCompoundOrEmpty(i).copy(), from, to, i);
+                if (entity != null) {
+                    spawned.add(entity);
                 }
             }
-            NewGamePlus.LOGGER.info("New Game Plus: spawned {} of {} imported mobs for {}", spawned, list.size(), player.getPlainTextName());
+            NewGamePlus.LOGGER.info("New Game Plus: spawned {} of {} imported mobs for {}", spawned.size(), list.size(), player.getPlainTextName());
         } catch (IOException | RuntimeException e) {
             NewGamePlus.LOGGER.error("New Game Plus: could not import the mobs", e);
         }
+        return spawned;
     }
 
-    private static boolean spawnMob(ServerPlayer player, CompoundTag tag, int[] from, int[] to, int index) {
+    private static Entity spawnMob(ServerPlayer player, CompoundTag tag, int[] from, int[] to, int index) {
         ServerLevel level = player.level();
         // What the mob was tied to in the old world does not exist here.
         for (String key : new String[]{"Passengers", "Leash", "leash", "Motion", "RootVehicle"}) {
@@ -115,7 +118,7 @@ public final class Importer {
                 loaded.setDeltaMovement(Vec3.ZERO);
                 return level.addWithUUID(loaded) ? loaded : null;
             });
-            return entity != null;
+            return entity;
         }
     }
 }
