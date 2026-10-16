@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
  * <li>Long hop: jump while sneaking to be thrown where you look (about 7 blocks when looking level).</li>
  * <li>Air jump: one extra jump per time in the air.</li>
  * <li>Focus: while airborne, drawing the bow holds you in place and slows nearby mobs and projectiles for up to
- * 6 seconds; arrows loosed meanwhile do +50% damage. Once per time in the air.</li>
+ * 6 seconds, however many arrows you loose; they do +50% damage. Once per time in the air.</li>
  * </ul>
  */
 public final class GaleMovement {
@@ -168,9 +168,8 @@ public final class GaleMovement {
             if (!state.focusUsed && drawingGaleBow(player)) {
                 startFocus(player, state);
             }
-        } else if (!drawingGaleBow(player)) {
-            endFocus(player);
         } else {
+            // Focus runs for its whole time, not just while the string is drawn, so several arrows fit in one.
             holdFocus(player, state);
         }
     }

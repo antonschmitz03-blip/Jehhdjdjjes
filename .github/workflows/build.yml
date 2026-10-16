@@ -24,6 +24,13 @@ jobs:
           javap -cp "$cp" net.minecraft.world.entity.LivingEntity | grep causeFallDamage | tee sig.txt
           grep -q 'causeFallDamage(double, float, net.minecraft.world.damagesource.DamageSource)' sig.txt
           javap -cp "$cp" net.minecraft.world.entity.player.Player | grep tryToStartFallFlying
+      - name: Vanilla bow model (reference)
+        run: |
+          for j in $(find ~/.gradle/caches/fabric-loom -name '*.jar'); do
+            for f in assets/minecraft/models/item/bow.json assets/minecraft/items/bow.json assets/minecraft/models/item/crossbow.json; do
+              unzip -p "$j" "$f" 2>/dev/null | sed "s|^|[$f] |"
+            done
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: vanilla-arsenal
