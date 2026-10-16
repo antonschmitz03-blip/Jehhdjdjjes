@@ -8,9 +8,8 @@ import io.github.antonschmitz.vplustweaks.VanillaPlusTweaks;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.Nullable;
 
 /** Lets a data file load only while a feature is switched on in config/vplustweaks.json. */
 public record FeatureEnabledCondition(String feature) implements ResourceCondition {
@@ -31,7 +30,7 @@ public record FeatureEnabledCondition(String feature) implements ResourceConditi
     }
 
     @Override
-    public boolean test(@Nullable HolderLookup.Provider registryLookup) {
+    public boolean test(RegistryOps.RegistryInfoLookup registryInfo) {
         return TweaksConfig.enabled(feature);
     }
 }
