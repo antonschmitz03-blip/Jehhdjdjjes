@@ -34,7 +34,7 @@ public class VanillaPlusTweaks implements ModInitializer {
             if (FabricLoader.getInstance().isModLoaded("enchantinginfuser")) {
                 Class<?> infuserMenu = Class.forName("fuzs.enchantinginfuser.common.world.inventory.InfuserMenu");
                 // The mixin's handler is merged into the Infuser's menu class, so it only shows up if the patch was applied.
-                boolean patched = Arrays.stream(infuserMenu.getDeclaredMethods()).anyMatch(method -> method.getName().contains("vplustweaks$halveCost"));
+                boolean patched = Arrays.stream(infuserMenu.getDeclaredMethods()).anyMatch(method -> method.getName().contains("vplustweaks$quarterCost"));
                 if (!patched) {
                     throw new IllegalStateException("The Enchanting Infuser cost patch was not applied");
                 }

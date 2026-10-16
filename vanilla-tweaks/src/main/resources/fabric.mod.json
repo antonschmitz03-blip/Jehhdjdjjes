@@ -3,7 +3,7 @@
   "id": "vplustweaks",
   "version": "${version}",
   "name": "Vanilla+ Tweaks",
-  "description": "Small vanilla+ tweaks: extra recipes, double doors, no crop trampling, no anvil 'Too Expensive!' limit and half-price enchanting (also in the Enchanting Infuser), tamed pets that you can't hurt, max-stat horses, fast ladder placement and floating ladders.",
+  "description": "Small vanilla+ tweaks: extra recipes, double doors, no crop trampling, no anvil 'Too Expensive!' limit and half-price enchanting (a quarter of the cost in the Enchanting Infuser), tamed pets that you can't hurt, max-stat horses, fast ladder placement and floating ladders.",
   "authors": ["antonschmitz03-blip"],
   "license": "CC0-1.0",
   "environment": "*",

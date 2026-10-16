@@ -9,11 +9,11 @@ Install on the server too when playing multiplayer.
   (same facing, opposite hinge). Sneak-click to use a single door. Iron doors are not affected.
 - **No crop trampling:** landing on farmland no longer turns it into dirt (fall damage is unchanged).
 - **No "Too Expensive!" in the anvil:** the 40-level cap is gone; you still pay the full level cost.
-- **Half-price enchanting:**
+- **Cheaper enchanting:**
   - Enchanting table: the level *requirement* is halved (e.g. 30 → 15). Enchantments are as strong as
     in vanilla, and the levels/lapis spent (1–3) are unchanged.
-  - Enchanting Infuser: its level cost is halved (rounded up). Refunds for removing enchantments are
-    unchanged.
+  - Enchanting Infuser: its level cost is cut to a quarter (rounded up, so a cost of 1 stays 1). Refunds for
+    removing enchantments are unchanged.
 - **Pets are safe from you:** you (and your arrows) can't damage your own tamed wolves, cats, horses and
   other pets.
 - **Best horses:** every horse spawns and loads with maximum health (30), speed and jump strength.
