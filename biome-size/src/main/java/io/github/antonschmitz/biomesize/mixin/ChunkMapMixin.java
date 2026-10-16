@@ -24,7 +24,7 @@ public abstract class ChunkMapMixin {
                                                 Operation<RandomState> original, @Local(argsOnly = true) ServerLevel level) {
         RandomState state = original.call(noises, seed, settings);
         boolean overworld = level.dimension() == Level.OVERWORLD;
-        ((ScalingFlag) state).biomesize$setScaled(overworld);
+        ((ScalingFlag) (Object) state).biomesize$setScaled(overworld);
         if (overworld && !BiomeSize.active().isDefault()) {
             BiomeSize.LOGGER.info("Biome Size: scaling the overworld noises");
         }
