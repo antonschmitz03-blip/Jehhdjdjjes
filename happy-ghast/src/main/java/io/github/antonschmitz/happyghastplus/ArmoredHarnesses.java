@@ -40,6 +40,10 @@ public final class ArmoredHarnesses {
         final double knockbackResistance;
         final boolean fireResistant;
 
+        public String id() {
+            return name;
+        }
+
         Tier(String name, double armor, double toughness, double knockbackResistance, boolean fireResistant) {
             this.name = name;
             this.armor = armor;
@@ -95,6 +99,16 @@ public final class ArmoredHarnesses {
                     tier.knockbackResistance, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.BODY);
         }
         return builder.build();
+    }
+
+    /** The armored tier of a harness item, or null for anything else (a plain harness included). */
+    public static Tier tierOf(Item item) {
+        for (Map.Entry<Tier, Map<DyeColor, Item>> entry : ITEMS.entrySet()) {
+            if (entry.getValue().containsValue(item)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public static Item get(Tier tier, DyeColor color) {

@@ -147,7 +147,6 @@ def entity_texture(pal):
         rivet(px, pal, 50, y)
     shade(px, pal, shield(42, 24, 53, 34))
     inlay(px, pal, 47, 28)
-    faceplate(px, pal)
     # sides
     flank(px, pal, 1, 29, 13, 17)        # west, around the buckle strap
     flank(px, pal, 66, 94, 78, 82)       # east
@@ -160,14 +159,21 @@ def entity_texture(pal):
     for x in (100, 105, 110, 116, 121):
         rivet(px, pal, x, 34)
     inlay(px, pal, 111, 34)
-    visor(px, pal)
     return px
 
 
+def visor_texture(pal):
+    """The visor, a flat 32x32 quad GhastVisorLayer draws just in front of the goggles and moves with them, so it is
+    down over the face while ridden and flips up with the goggles otherwise. At 2 pixels per model unit it is as wide
+    as the face; its centre sits 2 units below the goggles' centre. A brow band, a nose guard and cheek guards around
+    two open eye windows that line up with the goggle lenses, so the eyes stay visible."""
+    full = blank(64, 64)
+    faceplate(full, pal)
+    return [row[32:64] for row in full[32:64]]
+
+
 def faceplate(px, pal):
-    """Face armor on the harness box's front face (x 32..63, y 32..63), below the chest shield: a brow band, a nose
-    guard and cheek guards around two open eye windows, so the eyes stay visible. It is painted on the harness
-    itself, so it is not limited to the goggles' shape and stays put when the goggles flip up."""
+    """Drawn in harness front-face coordinates (x 32..63, y 32..63) so it lines up with the face."""
     face = rect(35, 35, 60, 51)
     for x0 in (38, 50):
         face -= rect(x0, 40, x0 + 7, 47)                       # eye windows
@@ -186,41 +192,6 @@ def faceplate(px, pal):
         put(px, 48, y, pal[SHADOW])
     for x, y in ((36, 44), (58, 44), (40, 49), (55, 49)):
         rivet(px, pal, x, y)
-
-
-def visor(px, pal):
-    """An armored frame around the goggles: brow guard, rims around open eye windows, nose bridge, cheek guards and
-    side hinges. The windows are left fully open so the goggle lenses, and the eyes behind them, stay visible."""
-    windows = [rect(15, 76, 22, 81, round_corners=False), rect(29, 76, 36, 81, round_corners=False)]
-    open_cells = set().union(*windows)
-    face = rect(11, 74, 40, 83) - open_cells
-    for x in (11, 12, 39, 40):       # cut the lower corners into cheeks
-        for y in range(82 - (x in (12, 39)), 84):
-            face.discard((x, y))
-    face -= {(x, 83) for x in range(23, 29)}  # a notch under the nose bridge
-    shade(px, pal, face)
-    # brow guard in the accent colour along the top edge, thicker over the nose
-    for x in range(12, 40):
-        put(px, x, 74, pal[ACCENT])
-    for x in range(23, 29):
-        put(px, x, 75, pal[ACCENT_SHADOW])
-    # rims: a lit inner edge on top and left of each window, a dark one bottom and right
-    for x0, x1 in ((15, 22), (29, 36)):
-        for x in range(x0, x1 + 1):
-            put(px, x, 75, pal[OUTLINE])
-            put(px, x, 82, pal[HIGHLIGHT])
-        for y in range(76, 82):
-            put(px, x0 - 1, y, pal[OUTLINE])
-            put(px, x1 + 1, y, pal[OUTLINE])
-        rivet(px, pal, x0 - 3, 79)
-    # nose bridge ridge
-    for y in range(76, 83):
-        put(px, 25, y, pal[HIGHLIGHT])
-        put(px, 26, y, pal[SHADOW])
-    # hinges where the frame meets the goggle straps, on the box's side faces
-    for x0 in (4, 43):
-        shade(px, pal, rect(x0, 77, x0 + 4, 80), wear=False)
-        rivet(px, pal, x0 + 2, 78)
 
 
 # Inventory icon: the leather saddle of the vanilla icon (rows 1..6), drawn as a plate.
@@ -292,6 +263,17 @@ def main():
         write_png(os.path.join(ASSETS, 'textures', 'entity', 'equipment', 'happy_ghast_body', f'{tier}_harness_plates.png'),
                   entity_texture(pal))
         write_png(os.path.join(ASSETS, 'textures', 'item', f'{tier}_harness_plates.png'), icon_texture(pal))
+        write_png(os.path.join(ASSETS, 'textures', 'item', f'ghast_visor_{tier}.png'), visor_texture(pal))
+        write_json(os.path.join(ASSETS, 'models', 'item', f'ghast_visor_{tier}.json'), {
+            'textures': {'t': f'happyghastplus:item/ghast_visor_{tier}', 'particle': f'happyghastplus:item/ghast_visor_{tier}'},
+            'elements': [{'from': [0, 0, 8], 'to': [16, 16, 8], 'faces': {
+                'north': {'uv': [0, 0, 16, 16], 'texture': '#t'}, 'south': {'uv': [0, 0, 16, 16], 'texture': '#t'}}}],
+        })
+    write_json(os.path.join(ASSETS, 'items', 'ghast_visor.json'), {'model': {
+        'type': 'minecraft:select', 'property': 'minecraft:custom_model_data', 'index': 0,
+        'cases': [{'when': t, 'model': {'type': 'minecraft:model', 'model': f'happyghastplus:item/ghast_visor_{t}'}} for t in TIERS],
+        'fallback': {'type': 'minecraft:model', 'model': 'happyghastplus:item/ghast_visor_iron'},
+    }})
 
     recipes = os.path.join(DATA, 'happyghastplus', 'recipe')
     previous = {'iron': None, 'diamond': 'iron', 'netherite': 'diamond'}

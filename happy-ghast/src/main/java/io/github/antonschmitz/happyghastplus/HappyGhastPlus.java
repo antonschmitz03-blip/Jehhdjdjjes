@@ -52,6 +52,8 @@ public class HappyGhastPlus implements ModInitializer {
     /** Pieces of the rope ladder the ghast draws; not obtainable. */
     public static Item GHAST_ROPE_SEGMENT;
     public static Item GHAST_ROPE_TOP;
+    /** The armored harnesses' visor, drawn in front of the goggles; not obtainable. */
+    public static Item GHAST_VISOR;
 
     @Override
     public void onInitialize() {
@@ -73,6 +75,7 @@ public class HappyGhastPlus implements ModInitializer {
         GHAST_SEARCHLIGHT = register("ghast_searchlight", properties -> new Item(properties.stacksTo(16)));
         GHAST_ROPE_SEGMENT = register("ghast_rope_segment", Item::new);
         GHAST_ROPE_TOP = register("ghast_rope_top", Item::new);
+        GHAST_VISOR = register("ghast_visor", Item::new);
         ArmoredHarnesses.register(HappyGhastPlus::register);
 
         for (String name : new String[] {"ghast_speed_upgrade", "ghast_whistle"}) {
@@ -115,6 +118,7 @@ public class HappyGhastPlus implements ModInitializer {
         check(BuiltInRegistries.ITEM.getValue(id("ghast_nest")) == GHAST_NEST_ITEM, "ghast nest item");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_eyelids")) == GHAST_EYELIDS, "ghast eyelids item");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_rope_top")) == GHAST_ROPE_TOP, "ghast rope item");
+        check(BuiltInRegistries.ITEM.getValue(id("ghast_visor")) == GHAST_VISOR, "ghast visor item");
         check(BuiltInRegistries.BLOCK.getValue(id("ghast_nest")) == GHAST_NEST, "ghast nest block");
         check(BuiltInRegistries.ITEM.getValue(id("ghast_searchlight")) == GHAST_SEARCHLIGHT, "searchlight item");
         check(BuiltInRegistries.ITEM.getValue(id("red_netherite_harness")) == ArmoredHarnesses.get(ArmoredHarnesses.Tier.NETHERITE, DyeColor.RED),
