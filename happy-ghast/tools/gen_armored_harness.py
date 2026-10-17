@@ -44,16 +44,23 @@ PALETTES = {
 }
 OUTLINE, SHADOW, MID, BASE, HIGHLIGHT = range(5)
 
-# Entity plates as (x0, y0, x1, y1) inclusive, on the leather of the vanilla harness.
+# Entity plates as (x0, y0, x1, y1) inclusive, on the leather of the vanilla harness, drawn in order (later plates
+# overlap earlier ones). The top only gets a spine plate so the saddle shows; the sides get two rows of skirt plates
+# that leave the bottom of the coloured flaps and the hanging buckle straps free.
 PLATES = [
-    (34, 1, 61, 8),     # top: three overlapping bands across the saddle
-    (34, 9, 61, 16),
-    (34, 17, 61, 24),
-    (42, 25, 53, 32),   # chest piece over the leather tongue at the front
-    (5, 32, 25, 39),    # west flank
-    (70, 32, 91, 39),   # east flank
-    (97, 32, 126, 35),  # band across the back
+    (41, 3, 54, 22),    # spine plate on the saddle
+    (42, 23, 53, 32),   # chest piece over the leather tongue at the front
+    # west flank: lower row split around the buckle strap, then the upper row over it
+    (1, 39, 12, 47), (18, 39, 30, 47), (1, 32, 30, 40),
+    # east flank
+    (65, 39, 77, 47), (83, 39, 94, 47), (65, 32, 94, 40),
+    # back, split around the two tail straps
+    (97, 39, 104, 47), (115, 39, 126, 47), (97, 32, 126, 40),
 ]
+# Visor over the goggles: the goggles are a 16x5x5 box whose front face is x 10..41, y 74..83 on the texture, lenses
+# at x 15..22 and 29..36. The plate covers the frame and leaves eye slits so the lenses show through.
+VISOR = (11, 74, 40, 83)
+VISOR_SLITS = [(14, 77, 23, 78), (28, 77, 37, 78)]
 
 # Inventory icon: the leather saddle of the vanilla icon (rows 1..6), drawn as a plate.
 ICON_PLATE = [
@@ -102,6 +109,15 @@ def entity_texture(pal):
     px = blank(128, 128)
     for rect in PLATES:
         draw_plate(px, pal, *rect)
+    draw_plate(px, pal, *VISOR)
+    for x0, y0, x1, y1 in VISOR_SLITS:
+        for y in range(y0 - 1, y1 + 2):
+            for x in range(x0 - 1, x1 + 2):
+                inside = x0 <= x <= x1 and y0 <= y <= y1
+                px[y][x] = (0, 0, 0, 0) if inside else pal[SHADOW if y > y1 else OUTLINE] + (255,)
+    for y in range(VISOR[1] + 1, VISOR[3]):
+        put(px, 25, y, pal[HIGHLIGHT])  # ridge down the middle
+        put(px, 26, y, pal[SHADOW])
     return px
 
 
