@@ -164,38 +164,35 @@ def entity_texture(pal):
 
 
 def visor(px, pal):
-    """A knight's visor over the goggles: brow ridge, angled eye slits, nose guard, breathing holes and side hinges."""
-    face = rect(11, 74, 40, 83)
+    """An armored frame around the goggles: brow guard, rims around open eye windows, nose bridge, cheek guards and
+    side hinges. The windows are left fully open so the goggle lenses, and the eyes behind them, stay visible."""
+    windows = [rect(15, 76, 22, 81, round_corners=False), rect(29, 76, 36, 81, round_corners=False)]
+    open_cells = set().union(*windows)
+    face = rect(11, 74, 40, 83) - open_cells
     for x in (11, 12, 39, 40):       # cut the lower corners into cheeks
         for y in range(82 - (x in (12, 39)), 84):
             face.discard((x, y))
+    face -= {(x, 83) for x in range(23, 29)}  # a notch under the nose bridge
     shade(px, pal, face)
-    # brow ridge in the accent colour, with a notch in the middle
+    # brow guard in the accent colour along the top edge, thicker over the nose
     for x in range(12, 40):
-        put(px, x, 75, pal[ACCENT])
-        put(px, x, 76, pal[SHADOW])
-    put(px, 25, 76, pal[OUTLINE])
-    put(px, 26, 76, pal[OUTLINE])
-    # eye slits, sloping down towards the middle, so the lenses show through
-    for side in (0, 1):
-        for i in range(8):
-            x = 15 + i if side == 0 else 36 - i
-            y = 77 + (i >= 5)
-            px[y][x] = (0, 0, 0, 0)
-            px[y + 1][x] = (0, 0, 0, 0)
-            put(px, x, y + 2, pal[HIGHLIGHT])
-    # nose guard
-    for y in range(77, 84):
+        put(px, x, 74, pal[ACCENT])
+    for x in range(23, 29):
+        put(px, x, 75, pal[ACCENT_SHADOW])
+    # rims: a lit inner edge on top and left of each window, a dark one bottom and right
+    for x0, x1 in ((15, 22), (29, 36)):
+        for x in range(x0, x1 + 1):
+            put(px, x, 75, pal[OUTLINE])
+            put(px, x, 82, pal[HIGHLIGHT])
+        for y in range(76, 82):
+            put(px, x0 - 1, y, pal[OUTLINE])
+            put(px, x1 + 1, y, pal[OUTLINE])
+        rivet(px, pal, x0 - 3, 79)
+    # nose bridge ridge
+    for y in range(76, 83):
         put(px, 25, y, pal[HIGHLIGHT])
         put(px, 26, y, pal[SHADOW])
-    put(px, 24, 83, pal[OUTLINE])
-    put(px, 27, 83, pal[OUTLINE])
-    # breathing holes on the cheeks
-    for x in (16, 19, 22, 29, 32, 35):
-        put(px, x, 82, pal[OUTLINE])
-    for x in (13, 38):
-        rivet(px, pal, x, 77)
-    # hinges where the visor meets the goggle straps, on the box's side faces
+    # hinges where the frame meets the goggle straps, on the box's side faces
     for x0 in (4, 43):
         shade(px, pal, rect(x0, 77, x0 + 4, 80), wear=False)
         rivet(px, pal, x0 + 2, 78)
