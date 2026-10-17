@@ -53,8 +53,12 @@ public final class GhastNests {
     private static final Map<UUID, Integer> COOLDOWN = new HashMap<>();
     private static int ticks;
 
-    /** {@code origin} is cell (0, 0) of the nest; {@code restTicks} counts ticks spent at rest on its floor; {@code yaw} is the facing the nest gives it. */
-    private record Rest(Level level, BlockPos origin, int restTicks, float yaw) {}
+    /**
+     * {@code origin} is cell (0, 0) of the nest; {@code restTicks} counts ticks spent at rest on its floor; {@code yaw}
+     * is the facing the nest gives it and {@code facing} the way the ghast faces now, turning towards it. The facing
+     * is kept here rather than read back from the ghast so nothing else turning it can stop it from settling.
+     */
+    private record Rest(Level level, BlockPos origin, int restTicks, float yaw, float facing) {}
 
     private GhastNests() {}
 
@@ -81,6 +85,11 @@ public final class GhastNests {
             RESTING.clear();
             COOLDOWN.clear();
         });
+    }
+
+    /** Whether the ghast is settling into or resting on a nest; its own AI is paused meanwhile (see MobMixin). */
+    public static boolean isResting(HappyGhast ghast) {
+        return RESTING.containsKey(ghast.getUUID());
     }
 
     /** Ends any rest or sleep; the ghast won't settle again for a few seconds. */
@@ -113,7 +122,7 @@ public final class GhastNests {
                     // A ghast that was held still by its rope ladder (the rider just dismounted over the nest) settles too:
                     // the rope is pulled up so the two holds don't fight over its position.
                     RopeLadders.retract(ghast.getUUID());
-                    RESTING.put(ghast.getUUID(), new Rest(ghast.level(), origin, 0, nestYaw(ghast.level(), origin)));
+                    RESTING.put(ghast.getUUID(), new Rest(ghast.level(), origin, 0, nestYaw(ghast.level(), origin), ghast.getYRot()));
                 }
             }
         }
@@ -192,9 +201,10 @@ public final class GhastNests {
         double y = Math.max(target.y, ghast.getY() - SINK_SPEED);
         // Once it has landed it stays landed: the ghast's own AI nudges it a little every tick, and counting that
         // as "not at rest" kept resetting the timer, so it never closed its eyes. Landing needs it to face the nest's way.
+        float yaw = Mth.approachDegrees(rest.facing(), rest.yaw(), 5.0F);
         boolean atRest = rest.restTicks() > 0
                 || (Math.abs(target.x - x) < 0.02 && Math.abs(target.z - z) < 0.02 && y - target.y < 0.01
-                && Math.abs(Mth.wrapDegrees(rest.yaw() - ghast.getYRot())) < 1.0F);
+                && Math.abs(Mth.wrapDegrees(rest.yaw() - yaw)) < 0.01F);
         if (atRest) {
             x = target.x;
             y = target.y;
@@ -203,8 +213,7 @@ public final class GhastNests {
         ghast.getNavigation().stop();
         ghast.setDeltaMovement(Vec3.ZERO);
         ghast.setPos(x, y, z);
-        // Turn to the nest's direction and hold it, otherwise the ghast's own look control keeps turning it.
-        float yaw = Mth.approachDegrees(ghast.getYRot(), rest.yaw(), 5.0F);
+        // Turn to the nest's direction and hold it.
         ghast.setYRot(yaw);
         ghast.setXRot(0.0F);
         ghast.setYHeadRot(yaw);
@@ -215,7 +224,7 @@ public final class GhastNests {
         ghast.yBodyRotO = yaw;
 
         int restTicks = atRest ? rest.restTicks() + 1 : 0;
-        RESTING.put(ghast.getUUID(), new Rest(rest.level(), rest.origin(), restTicks, rest.yaw()));
+        RESTING.put(ghast.getUUID(), new Rest(rest.level(), rest.origin(), restTicks, rest.yaw(), yaw));
         if (restTicks == SLEEP_AFTER) {
             ghast.setAttached(SLEEPING, true);
         }
