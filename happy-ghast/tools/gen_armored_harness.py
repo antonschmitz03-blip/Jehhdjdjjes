@@ -147,6 +147,7 @@ def entity_texture(pal):
         rivet(px, pal, 50, y)
     shade(px, pal, shield(42, 24, 53, 34))
     inlay(px, pal, 47, 28)
+    faceplate(px, pal)
     # sides
     flank(px, pal, 1, 29, 13, 17)        # west, around the buckle strap
     flank(px, pal, 66, 94, 78, 82)       # east
@@ -161,6 +162,30 @@ def entity_texture(pal):
     inlay(px, pal, 111, 34)
     visor(px, pal)
     return px
+
+
+def faceplate(px, pal):
+    """Face armor on the harness box's front face (x 32..63, y 32..63), below the chest shield: a brow band, a nose
+    guard and cheek guards around two open eye windows, so the eyes stay visible. It is painted on the harness
+    itself, so it is not limited to the goggles' shape and stays put when the goggles flip up."""
+    face = rect(35, 35, 60, 51)
+    for x0 in (38, 50):
+        face -= rect(x0, 40, x0 + 7, 47)                       # eye windows
+    for k, w in enumerate((3, 2, 1)):                          # rounded top corners clear of the side straps
+        face -= {(x, 35 + k) for x in range(35, 35 + w)} | {(x, 35 + k) for x in range(61 - w, 61)}
+    face -= {(x, 51) for x in (35, 36, 59, 60)} | {(35, 50), (60, 50)}
+    face -= {(x, 51) for x in range(41, 45)} | {(x, 51) for x in range(51, 55)}  # scallops under the cheeks
+    for k in range(1, 4):                                      # nose guard runs on to a point
+        face |= {(x, 51 + k) for x in range(46 + (k > 1), 50 - (k > 1))}
+    shade(px, pal, face)
+    for x in range(37, 59):                                    # accent brow line
+        put(px, x, 37, pal[ACCENT])
+        put(px, x, 38, pal[ACCENT_SHADOW])
+    for y in range(39, 53):                                    # ridge down the nose guard
+        put(px, 47, y, pal[HIGHLIGHT])
+        put(px, 48, y, pal[SHADOW])
+    for x, y in ((36, 44), (58, 44), (40, 49), (55, 49)):
+        rivet(px, pal, x, y)
 
 
 def visor(px, pal):
