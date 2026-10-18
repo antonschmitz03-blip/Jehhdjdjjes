@@ -35,6 +35,7 @@ public final class TweaksConfig {
     public static final String BEST_HORSES = "max_stat_horses";
     public static final String FAST_LADDERS = "fast_ladder_placement";
     public static final String FLOATING_LADDERS = "floating_ladders";
+    public static final String NO_PODZOL_FROM_SAPLINGS = "no_podzol_from_large_trees";
     /** Recipe switches are named in the recipes' "fabric:load_conditions". */
     public static final String RECIPES_GUNPOWDER = "recipe_gunpowder";
     public static final String RECIPES_LEATHER = "recipe_leather_from_rotten_flesh";
@@ -50,6 +51,7 @@ public final class TweaksConfig {
         for (String key : new String[] {
                 DOUBLE_DOORS, NO_CROP_TRAMPLING, NO_ANVIL_LIMIT, CHEAPER_ENCHANTING_TABLE, CHEAPER_INFUSER,
                 FREE_ENCHANTMENT_COMBINING, SAFE_PETS, BEST_HORSES, FAST_LADDERS, FLOATING_LADDERS,
+                NO_PODZOL_FROM_SAPLINGS,
                 RECIPES_GUNPOWDER, RECIPES_LEATHER, RECIPES_SADDLE, RECIPES_NAME_TAG, RECIPES_HORSE_ARMOR,
                 RECIPES_CHAINMAIL, RECIPES_STICKS, RECIPES_UNDYE, RECIPES_TRIDENT}) {
             DEFAULTS.put(key, true);

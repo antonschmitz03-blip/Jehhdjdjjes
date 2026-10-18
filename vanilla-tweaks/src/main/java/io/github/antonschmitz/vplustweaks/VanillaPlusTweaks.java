@@ -39,6 +39,8 @@ public class VanillaPlusTweaks implements ModInitializer {
             Class.forName("net.minecraft.world.entity.animal.equine.Horse");
             Class.forName("net.minecraft.world.entity.OwnableEntity");
             Class.forName("net.minecraft.world.level.block.LadderBlock");
+            Class.forName("net.minecraft.world.level.block.grower.TreeGrower");
+            Class.forName("net.minecraft.world.level.levelgen.feature.treedecorators.AlterGroundDecorator");
             if (FabricLoader.getInstance().isModLoaded("enchantinginfuser")) {
                 Class<?> infuserMenu = Class.forName("fuzs.enchantinginfuser.common.world.inventory.InfuserMenu");
                 // The mixin's handler is merged into the Infuser's menu class, so it only shows up if the patch was applied.

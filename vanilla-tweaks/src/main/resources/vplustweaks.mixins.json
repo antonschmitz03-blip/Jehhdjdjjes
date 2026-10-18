@@ -4,11 +4,13 @@
   "package": "io.github.antonschmitz.vplustweaks.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AlterGroundDecoratorMixin",
     "AnvilMenuMixin",
     "EnchantmentMenuMixin",
     "EnchantmentMixin",
     "FarmlandBlockMixin",
-    "LadderBlockMixin"
+    "LadderBlockMixin",
+    "TreeGrowerMixin"
   ],
   "client": [
     "client.AnvilScreenMixin",
