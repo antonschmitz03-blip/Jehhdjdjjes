@@ -191,6 +191,14 @@ final class SelfTest {
         MiningDimension.LOGGER.info("miningdim self test: pebblin at {} smelled iron at {} ({} blocks away) after {} floors", spot, ore,
                 String.format("%.1f", Math.sqrt(ore.distSqr(spot))), tried);
 
+        if (den == null) {
+            // Dens are rare enough that a small sample can miss them; the test is about knocker behaviour, so place one.
+            den = spot;
+            mining.setBlock(den, MiningDimension.KNOCKER_DEN.defaultBlockState(), 2);
+            MiningDimension.LOGGER.info("miningdim self test: no den in the sampled chunks, placed one at {}", den);
+        }
+        MiningDimension.LOGGER.info("miningdim self test: {} pebblins generated in the sampled chunks",
+                mining.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(Pebblin.class), p -> true).size());
         knockerTest(mining, den);
 
         // Mineshafts: look for structure starts in a 50x50 chunk area (cheap, no terrain), then generate one fully.
