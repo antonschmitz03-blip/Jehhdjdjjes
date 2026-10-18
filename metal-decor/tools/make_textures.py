@@ -21,16 +21,14 @@ TOOLS = Path(__file__).resolve().parent
 OUT = TOOLS.parent / "src/main/resources/assets/metaldecor/textures"
 VANILLA = TOOLS / "vanilla-samples"
 
-# Nine shades, darkest to brightest, taken from the vanilla iron, gold and diamond blocks. The eight copper shades map
-# onto 0-7; 8 is an extra glint.
+# Eight shades, darkest to brightest, matched rank for rank to the eight vanilla copper shades. Picked from the vanilla
+# iron, gold and diamond blocks, a step darker so the decor doesn't glare next to them.
 RAMPS = {
-    "iron": ["#8f8f8f", "#a1a1a1", "#b1b0b0", "#c1c1c1", "#d1cfcf", "#dcdcdc", "#e6e6e6", "#f2f2f2", "#fafafa"],
-    "gold": ["#cc8e27", "#d39632", "#f9bd23", "#f5cc27", "#ffd83e", "#fee048", "#ffec4f", "#fffd90", "#feffbd"],
-    "diamond": ["#0ebabd", "#15c2c6", "#3de0e5", "#4bede6", "#65f5e3", "#70fbf0", "#9efeeb", "#d5fff6", "#ffffff"],
+    "iron": ["#5f5f5f", "#727272", "#868686", "#999999", "#acacac", "#bdbdbd", "#cfcfcf", "#e0e0e0"],
+    "gold": ["#8f5212", "#ae6d26", "#c98c1c", "#e0a21f", "#f2bd2a", "#f8cf36", "#fde34a", "#fff28a"],
+    "diamond": ["#0a7f86", "#0ea3a8", "#14bcbf", "#2ad3d6", "#45e3df", "#64f0e4", "#8ff8ea", "#c6fff4"],
 }
 COPPER = ["#904931", "#9a5038", "#a75a40", "#b26247", "#c26b4c", "#c87456", "#d67b5b", "#e3826c"]
-# The patterns below are drawn in seven steps (0-6); this spreads them over the nine shades.
-STEP = [0, 1, 3, 4, 5, 7, 8]
 
 T = None  # transparent pixel
 
@@ -57,22 +55,33 @@ def nearest(color, ramp):
     return min(range(len(ramp)), key=lambda i: abs(lum(hex_rgba(ramp[i])) - l))
 
 
-def paint(shades, metal, noise=True):
-    """Shade map in seven steps (None for transparent) to an image. Flat areas pick up the vanilla block's noise."""
+def field(turn=0):
+    """The uneven diagonal shine of the vanilla copper block, squeezed into shades 3-6. Flat areas take their shade
+    from it, so nothing is perfectly even. turn rotates it so neighbouring textures don't shine the same way."""
+    src = vanilla("copper_block").rotate(90 * turn)
+    table = {hex_rgba(c)[:3]: i for i, c in enumerate(COPPER)}
+    return [[3 + round(table[src.getpixel((x, y))[:3]] * 3 / 7) for x in range(16)] for y in range(16)]
+
+
+def paint(shades, metal, turn=0):
+    """Shade map to an image. 4 is the flat surface (follows the shine field), 3 a little below it, 5 a little above,
+    6 a highlight, 0-2 fixed dark shades, None transparent."""
     ramp = [hex_rgba(c) for c in RAMPS[metal]]
-    block = vanilla(f"{metal}_block")
-    idx = [[nearest(block.getpixel((x, y)), RAMPS[metal]) for x in range(16)] for y in range(16)]
-    flat = sorted(v for row in idx for v in row)[128]
+    f = field(turn)
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for y, row in enumerate(shades):
         for x, s in enumerate(row):
             if s is None:
                 continue
-            v = STEP[max(0, min(6, s))]
-            if noise and s in (3, 4):
-                v += max(-1, min(1, idx[y][x] - flat))
-            img.putpixel((x, y), ramp[max(0, min(8, v))])
+            v = {3: f[y][x] - 1, 4: f[y][x], 5: min(7, f[y][x] + 1), 6: 7}.get(s, s)
+            img.putpixel((x, y), ramp[max(0, min(7, v))])
     return img
+
+
+def ascii_map(rows):
+    """Hand-drawn map: . flat, d below, l above, H highlight, M/D/X dark (2/1/0), space transparent."""
+    key = {".": 4, "d": 3, "l": 5, "H": 6, "M": 2, "D": 1, "X": 0, " ": None}
+    return [[key[c] for c in row] for row in rows]
 
 
 def recolor(name, mapping):
@@ -89,7 +98,7 @@ def recolor(name, mapping):
 
 
 def from_copper(name, metal):
-    return recolor(name, dict(zip(COPPER, RAMPS[metal][:8])))
+    return recolor(name, dict(zip(COPPER, RAMPS[metal])))
 
 
 def bevel_box(g, x0, y0, x1, y1, base=4, light=5, shadow=2, corner=6):
@@ -111,38 +120,67 @@ def bevel_box(g, x0, y0, x1, y1, base=4, light=5, shadow=2, corner=6):
 # ---------------------------------------------------------------- vanilla-style iron and gold
 
 def tiles():
-    g = grid()
-    for ty in range(4):
-        for tx in range(4):
-            bevel_box(g, tx * 4, ty * 4, tx * 4 + 3, ty * 4 + 3)
-    return g
+    return ascii_map([
+        "llllHlll.lllHllM",
+        "l..dl..Dl..dl.dD",
+        "l...l.dDl...l..D",
+        "dDMDdMDXdDDMdMDX",
+        "lllMl.lll.llHllD",
+        "l..Dl..dl..Dl..d",
+        "l.ddl...l.ddl..D",
+        "dMDXdDMDdMDDdDMX",
+        "lHllll.DlllllHlM",
+        "l..Dl..dl.dDl..D",
+        "l...l..Dl..Dl.dd",
+        "dDMDdDDXdDMDdMDX",
+        "lllDlHllllHMlllD",
+        "l..dl..Dl..dl..D",
+        "l.dDl..dl...l.dD",
+        "MDDXDMDXMDDXDDMX",
+    ])
 
 
 def pillar_side():
-    profile = [2, 5, 4, 2, 5, 4, 4, 2, 5, 4, 4, 2, 5, 4, 3, 1]
-    g = [[profile[x] for x in range(16)] for _ in range(16)]
-    for x in range(16):
-        g[0][x] = 6 if 0 < x < 15 else 3
-        g[1][x] = 3
-        g[14][x] = 5 if 0 < x < 15 else 3
-        g[15][x] = 1
-    return g
+    return ascii_map([
+        "lHllllHlllllHllM",
+        "DMDDDMDDDDMDDDDX",
+        "l.dDl..dDl.dDl.D",
+        "l.dDl..dDl..Ml.D",
+        "l..Dl.ddDl.dDl.D",
+        "l.dMl..dDl.dDldD",
+        "l.dDl..dDl.dDl.D",
+        "l.dDl..dMl..Dl.D",
+        "l.dDl.d.Dl.dDl.D",
+        "l..Dl..dDl.dDl.M",
+        "l.dDl..dDlddDl.D",
+        "l.dDl..dDl.dMl.D",
+        "l.dMl..dDl.dDl.D",
+        "l.dDl..dDl..Dl.D",
+        "llllHlllllllHllD",
+        "MDDXDDMDDXDDDMDX",
+    ])
 
 
 def pillar_end():
-    rings = [5, 2, 4, 5, 3, 4, 3, 4]
-    g = grid()
-    for y in range(16):
-        for x in range(16):
-            d = min(x, y, 15 - x, 15 - y)
-            g[y][x] = rings[d]
-            # Light comes from the top left.
-            if d in (0, 3) and (x == 15 - d or y == 15 - d):
-                g[y][x] = 2
-    return g
+    return ascii_map([
+        "llllHllllllHlllM",
+        "l..............D",
+        "l.DDDMDDDDDDMD.D",
+        "l.Dllllllllll..D",
+        "l.Dl........dl.D",
+        "l.Ml.HlllllD.l.D",
+        "l.Dl.l.....D.l.D",
+        "l.Dl.l.dd..D.l.D",
+        "l.Dl.l.dd..M.l.D",
+        "l.Dl.l.....D.l.D",
+        "l.Dl.DDMDDDD.l.D",
+        "l.Dl.........l.D",
+        "l.Dllllllllll..D",
+        "l..............D",
+        "l..d......d....D",
+        "MDDXDDMDDDDXDDMX",
+    ])
 
-
-# ---------------------------------------------------------------- elvish diamond
 
 def engrave(g, mask, groove=1, rim=5):
     """Cuts the mask into the metal: dark groove with a lit lower-right rim, as if light came from the top left."""
@@ -200,7 +238,7 @@ def filigree():
     for x in (0, 15):
         for y in range(16):
             mask[y][x] = False
-    engrave(g, mask, groove=2, rim=6)
+    engrave(g, mask, groove=1, rim=5)
     for y in range(16):
         g[y][15] = 2
     for x in range(16):
@@ -348,15 +386,16 @@ def main():
     made = []
     for metal in ("iron", "gold"):
         save(from_copper("copper_block", metal), block / f"{metal}_plating.png", made, f"{metal}_plating")
-        save(paint(tiles(), metal), block / f"{metal}_tiles.png", made, f"{metal}_tiles")
+        save(paint(tiles(), metal, 1), block / f"{metal}_tiles.png", made, f"{metal}_tiles")
         save(from_copper("cut_copper", metal), block / f"{metal}_cut.png", made, f"{metal}_cut")
-        save(paint(pillar_side(), metal), block / f"{metal}_pillar.png", made, f"{metal}_pillar")
-        save(paint(pillar_end(), metal), block / f"{metal}_pillar_top.png", made, f"{metal}_pillar_top")
+        save(paint(pillar_side(), metal, 0), block / f"{metal}_pillar.png", made, f"{metal}_pillar")
+        save(paint(pillar_end(), metal, 2), block / f"{metal}_pillar_top.png", made, f"{metal}_pillar_top")
         save(from_copper("copper_grate", metal), block / f"{metal}_grate.png", made, f"{metal}_grate")
         save(from_copper("chiseled_copper", metal), block / f"{metal}_pedestal_top.png", made, f"{metal}_pedestal_top")
-    for style, fn in (("plating", filigree), ("tiles", leaf_tiles), ("cut", arches), ("pillar", vine_pillar_side),
-                      ("pillar_top", rosette), ("grate", lattice), ("pedestal_top", rosette)):
-        save(paint(fn(), "diamond"), block / f"diamond_{style}.png", made, f"diamond_{style}")
+    for turn, (style, fn) in enumerate((("plating", filigree), ("tiles", leaf_tiles), ("cut", arches),
+                                        ("pillar", vine_pillar_side), ("pillar_top", rosette), ("grate", lattice),
+                                        ("pedestal_top", rosette))):
+        save(paint(fn(), "diamond", turn % 4), block / f"diamond_{style}.png", made, f"diamond_{style}")
 
     gold_frame = dict(zip(LANTERN_FRAME, GOLD_FRAME))
     diamond_lantern = {**dict(zip(LANTERN_FRAME, DIAMOND_FRAME)), **dict(zip(LANTERN_FLAME, ELVISH_FLAME))}

@@ -5,6 +5,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -69,8 +70,11 @@ public class PedestalBlock extends BaseEntityBlock {
         if (!level.isClientSide()) {
             ItemStack item = pedestal.getItem();
             pedestal.setItem(ItemStack.EMPTY);
-            if (!player.getInventory().add(item)) {
-                player.drop(item, false);
+            player.getInventory().add(item);
+            if (!item.isEmpty()) {
+                ItemEntity dropped = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), item);
+                dropped.setNoPickUpDelay();
+                level.addFreshEntity(dropped);
             }
             level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, 1.0F);
         }

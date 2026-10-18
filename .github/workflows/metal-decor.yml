@@ -35,7 +35,7 @@ jobs:
         run: |
           JAR=$(find ~/.gradle -name 'minecraft-merged*.jar' | head -1)
           [ -z "$JAR" ] && JAR=$(find ~/.gradle .gradle -name 'minecraft-client*.jar' 2>/dev/null | head -1)
-          for c in net.minecraft.client.renderer.blockentity.BlockEntityRenderer \
+          for c in net.minecraft.world.level.material.PushReaction \
                    net.minecraft.client.renderer.blockentity.BlockEntityRenderers \
                    'net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider$Context' \
                    net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState \

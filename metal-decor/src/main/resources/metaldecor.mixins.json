@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.antonschmitz.metaldecor.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["client.BlockEntityRenderersInvoker"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -130,7 +130,7 @@ def label(canvas, xy, text):
 
 def main(out):
     cell_w, cell_h = 2 * C30 * 16 * S + 40, 2 * 16 * S + 60
-    cols = 8
+    cols = 9
     rows = 4
     canvas = Image.new("RGBA", (int(cols * cell_w), int(rows * cell_h)), (38, 42, 50, 255))
 
@@ -138,14 +138,15 @@ def main(out):
         return (int(col * cell_w + cell_w / 2), int(row * cell_h + 16 * S * S30 * 2 + 50 - 16 * S * S30 + 10))
 
     for row, metal in enumerate(("iron", "gold", "diamond")):
+        ref = Image.open(Path(__file__).resolve().parent / "vanilla-samples" / f"{metal}_block.png").convert("RGBA")
         items = [
+            ("VANILLA block", lambda o, ref=ref: cube(canvas, o, ref)),
             ("plating", lambda o: cube(canvas, o, tex(f"{metal}_plating"))),
             ("tiles", lambda o: cube(canvas, o, tex(f"{metal}_tiles"))),
             ("cut", lambda o: cube(canvas, o, tex(f"{metal}_cut"))),
             ("pillar", lambda o: cube(canvas, o, tex(f"{metal}_pillar"), tex(f"{metal}_pillar_top"))),
             ("grate", lambda o: cube(canvas, o, tex(f"{metal}_grate"), back=True)),
             ("stairs", lambda o: stairs(canvas, o, tex(f"{metal}_plating"))),
-            ("slab", lambda o: slab(canvas, o, tex(f"{metal}_tiles"))),
             ("pedestal", lambda o: pedestal(canvas, o, metal, tex("diamond_lantern", "item") if metal == "gold" else None)),
         ]
         for col, (name, draw) in enumerate(items):
@@ -161,6 +162,11 @@ def main(out):
         x, y = at(3 + i, 3)
         canvas.alpha_composite(icon, (x - 48, y - 20))
         label(canvas, (x - 40, int(4 * cell_h) - 22), name.replace("_", " ") + " (item)")
+    vdir = Path(__file__).resolve().parent / "vanilla-samples"
+    for col, name in ((7, "cut_copper"), (8, "chiseled_copper")):
+        o = at(col, 3)
+        cube(canvas, o, Image.open(vdir / f"{name}.png").convert("RGBA"))
+        label(canvas, (o[0] - 40, int(4 * cell_h) - 22), "VANILLA " + name.replace("_", " "))
     canvas.save(out)
 
 

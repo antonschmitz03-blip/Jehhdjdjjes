@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -51,7 +51,7 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalBlockEntity
         }
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.05F + 0.04F * Mth.sin(state.time / 12.0F), 0.5F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.time * 1.5F));
+        poseStack.rotateDegrees(Axis.YP, state.time * 1.5F);
         poseStack.scale(1.4F, 1.4F, 1.4F);
         state.item.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
