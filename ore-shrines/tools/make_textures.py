@@ -56,19 +56,14 @@ def gold_at(t):
 
 
 def shell_side():
-    """Polished blackstone with gilded corners and a window into the glowing heart, like a respawn anchor."""
+    """Body wall between the corner pillars: polished blackstone with a gilded window into the glowing heart."""
     base = load("polished_blackstone").copy()
     gild = load("gilded_blackstone")
     r = random.Random(21)
     for y in range(16):
         for x in range(16):
-            # Gold edging along the top and bottom rows and the corners, uneven like gilded blackstone.
-            edge = y in (0, 15) or (x in (0, 15) and (y < 4 or y > 11))
-            if edge and r.random() < 0.8:
-                base.putpixel((x, y), gold_at(r.choice([2, 3, 3, 4]) if y == 0 else r.choice([1, 2, 3])))
-            elif (y in (1, 14) or x in (1, 14)) and r.random() < 0.12:
+            if r.random() < 0.06:
                 base.putpixel((x, y), gild.getpixel((x, y)))
-    # Window: 6x6 hole with a dark inner lip and a gold frame around it.
     for y in range(3, 13):
         for x in range(4, 12):
             ring = y in (3, 12) or x in (4, 11)
@@ -83,6 +78,29 @@ def shell_side():
             else:
                 base.putpixel((x, y), (0, 0, 0, 0))
     return base
+
+
+def trim():
+    """Footing and capstone: blackstone with a gilded lip on the top and bottom rows."""
+    base = load("polished_blackstone").copy()
+    r = random.Random(24)
+    for x in range(16):
+        if r.random() < 0.9:
+            base.putpixel((x, 0), gold_at(r.choice([3, 4, 4, 5])))
+        if r.random() < 0.9:
+            base.putpixel((x, 15), gold_at(r.choice([0, 1, 1, 2])))
+        if r.random() < 0.25:
+            base.putpixel((x, 1), gold_at(r.choice([1, 2])))
+        if r.random() < 0.25:
+            base.putpixel((x, 14), gold_at(r.choice([0, 1])))
+    for x in range(16):
+        base.putpixel((x, 2), tuple(int(v * 0.7) for v in base.getpixel((x, 2))[:3]) + (255,))
+    return base
+
+
+def pillar():
+    """Corner pillars: gilded blackstone, so the gold veins run up the corners."""
+    return load("gilded_blackstone").copy()
 
 
 def shell_top():
@@ -127,6 +145,8 @@ for old in os.listdir(OUT):
     os.remove(os.path.join(OUT, old))
 
 shell_side().save(f"{OUT}/shrine_core_side.png")
+trim().save(f"{OUT}/shrine_core_trim.png")
+pillar().save(f"{OUT}/shrine_core_pillar.png")
 shell_top().save(f"{OUT}/shrine_core_top.png")
 shell_bottom().save(f"{OUT}/shrine_core_bottom.png")
 heart = load("amethyst_block")

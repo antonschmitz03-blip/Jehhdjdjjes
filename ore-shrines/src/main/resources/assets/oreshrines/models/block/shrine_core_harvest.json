@@ -3,6 +3,8 @@
   "textures": {
     "side": "oreshrines:block/shrine_core_side",
     "top": "oreshrines:block/shrine_core_top",
+    "trim": "oreshrines:block/shrine_core_trim",
+    "pillar": "oreshrines:block/shrine_core_pillar",
     "bottom": "oreshrines:block/shrine_core_bottom",
     "heart": "oreshrines:block/shrine_heart_harvest",
     "cluster": "oreshrines:block/shrine_cluster_harvest"
