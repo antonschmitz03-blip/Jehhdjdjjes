@@ -44,9 +44,13 @@ jobs:
           cp $(ls graves/build/libs/simple-graves-*.jar | grep -v sources) run/mods/
           cp $(ls waystones/build/libs/simple-waystones-*.jar | grep -v sources) run/mods/
           for project in forge-config-api-port puzzles-lib enchanting-infuser; do
-            url=$(curl -sSf "https://api.modrinth.com/v2/project/$project/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%2226.3%22%5D" \
-              | jq -r '.[0].files[] | select(.primary) | .url')
-            echo "$project: $url"
+            versions=$(curl -sSf "https://api.modrinth.com/v2/project/$project/version?loaders=%5B%22fabric%22%5D&game_versions=%5B%2226.3%22%5D")
+            echo "$project: $(echo "$versions" | jq -r '[.[].version_number] | join(", ")')"
+            # Puzzles Lib's newest build needs a newer Fabric API than the one this project builds against.
+            index=0
+            if [ "$project" = puzzles-lib ]; then index=1; fi
+            url=$(echo "$versions" | jq -r ".[$index].files[] | select(.primary) | .url")
+            echo "using $url"
             curl -sSfL -o "run/mods/$project.jar" "$url"
           done
           echo "eula=true" > run/eula.txt
