@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "oreshrines",
+  "version": "${version}",
+  "name": "Ore Shrines",
+  "description": "Beacon-style shrines built from iron, gold and diamond blocks that give area effects: faster crops, no hostile spawns or phantoms, regeneration, faster furnaces, faster growing animals, or XP from stored ore.",
+  "authors": ["antonschmitz03-blip"],
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.antonschmitz.oreshrines.OreShrines"]
+  },
+  "mixins": ["oreshrines.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}

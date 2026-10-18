@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:gold_ingot",
+    "D": "minecraft:diamond_block"
+  },
+  "pattern": [
+    "IGI",
+    "GDG",
+    "IGI"
+  ],
+  "result": {
+    "id": "oreshrines:shrine_core"
+  }
+}
