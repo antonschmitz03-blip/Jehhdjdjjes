@@ -59,7 +59,7 @@ public class MiningDimension implements ModInitializer {
 
     public static final ResourceKey<EntityType<?>> KNOCKER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, id("knocker"));
     public static final EntityType<Knocker> KNOCKER = Registry.register(BuiltInRegistries.ENTITY_TYPE, KNOCKER_KEY,
-            FabricEntityType.Builder.createMob(Knocker::new, MobCategory.CREATURE, mob -> mob.defaultAttributes(Knocker::createAttributes))
+            FabricEntityType.Builder.createMob(Knocker::new, MobCategory.MISC, mob -> mob.defaultAttributes(Knocker::createAttributes))
                     .sized(0.5F, 1.25F)
                     .eyeHeight(1.0F)
                     .clientTrackingRange(8)
