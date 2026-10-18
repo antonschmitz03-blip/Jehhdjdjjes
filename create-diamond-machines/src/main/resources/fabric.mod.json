@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "diamondmachines",
+  "version": "${version}",
+  "name": "Create: Diamond Machines",
+  "description": "Diamond upgrades for Create's Mechanical Drill, Mechanical Saw and Crushing Wheels: faster breaking and cutting, and diamond crushing wheels that give extra output.",
+  "authors": ["antonschmitz03-blip"],
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.antonschmitz.diamondmachines.DiamondMachines"],
+    "client": ["io.github.antonschmitz.diamondmachines.client.DiamondMachinesClient"]
+  },
+  "mixins": [
+    "diamondmachines.mixins.json",
+    {"config": "diamondmachines.client.mixins.json", "environment": "client"}
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "create": ">=6.0.9"
+  }
+}

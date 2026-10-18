@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "create:mechanical_drill",
+    "minecraft:diamond_block"
+  ],
+  "result": {
+    "id": "diamondmachines:diamond_drill"
+  }
+}

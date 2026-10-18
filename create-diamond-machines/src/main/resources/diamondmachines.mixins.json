@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "io.github.antonschmitz.diamondmachines.mixin",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BlockStateBaseMixin",
+    "CrushingWheelControllerBlockEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

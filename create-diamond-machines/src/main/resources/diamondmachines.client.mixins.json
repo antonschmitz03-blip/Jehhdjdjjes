@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "io.github.antonschmitz.diamondmachines.client.mixin",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "DrillActorVisualMixin",
+    "DrillMovementRenderBehaviourMixin",
+    "DrillRendererMixin",
+    "SawMovementRenderBehaviourMixin",
+    "SawRendererMixin",
+    "SawVisualMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

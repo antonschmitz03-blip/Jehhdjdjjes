@@ -1,0 +1,7 @@
+{
+  "parent": "create:block/mechanical_drill/head",
+  "textures": {
+    "2": "diamondmachines:block/diamond_drill_head",
+    "particle": "diamondmachines:block/diamond_drill_head"
+  }
+}

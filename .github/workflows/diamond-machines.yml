@@ -1,0 +1,39 @@
+name: Create Diamond Machines
+
+on:
+  push:
+    paths:
+      - 'create-diamond-machines/**'
+      - '.github/workflows/diamond-machines.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: create-diamond-machines
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew build --console=plain > build.log 2>&1 || status=$?
+          grep -E -A3 'error:|What went wrong' build.log | head -80 || true
+          exit ${status:-0}
+      # Mixins only fail at runtime, so check every injection point is in Create's bytecode.
+      - name: Mixin target check
+        shell: bash
+        run: |
+          MC=$(find ~/.gradle -name 'minecraft-merged*.jar' | head -1)
+          python3 tools/check_mixin_targets.py libs/create-fly-26.3-6.0.9-unofficial.1-classes.jar "$MC"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: create-diamond-machines
+          path: create-diamond-machines/build/libs/create-diamond-machines-*.jar

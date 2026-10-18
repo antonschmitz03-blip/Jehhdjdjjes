@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "create:mechanical_saw",
+    "minecraft:diamond_block"
+  ],
+  "result": {
+    "id": "diamondmachines:diamond_saw"
+  }
+}

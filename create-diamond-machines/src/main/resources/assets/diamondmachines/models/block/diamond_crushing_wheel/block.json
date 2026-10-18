@@ -1,0 +1,14 @@
+{
+  "parent": "block/block",
+  "loader": "neoforge:obj",
+  "flip_v": true,
+  "model": "create:models/block/crushing_wheel/crushing_wheel.obj",
+  "textures": {
+    "axis": "create:block/axis",
+    "axis_top": "create:block/axis_top",
+    "plates": "diamondmachines:block/diamond_crushing_wheel_plates",
+    "insert": "create:block/crushing_wheel_insert",
+    "spruce_log_top": "minecraft:block/spruce_log_top",
+    "particle": "minecraft:block/diamond_block"
+  }
+}

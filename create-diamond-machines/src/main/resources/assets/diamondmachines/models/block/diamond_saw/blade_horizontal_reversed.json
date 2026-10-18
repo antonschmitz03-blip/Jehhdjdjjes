@@ -1,0 +1,7 @@
+{
+  "parent": "create:block/mechanical_saw/blade_horizontal_reversed",
+  "textures": {
+    "stonecutter_saw": "diamondmachines:block/diamond_saw",
+    "particle": "diamondmachines:block/diamond_saw"
+  }
+}
