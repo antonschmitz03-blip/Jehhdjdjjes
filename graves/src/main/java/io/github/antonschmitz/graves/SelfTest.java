@@ -47,25 +47,29 @@ final class SelfTest {
         player.getInventory().setItem(20, new ItemStack(Items.COBBLESTONE, 64));
         player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
         player.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.TORCH, 3));
-        player.giveExperienceLevels(5);
+        player.giveExperienceLevels(20);
 
         player.die(level.damageSources().generic());
 
         GraveBlockEntity grave = findGrave(level, y);
         check(grave != null, "no grave placed");
         check(grave.entries().size() == 4, "expected 4 stacks in the grave, got " + grave.entries());
-        check(grave.xp() == 35, "expected 35 xp in the grave, got " + grave.xp());
+        // All 20 levels (550 points), not just vanilla's capped 100-point drop.
+        check(grave.xp() == 550, "expected 550 xp in the grave, got " + grave.xp());
         check(grave.entries().stream().anyMatch(e -> e.slot().equals("inv:0") && e.stack().is(Items.DIAMOND) && e.stack().getCount() == 5),
                 "diamonds not stored with their slot: " + grave.entries());
         check(player.getInventory().isEmpty(), "player still has items after death");
         BlockPos gravePos = grave.getBlockPos();
 
+        player.setExperienceLevels(0);
+        player.setExperiencePoints(0);
         grave.restoreTo(player);
 
         check(player.getInventory().getItem(0).is(Items.DIAMOND) && player.getInventory().getItem(0).getCount() == 5, "diamonds not back in slot 0");
         check(player.getInventory().getItem(20).is(Items.COBBLESTONE), "cobblestone not back in slot 20");
         check(player.getItemBySlot(EquipmentSlot.HEAD).is(Items.IRON_HELMET), "helmet not back on the head");
         check(player.getItemBySlot(EquipmentSlot.OFFHAND).is(Items.TORCH), "torches not back in the offhand");
+        check(player.experienceLevel == 20, "expected level 20 back, got " + player.experienceLevel);
         check(!(level.getBlockEntity(gravePos) instanceof GraveBlockEntity), "grave still there after restoring");
         player.getInventory().clearContent();
         SimpleGraves.LOGGER.info("simplegraves self test: death grave ok at {}", gravePos);

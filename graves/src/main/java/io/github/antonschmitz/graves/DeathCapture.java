@@ -41,9 +41,12 @@ public final class DeathCapture {
     private final Map<String, ItemStack> snapshot = new LinkedHashMap<>();
     private final List<ItemStack> items = new ArrayList<>();
     private int xp;
+    /** All the XP the player had when they died; vanilla only drops a capped part of it. */
+    private final int fullXp;
 
     private DeathCapture(ServerPlayer player) {
         this.player = player;
+        this.fullXp = totalXp(player);
         this.level = player.level();
         this.deathPos = player.blockPosition();
         Inventory inventory = player.getInventory();
@@ -134,6 +137,11 @@ public final class DeathCapture {
     }
 
     private void placeGrave() {
+        // Vanilla drops at most 7 points per level (capped at 100). If it dropped any (so keepInventory is
+        // off), the grave keeps everything the player had instead.
+        if (xp > 0) {
+            xp = Math.max(xp, fullXp);
+        }
         if (items.isEmpty() && xp <= 0) {
             return;
         }
@@ -158,6 +166,14 @@ public final class DeathCapture {
         if (ServerPlayNetworking.canSend(player, GraveWaypointPayload.TYPE)) {
             ServerPlayNetworking.send(player, new GraveWaypointPayload(true, pos, level.dimension().identifier().toString()));
         }
+    }
+
+    static int totalXp(ServerPlayer player) {
+        int total = 0;
+        for (int level = 0; level < player.experienceLevel; level++) {
+            total += level >= 30 ? 112 + (level - 30) * 9 : level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+        }
+        return total + Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
     }
 
     /** Drops the items and XP as if there were no grave. */

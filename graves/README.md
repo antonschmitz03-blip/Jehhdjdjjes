@@ -6,8 +6,8 @@ Xaero waypoint).
 
 ## What happens when you die
 
-- Everything you would have dropped goes into a **grave** (an engraved headstone over a little burial mound) instead, along with the XP
-  vanilla would drop. Nothing is left lying around to despawn, burn or fall into the void.
+- Everything you would have dropped goes into a **grave** (a headstone with a carved skull over a little burial mound) instead, along with all of
+  your XP (not just the capped amount vanilla drops). Nothing is left lying around to despawn, burn or fall into the void.
 - Whatever stays with you stays out of the grave: `keepInventory`, a backpack with an enabled **Soulbound
   Upgrade**, Curse of Vanishing items (destroyed as usual), Trinkets slots set to "keep".
 - **Placement:** the nearest free spot (within 16 blocks) with a solid, non-lava block underneath. If there is
