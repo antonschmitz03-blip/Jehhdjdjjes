@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
@@ -79,6 +81,19 @@ final class SelfTest {
                 check(!player.getInventory().getItem(i).is(SimpleWaystones.WAYSTONE_ITEM), "rename screen handed out a waystone");
             }
             SimpleWaystones.LOGGER.info("simplewaystones self test: rename ok");
+
+            // Breaking either half drops exactly one waystone.
+            for (boolean upper : new boolean[]{false, true}) {
+                BlockPos spot = place(level, 400, 0);
+                level.destroyBlock(upper ? spot.above() : spot, true);
+                var drops = level.getEntitiesOfClass(ItemEntity.class, new AABB(spot).inflate(4, 4, 4),
+                        item -> item.getItem().is(SimpleWaystones.WAYSTONE_ITEM));
+                int count = drops.stream().mapToInt(item -> item.getItem().getCount()).sum();
+                check(count == 1, "breaking the " + (upper ? "upper" : "lower") + " half dropped " + count + " waystones");
+                check(level.getBlockState(spot).isAir() && level.getBlockState(spot.above()).isAir(), "waystone not fully removed");
+                drops.forEach(ItemEntity::discard);
+            }
+            SimpleWaystones.LOGGER.info("simplewaystones self test: drops ok");
 
             // A waystone removed without breaking it disappears from the list on use.
             level.setBlockAndUpdate(near, Blocks.AIR.defaultBlockState());
