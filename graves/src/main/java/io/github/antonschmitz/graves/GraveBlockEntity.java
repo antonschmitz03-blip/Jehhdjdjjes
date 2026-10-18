@@ -103,7 +103,7 @@ public class GraveBlockEntity extends BlockEntity {
             }
         }
         if (xp > 0) {
-            player.giveExperiencePoints(xp);
+            DeathCapture.giveXp(player, xp);
         }
         entries.clear();
         xp = 0;
@@ -140,7 +140,7 @@ public class GraveBlockEntity extends BlockEntity {
         openContainer = container;
         openSlots = slots;
         if (xp > 0) {
-            player.giveExperiencePoints(xp);
+            DeathCapture.giveXp(player, xp);
             xp = 0;
         }
         setChanged();

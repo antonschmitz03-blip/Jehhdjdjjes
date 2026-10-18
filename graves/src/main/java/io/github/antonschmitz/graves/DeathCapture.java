@@ -171,9 +171,32 @@ public final class DeathCapture {
     static int totalXp(ServerPlayer player) {
         int total = 0;
         for (int level = 0; level < player.experienceLevel; level++) {
-            total += level >= 30 ? 112 + (level - 30) * 9 : level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+            total += xpForLevel(level);
         }
         return total + Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
+    }
+
+    private static int xpForLevel(int level) {
+        return level >= 30 ? 112 + (level - 30) * 9 : level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+    }
+
+    /**
+     * Gives XP back exactly. Vanilla's giveExperiencePoints adds it as a float fraction of each level, which can
+     * land a hair short of a level boundary for large amounts (550 points gave level 19 instead of 20).
+     */
+    static void giveXp(ServerPlayer player, int amount) {
+        if (amount <= 0) {
+            return;
+        }
+        int remaining = totalXp(player) + amount;
+        int level = 0;
+        while (remaining >= xpForLevel(level)) {
+            remaining -= xpForLevel(level);
+            level++;
+        }
+        player.totalExperience += amount;
+        player.setExperienceLevels(level);
+        player.setExperiencePoints(remaining);
     }
 
     /** Drops the items and XP as if there were no grave. */
