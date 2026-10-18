@@ -21,6 +21,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -33,15 +37,29 @@ import org.jspecify.annotations.Nullable;
  * shrine, or with anything else to open the overview screen (and see the range outlined for a few seconds).
  */
 public class ShrineCoreBlock extends BaseEntityBlock {
-    /** Iron plinth, gold pillar, iron cap and a diamond on top. */
+    /** The effect, so the client can colour the crystal. */
+    public static final EnumProperty<ShrineEffect> EFFECT = EnumProperty.create("effect", ShrineEffect.class);
+    /** Has an effect and a pyramid: the crystal glows in the effect's colour instead of dull grey. */
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    /** Stone base, plinth and dish, four corner posts and the floating crystal. */
     private static final VoxelShape SHAPE = Shapes.or(
-            Block.box(1, 0, 1, 15, 3, 15),
-            Block.box(4, 3, 4, 12, 10, 12),
-            Block.box(2, 10, 2, 14, 12, 14),
-            Block.box(5, 12, 5, 11, 16, 11));
+            Block.box(0, 0, 0, 16, 4, 16),
+            Block.box(3, 4, 3, 13, 8, 13),
+            Block.box(0.5, 4, 0.5, 3, 13, 3),
+            Block.box(13, 4, 0.5, 15.5, 13, 3),
+            Block.box(0.5, 4, 13, 3, 13, 15.5),
+            Block.box(13, 4, 13, 15.5, 13, 15.5),
+            Block.box(6, 8, 6, 10, 16, 10));
 
     public ShrineCoreBlock(Properties properties) {
         super(properties);
+        registerDefaultState(stateDefinition.any().setValue(EFFECT, ShrineEffect.NONE).setValue(LIT, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(EFFECT, LIT);
     }
 
     @Override

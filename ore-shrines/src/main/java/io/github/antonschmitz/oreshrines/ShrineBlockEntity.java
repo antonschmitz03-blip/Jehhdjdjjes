@@ -137,6 +137,23 @@ public class ShrineBlockEntity extends BlockEntity implements Container {
         this.effect = effect;
         setChanged();
         updateComparators();
+        updateBlockState();
+    }
+
+    /** Keeps the block's EFFECT and LIT properties (crystal colour and light) in step with the shrine. */
+    private void updateBlockState() {
+        if (level == null || isRemoved()) {
+            return;
+        }
+        BlockState state = level.getBlockState(getBlockPos());
+        if (!state.is(OreShrines.SHRINE_CORE)) {
+            return;
+        }
+        BlockState wanted = state.setValue(ShrineCoreBlock.EFFECT, effect)
+                .setValue(ShrineCoreBlock.LIT, effect != ShrineEffect.NONE && radius > 0);
+        if (wanted != state) {
+            level.setBlock(getBlockPos(), wanted, Block.UPDATE_ALL);
+        }
     }
 
     /** Adds up to {@code count} items worth {@code value} XP each; returns how many were taken. */
@@ -294,6 +311,8 @@ public class ShrineBlockEntity extends BlockEntity implements Container {
             double points = (iron + gold * 2.0 + diamond * 3.0) / total;
             radius = (int) Math.round(16 * found * (0.75 + 0.25 * points));
         }
+
+        updateBlockState();
 
         furnaces.clear();
         if (radius > 0 && effect == ShrineEffect.HEARTH) {

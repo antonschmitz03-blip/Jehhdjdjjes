@@ -2,13 +2,14 @@ package io.github.antonschmitz.oreshrines;
 
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jspecify.annotations.Nullable;
 
 /** What a shrine does. The offering is the item you right-click the core with to switch to that effect. */
-public enum ShrineEffect {
+public enum ShrineEffect implements StringRepresentable {
     NONE(null, 0xA0A0A0, ChatFormatting.GRAY),
     HARVEST(Items.GOLDEN_CARROT, 0x86D93A, ChatFormatting.GREEN),
     WARD(Items.PHANTOM_MEMBRANE, 0x7C8CF0, ChatFormatting.BLUE),
@@ -43,6 +44,11 @@ public enum ShrineEffect {
 
     public String id() {
         return name().toLowerCase(Locale.ROOT);
+    }
+
+    @Override
+    public String getSerializedName() {
+        return id();
     }
 
     public String nameKey() {

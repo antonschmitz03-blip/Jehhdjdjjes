@@ -1,0 +1,10 @@
+{
+  "parent": "oreshrines:block/shrine_core_template",
+  "textures": {
+    "side": "oreshrines:block/shrine_stone_side",
+    "top": "oreshrines:block/shrine_stone_top",
+    "gilding": "oreshrines:block/shrine_gilding",
+    "pillar": "oreshrines:block/shrine_pillar",
+    "crystal": "oreshrines:block/shrine_crystal_mending"
+  }
+}

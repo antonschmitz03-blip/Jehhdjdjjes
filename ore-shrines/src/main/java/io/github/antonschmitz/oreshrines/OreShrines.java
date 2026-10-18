@@ -37,7 +37,7 @@ public class OreShrines implements ModInitializer {
                 .sound(SoundType.METAL)
                 .requiresCorrectToolForDrops()
                 .strength(5.0F, 6.0F)
-                .lightLevel(state -> 15)
+                .lightLevel(state -> state.getValue(ShrineCoreBlock.LIT) ? 15 : 7)
                 .noOcclusion()
                 .setId(blockKey)));
         ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id("shrine_core"));

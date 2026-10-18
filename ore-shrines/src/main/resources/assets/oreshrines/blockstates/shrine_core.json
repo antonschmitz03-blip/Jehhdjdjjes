@@ -1,5 +1,46 @@
 {
   "variants": {
-    "": { "model": "oreshrines:block/shrine_core" }
+    "effect=none,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=none,lit=true": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=harvest,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=harvest,lit=true": {
+      "model": "oreshrines:block/shrine_core_harvest"
+    },
+    "effect=ward,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=ward,lit=true": {
+      "model": "oreshrines:block/shrine_core_ward"
+    },
+    "effect=mending,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=mending,lit=true": {
+      "model": "oreshrines:block/shrine_core_mending"
+    },
+    "effect=hearth,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=hearth,lit=true": {
+      "model": "oreshrines:block/shrine_core_hearth"
+    },
+    "effect=pasture,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=pasture,lit=true": {
+      "model": "oreshrines:block/shrine_core_pasture"
+    },
+    "effect=wisdom,lit=false": {
+      "model": "oreshrines:block/shrine_core_dormant"
+    },
+    "effect=wisdom,lit=true": {
+      "model": "oreshrines:block/shrine_core_wisdom"
+    }
   }
 }
