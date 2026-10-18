@@ -11,13 +11,6 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:block_state_property",
-          "block": "simplewaystones:waystone",
-          "properties": {
-            "half": "lower"
-          }
-        },
-        {
           "condition": "minecraft:survives_explosion"
         }
       ]

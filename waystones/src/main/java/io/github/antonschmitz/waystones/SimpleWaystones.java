@@ -22,10 +22,8 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.MapColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,10 +61,6 @@ public class SimpleWaystones implements ModInitializer {
             }
             WaystoneData.Waystone waystone = WaystoneData.get().at(serverLevel, WaystoneBlock.lowerPos(state, pos));
             if (waystone == null || serverPlayer.isCreative() || serverPlayer.getUUID().equals(waystone.owner())) {
-                if (serverPlayer.isCreative() && state.getValue(WaystoneBlock.HALF) == DoubleBlockHalf.UPPER) {
-                    // Creative breaks drop nothing, but the lower half removed by the update would; take it out silently.
-                    serverLevel.setBlock(pos.below(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
-                }
                 return true;
             }
             serverPlayer.sendSystemMessage(Component.translatable("simplewaystones.message.not_yours", waystone.ownerName())
