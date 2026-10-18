@@ -37,7 +37,7 @@ jobs:
       # and lets Simple Graves kill a fake player to check the grave round trip.
       - name: Server smoke test
         run: |
-          trap 'echo "--- server.log (last 150 lines)"; tail -150 server.log || true' EXIT
+          trap 'echo "--- server.log problems"; grep -nE "ERROR|Exception|Caused by|FAILED|Crash|crash|exit " server.log | grep -v server.properties | head -80 || true' EXIT
           mkdir -p run/mods
           cp libs/*.jar run/mods/
           cp vanilla-tweaks/build/libs/vanilla-plus-tweaks-*.jar run/mods/
