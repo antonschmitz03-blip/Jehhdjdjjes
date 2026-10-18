@@ -1,0 +1,21 @@
+name: Diamond Machines research
+
+on:
+  push:
+    paths:
+      - '.github/workflows/diamond-machines-research.yml'
+  workflow_dispatch:
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Create Fly 26.3 on Modrinth
+        shell: bash
+        run: |
+          echo "== by sha1 of the installed jar"
+          curl -s https://api.modrinth.com/v2/version_file/8ae86fb9e5eb19b87790f3550602d2b2f2f05e3a | head -c 3000; echo
+          echo "== versions"
+          curl -s 'https://api.modrinth.com/v2/project/create-fly/version' | jq -r '.[] | "\(.version_number) \(.game_versions|join(",")) \(.loaders|join(",")) \(.files[0].url)"' | head -20
+          echo "== curseforge maven probe"
+          curl -s -o /dev/null -w '%{http_code}\n' https://cursemaven.com/
