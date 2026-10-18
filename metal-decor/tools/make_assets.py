@@ -235,48 +235,10 @@ def templates():
                 "down": {"uv": [2, 2, 14, 14], "texture": "#base"}}},
         ]})
 
-    def lantern_elements(lift):
-        handle_top = 9 + lift
-        out = [
-            {"from": [5, lift, 5], "to": [11, 7 + lift, 11], "faces": {
-                **faces("#lantern", [0, 0, 6, 7]),
-                "up": {"uv": [0, 7, 6, 13], "texture": "#lantern"},
-                "down": {"uv": [0, 7, 6, 13], "texture": "#lantern"}}},
-            {"from": [6, 7 + lift, 6], "to": [10, 9 + lift, 10], "faces": {
-                **faces("#lantern", [7, 0, 11, 2]),
-                "up": {"uv": [7, 2, 11, 6], "texture": "#lantern"}}},
-            {"from": [6.5, handle_top, 8], "to": [9.5, handle_top + 2, 8],
-             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]}, "shade": False, "faces": {
-                "north": {"uv": [12, 0, 15, 2], "texture": "#lantern"},
-                "south": {"uv": [12, 0, 15, 2], "texture": "#lantern"}}},
-            {"from": [8, handle_top, 6.5], "to": [8, handle_top + 2, 9.5],
-             "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]}, "shade": False, "faces": {
-                "west": {"uv": [12, 0, 15, 2], "texture": "#lantern"},
-                "east": {"uv": [12, 0, 15, 2], "texture": "#lantern"}}},
-        ]
-        if lift:
-            chain_bottom = handle_top + 2
-            out += [
-                {"from": [6.5, chain_bottom, 8], "to": [9.5, 16, 8],
-                 "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]}, "shade": False, "faces": {
-                    "north": {"uv": [12, 2, 15, 2 + 16 - chain_bottom], "texture": "#lantern"},
-                    "south": {"uv": [12, 2, 15, 2 + 16 - chain_bottom], "texture": "#lantern"}}},
-                {"from": [8, chain_bottom, 6.5], "to": [8, 16, 9.5],
-                 "rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]}, "shade": False, "faces": {
-                    "west": {"uv": [12, 2, 15, 2 + 16 - chain_bottom], "texture": "#lantern"},
-                    "east": {"uv": [12, 2, 15, 2 + 16 - chain_bottom], "texture": "#lantern"}}},
-            ]
-        return out
-
-    model("template_lantern", {"parent": "minecraft:block/block", "textures": {"particle": "#lantern"},
-                               "elements": lantern_elements(0)})
-    model("template_hanging_lantern", {"parent": "minecraft:block/block", "textures": {"particle": "#lantern"},
-                                       "elements": lantern_elements(1)})
-
 
 def lantern(name):
-    model(name, {"parent": ref("block", "template_lantern"), "textures": {"lantern": ref("block", name)}})
-    model(name + "_hanging", {"parent": ref("block", "template_hanging_lantern"),
+    model(name, {"parent": "minecraft:block/template_lantern", "textures": {"lantern": ref("block", name)}})
+    model(name + "_hanging", {"parent": "minecraft:block/template_hanging_lantern",
                               "textures": {"lantern": ref("block", name)}})
     blockstate(name, {"variants": {
         "hanging=false": {"model": ref("block", name)},
@@ -312,19 +274,29 @@ def chain(name):
 
 
 def bars(name):
+    """Same geometry as the vanilla iron bars: flat panes through the middle with thin edge faces."""
     tex = ref("block", name)
-    model(name + "_post", {"textures": {"particle": tex, "bars": tex}, "elements": [
-        {"from": [7, 0, 7], "to": [9, 16, 9], "faces": {
-            **faces("#bars", [7, 0, 9, 16]),
-            "up": {"uv": [7, 0, 9, 2], "texture": "#bars", "cullface": "up"},
-            "down": {"uv": [7, 0, 9, 2], "texture": "#bars", "cullface": "down"}}}]})
-    model(name + "_side", {"textures": {"particle": tex, "bars": tex}, "elements": [
-        {"from": [7, 0, 0], "to": [9, 16, 7], "faces": {
-            "west": {"uv": [0, 0, 7, 16], "texture": "#bars"},
-            "east": {"uv": [0, 0, 7, 16], "texture": "#bars"},
-            "north": {"uv": [7, 0, 9, 16], "texture": "#bars", "cullface": "north"},
-            "up": {"uv": [2, 0, 4, 7], "texture": "#bars", "cullface": "up"},
-            "down": {"uv": [2, 0, 4, 7], "texture": "#bars", "cullface": "down"}}}]})
+    t = {"particle": tex, "bars": tex, "edge": tex}
+    model(name + "_post", {"ambientocclusion": False, "textures": t, "elements": [
+        {"from": [8, 0, 7], "to": [8, 16, 9], "faces": {
+            "west": {"uv": [7, 0, 9, 16], "texture": "#bars"}, "east": {"uv": [9, 0, 7, 16], "texture": "#bars"}}},
+        {"from": [7, 0, 8], "to": [9, 16, 8], "faces": {
+            "north": {"uv": [7, 0, 9, 16], "texture": "#bars"}, "south": {"uv": [9, 0, 7, 16], "texture": "#bars"}}},
+        {"from": [7, 0.001, 7], "to": [9, 0.001, 9], "faces": {
+            "down": {"uv": [7, 7, 9, 9], "texture": "#edge"}, "up": {"uv": [7, 7, 9, 9], "texture": "#edge"}}},
+        {"from": [7, 15.999, 7], "to": [9, 15.999, 9], "faces": {
+            "down": {"uv": [7, 7, 9, 9], "texture": "#edge"}, "up": {"uv": [7, 7, 9, 9], "texture": "#edge"}}},
+    ]})
+    model(name + "_side", {"ambientocclusion": False, "textures": t, "elements": [
+        {"from": [8, 0, 0], "to": [8, 16, 8], "faces": {
+            "west": {"uv": [16, 0, 8, 16], "texture": "#bars"}, "east": {"uv": [8, 0, 16, 16], "texture": "#bars"}}},
+        {"from": [7, 0, 0], "to": [9, 16, 0], "faces": {
+            "north": {"uv": [7, 0, 9, 16], "texture": "#edge", "cullface": "north"}}},
+        {"from": [7, 0.001, 0], "to": [9, 0.001, 8], "faces": {
+            "down": {"uv": [7, 0, 9, 8], "texture": "#edge"}, "up": {"uv": [7, 0, 9, 8], "texture": "#edge"}}},
+        {"from": [7, 15.999, 0], "to": [9, 15.999, 8], "faces": {
+            "down": {"uv": [7, 0, 9, 8], "texture": "#edge"}, "up": {"uv": [7, 0, 9, 8], "texture": "#edge"}}},
+    ]})
     parts = [{"apply": {"model": ref("block", name + "_post")}}]
     for side, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
         apply = {"model": ref("block", name + "_side")}

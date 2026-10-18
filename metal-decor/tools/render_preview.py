@@ -15,7 +15,8 @@ SHADE = {"up": 1.0, "south": 0.82, "east": 0.64, "north": 0.64, "west": 0.82, "d
 
 
 def tex(name, kind="block"):
-    return Image.open(TEX / kind / f"{name}.png").convert("RGBA")
+    img = Image.open(TEX / kind / f"{name}.png").convert("RGBA")
+    return img.crop((0, 0, 16, 16))
 
 
 def project(x, y, z):
@@ -116,11 +117,11 @@ def pedestal(canvas, o, metal, item=None):
 def lantern(canvas, o, name, hanging=False):
     t = tex(name)
     lift = 1 if hanging else 0
-    body = {"up": (t, (0, 7, 6, 13)), "south": (t, (0, 0, 6, 7)), "east": (t, (0, 0, 6, 7))}
-    cap = {"up": (t, (7, 2, 11, 6)), "south": (t, (7, 0, 11, 2)), "east": (t, (7, 0, 11, 2))}
+    body = {"up": (t, (0, 9, 6, 15)), "south": (t, (0, 2, 6, 9)), "east": (t, (0, 2, 6, 9))}
+    cap = {"up": (t, (1, 10, 5, 14)), "south": (t, (1, 0, 5, 2)), "east": (t, (1, 0, 5, 2))}
     box(canvas, o, (5, lift, 5), (11, 7 + lift, 11), body)
     box(canvas, o, (6, 7 + lift, 6), (10, 9 + lift, 10), cap)
-    box(canvas, o, (6.5, 9 + lift, 8), (9.5, 11 + lift, 8), {"south": (t, (12, 0, 15, 2))})
+    box(canvas, o, (6.5, 9 + lift, 8), (9.5, 11 + lift, 8), {"south": (t, (11, 1, 14, 3))})
 
 
 def label(canvas, xy, text):

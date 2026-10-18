@@ -1,5 +1,5 @@
 {
-  "parent": "metaldecor:block/template_hanging_lantern",
+  "parent": "minecraft:block/template_hanging_lantern",
   "textures": {
     "lantern": "metaldecor:block/gold_soul_lantern"
   }

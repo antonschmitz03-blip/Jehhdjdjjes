@@ -1,9 +1,15 @@
-"""Draws every Metal Decor texture as 16x16 pixel art.
+"""Draws every Metal Decor texture as 16x16 pixel art, based on the vanilla textures so they sit right next to them.
 
-Iron and gold share vanilla-style patterns (bevelled plates, tiles, bricks), each painted with a shade ramp picked from
-the vanilla metal blocks. The diamond set is drawn with elvish motifs instead: leaves, vines and pointed arches.
+- Iron and gold plating, cut blocks, grates and pedestal tops are the vanilla copper block, cut copper, copper grate and
+  chiseled copper, recoloured with the shades of the vanilla iron and gold blocks.
+- Gold lanterns, the gold chain and gold bars are the vanilla lantern, soul lantern, iron chain and iron bars with a
+  gold frame. The diamond lantern gets a diamond frame and a pale elvish flame.
+- Tiles, pillars and the whole elvish diamond set are drawn here, in the same shades, with the vanilla block's own
+  pixel noise laid over the flat areas.
 
-Run from the metal-decor folder: python3 tools/make_textures.py [preview.png]
+The vanilla samples come from the CI step "Vanilla texture samples" (decode its base64 lines into
+tools/vanilla-samples/<name>.png); they are not committed. Run from the metal-decor folder:
+python3 tools/make_textures.py [preview.png]
 """
 import math
 import sys
@@ -11,19 +17,20 @@ from pathlib import Path
 
 from PIL import Image
 
-OUT = Path(__file__).resolve().parent.parent / "src/main/resources/assets/metaldecor/textures"
+TOOLS = Path(__file__).resolve().parent
+OUT = TOOLS.parent / "src/main/resources/assets/metaldecor/textures"
+VANILLA = TOOLS / "vanilla-samples"
 
-# Darkest to brightest, sampled to sit next to the vanilla iron, gold and diamond blocks.
+# Nine shades, darkest to brightest, taken from the vanilla iron, gold and diamond blocks. The eight copper shades map
+# onto 0-7; 8 is an extra glint.
 RAMPS = {
-    "iron": ["#3f3f3f", "#5f5f5f", "#7f7f7f", "#a2a2a2", "#c3c3c3", "#dcdcdc", "#f4f4f4"],
-    "gold": ["#83480e", "#ad6612", "#d4901b", "#eab427", "#f9d73e", "#fcee5a", "#fffcb5"],
-    "diamond": ["#0d3b37", "#137469", "#1ca898", "#2ed1bf", "#62e8da", "#a6fbea", "#e6fffb"],
+    "iron": ["#8f8f8f", "#a1a1a1", "#b1b0b0", "#c1c1c1", "#d1cfcf", "#dcdcdc", "#e6e6e6", "#f2f2f2", "#fafafa"],
+    "gold": ["#cc8e27", "#d39632", "#f9bd23", "#f5cc27", "#ffd83e", "#fee048", "#ffec4f", "#fffd90", "#feffbd"],
+    "diamond": ["#0ebabd", "#15c2c6", "#3de0e5", "#4bede6", "#65f5e3", "#70fbf0", "#9efeeb", "#d5fff6", "#ffffff"],
 }
-FLAMES = {
-    "gold": ["#c8641a", "#f39a2c", "#ffc75a", "#fff1b0"],
-    "soul_gold": ["#1f6f87", "#3fb3c9", "#86ecf2", "#e0ffff"],
-    "diamond": ["#2a8f9a", "#7fe3e0", "#c9fff6", "#ffffff"],
-}
+COPPER = ["#904931", "#9a5038", "#a75a40", "#b26247", "#c26b4c", "#c87456", "#d67b5b", "#e3826c"]
+# The patterns below are drawn in seven steps (0-6); this spreads them over the nine shades.
+STEP = [0, 1, 3, 4, 5, 7, 8]
 
 T = None  # transparent pixel
 
@@ -33,19 +40,56 @@ def hex_rgba(color):
     return tuple(int(color[i:i + 2], 16) for i in (0, 2, 4)) + (255,)
 
 
+def vanilla(name):
+    return Image.open(VANILLA / f"{name}.png").convert("RGBA")
+
+
 def grid(value=4):
     return [[value] * 16 for _ in range(16)]
 
 
-def paint(shades, ramp):
-    """Shade map (indices into the ramp, None for transparent) to an image."""
+def lum(c):
+    return 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2]
+
+
+def nearest(color, ramp):
+    l = lum(color)
+    return min(range(len(ramp)), key=lambda i: abs(lum(hex_rgba(ramp[i])) - l))
+
+
+def paint(shades, metal, noise=True):
+    """Shade map in seven steps (None for transparent) to an image. Flat areas pick up the vanilla block's noise."""
+    ramp = [hex_rgba(c) for c in RAMPS[metal]]
+    block = vanilla(f"{metal}_block")
+    idx = [[nearest(block.getpixel((x, y)), RAMPS[metal]) for x in range(16)] for y in range(16)]
+    flat = sorted(v for row in idx for v in row)[128]
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    colors = [hex_rgba(c) for c in ramp]
     for y, row in enumerate(shades):
         for x, s in enumerate(row):
-            if s is not None:
-                img.putpixel((x, y), colors[max(0, min(len(colors) - 1, s))])
+            if s is None:
+                continue
+            v = STEP[max(0, min(6, s))]
+            if noise and s in (3, 4):
+                v += max(-1, min(1, idx[y][x] - flat))
+            img.putpixel((x, y), ramp[max(0, min(8, v))])
     return img
+
+
+def recolor(name, mapping):
+    """Swaps colours of a vanilla texture: mapping is source hex -> target hex."""
+    src = vanilla(name)
+    out = src.copy()
+    table = {hex_rgba(k)[:3]: hex_rgba(v) for k, v in mapping.items()}
+    for y in range(src.height):
+        for x in range(src.width):
+            p = src.getpixel((x, y))
+            if p[3] and p[:3] in table:
+                out.putpixel((x, y), table[p[:3]][:3] + (p[3],))
+    return out
+
+
+def from_copper(name, metal):
+    return recolor(name, dict(zip(COPPER, RAMPS[metal][:8])))
 
 
 def bevel_box(g, x0, y0, x1, y1, base=4, light=5, shadow=2, corner=6):
@@ -66,50 +110,11 @@ def bevel_box(g, x0, y0, x1, y1, base=4, light=5, shadow=2, corner=6):
 
 # ---------------------------------------------------------------- vanilla-style iron and gold
 
-def plating():
-    g = grid()
-    bevel_box(g, 0, 0, 15, 7)
-    bevel_box(g, 0, 8, 15, 15)
-    for y in (2, 10):
-        for x in (2, 13):
-            g[y][x] = 6
-            g[y + 1][x] = 2
-            g[y][x + 1] = 3
-    # A soft sheen across each plate, like the vanilla iron block.
-    for y, x in ((3, 6), (3, 7), (4, 5), (11, 9), (12, 8), (12, 10)):
-        g[y][x] = 5
-    return g
-
-
 def tiles():
     g = grid()
     for ty in range(4):
         for tx in range(4):
-            base = 4 if (tx + ty) % 2 == 0 else 3
-            bevel_box(g, tx * 4, ty * 4, tx * 4 + 3, ty * 4 + 3, base=base)
-    return g
-
-
-def cut():
-    g = grid()
-    for row in range(4):
-        offset = 4 if row % 2 else 0
-        for start in range(-8, 16, 8):
-            x0 = start + offset
-            for x in range(max(0, x0), min(16, x0 + 8)):
-                for y in range(row * 4, row * 4 + 4):
-                    g[y][x] = 4
-            # Bevel the brick, clipped to the texture.
-            for x in range(max(0, x0), min(16, x0 + 8)):
-                g[row * 4][x] = 5
-                g[row * 4 + 3][x] = 2
-            for y in range(row * 4, row * 4 + 4):
-                if 0 <= x0 < 16:
-                    g[y][x0] = 5
-                if 0 <= x0 + 7 < 16:
-                    g[y][x0 + 7] = 2
-            if 0 <= x0 < 16:
-                g[row * 4][x0] = 6
+            bevel_box(g, tx * 4, ty * 4, tx * 4 + 3, ty * 4 + 3)
     return g
 
 
@@ -134,91 +139,6 @@ def pillar_end():
             # Light comes from the top left.
             if d in (0, 3) and (x == 15 - d or y == 15 - d):
                 g[y][x] = 2
-    return g
-
-
-def grate():
-    g = [[T] * 16 for _ in range(16)]
-    bars = {0, 1, 7, 8, 14, 15}
-    for y in range(16):
-        for x in range(16):
-            if x in bars or y in bars:
-                g[y][x] = 4
-    for y in range(16):
-        for x in range(16):
-            if g[y][x] is None:
-                continue
-            if (x in bars and x in (0, 7, 14)) or (y in bars and y in (0, 7, 14)):
-                g[y][x] = 5
-            if (y in (1, 8, 15) and x not in bars) or (x in (1, 8, 15) and y not in bars):
-                g[y][x] = 2
-    for y in (0, 7, 14):
-        for x in (0, 7, 14):
-            g[y][x] = 6
-            g[y + 1][x + 1] = 3
-    return g
-
-
-def bars():
-    """Vertical bars at x 2-3, 7-8 and 12-13; the bars model shows 0-7 on its arms and 7-9 on the post."""
-    g = [[T] * 16 for _ in range(16)]
-    for y in range(16):
-        for x0 in (2, 7, 12):
-            g[y][x0] = 5
-            g[y][x0 + 1] = 2 if x0 != 7 else 3
-        g[y][8] = 2
-    for x0 in (2, 7, 12):
-        g[0][x0] = 6
-        g[15][x0 + 1] = 1
-    return g
-
-
-def chain():
-    """Links for the two crossed planes: columns 0-2 for one plane, 3-5 for the other, offset by half a link."""
-    g = [[T] * 16 for _ in range(16)]
-    for plane, offset in ((0, 0), (3, 4)):
-        for start in range(-8, 16, 8):
-            top = start + offset
-            for dy in range(6):
-                y = top + dy
-                if not 0 <= y < 16:
-                    continue
-                if dy in (0, 5):
-                    g[y][plane + 1] = 5 if dy == 0 else 2
-                else:
-                    g[y][plane] = 4 if dy < 3 else 3
-                    g[y][plane + 2] = 2
-            # Edge-on view of the next link through the gap.
-            for dy in (6, 7):
-                y = top + dy
-                if 0 <= y < 16:
-                    g[y][plane + 1] = 3
-    return g
-
-
-def chain_item():
-    g = [[T] * 16 for _ in range(16)]
-    for i, top in enumerate((0, 5, 10)):
-        x = 6 + (i % 2)
-        for dy in range(6):
-            y = top + dy
-            if y > 15:
-                break
-            if dy in (0, 5):
-                g[y][x + 1] = 5 if dy == 0 else 2
-            else:
-                g[y][x] = 4
-                g[y][x + 2] = 2
-    return g
-
-
-def bars_item():
-    g = bars()
-    for x in range(1, 15):
-        for y in (1, 14):
-            g[y][x] = 4
-        g[2][x] = 2
-        g[15][x] = 2
     return g
 
 
@@ -403,103 +323,21 @@ def lattice():
 
 # ---------------------------------------------------------------- lanterns and pedestal
 
-def lantern_sheet(ramp_name, flame, elvish=False):
-    """Layout used by template_lantern: body side 0,0-6,7; body top 0,7-6,13; cap side 7,0-11,2; cap top 7,2-11,6;
-    handle 12,0-15,2; hanging chain 12,2-15,8."""
-    ramp = [hex_rgba(c) for c in RAMPS[ramp_name]]
-    fl = [hex_rgba(c) for c in FLAMES[flame]]
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.putpixel
-    for x in range(6):
-        px((x, 0), ramp[5])
-        px((x, 6), ramp[2])
-    for y in range(1, 6):
-        px((0, y), ramp[4])
-        px((5, y), ramp[2])
-        for x in range(1, 5):
-            glow = [1, 2, 2, 1][x - 1]
-            if y in (2, 3):
-                glow += 1
-            px((x, y), fl[min(3, glow)])
-    if elvish:
-        # Leaf-shaped window: the corners of the glass are metal.
-        for x, y in ((1, 1), (4, 1), (1, 5), (4, 5)):
-            px((x, y), ramp[3])
-    for y in range(7, 13):
-        for x in range(6):
-            d = min(x, y - 7, 5 - x, 12 - y)
-            px((x, y), ramp[[5, 3, 1][min(d, 2)]])
-    for x in range(7, 11):
-        px((x, 0), ramp[5])
-        px((x, 1), ramp[3])
-    for y in range(2, 6):
-        for x in range(7, 11):
-            d = min(x - 7, y - 2, 10 - x, 5 - y)
-            px((x, y), ramp[4 if d == 0 else 2])
-    for x in range(12, 15):
-        px((x, 0), ramp[5])
-    px((12, 1), ramp[3])
-    px((14, 1), ramp[2])
-    for y in range(2, 8):
-        px((13, y), ramp[4 if y % 3 else 2])
-        if y % 3 == 0:
-            px((12, y), ramp[3])
-            px((14, y), ramp[2])
-    return img
-
-
-def lantern_item(ramp_name, flame, elvish=False):
-    ramp = [hex_rgba(c) for c in RAMPS[ramp_name]]
-    fl = [hex_rgba(c) for c in FLAMES[flame]]
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    px = img.putpixel
-    for x in (6, 9):
-        px((x, 1), ramp[4])
-        px((x, 2), ramp[2])
-    for x in (7, 8):
-        px((x, 0), ramp[5])
-    for x in range(5, 11):
-        px((x, 3), ramp[5])
-        px((x, 4), ramp[3])
-    for y in range(5, 14):
-        for x in range(4, 12):
-            if x in (4, 11) or y in (5, 13):
-                px((x, y), ramp[5 if x == 4 or y == 5 else 2])
-            else:
-                glow = 1 if x in (5, 10) else 2
-                if 7 <= y <= 10 and x in (7, 8):
-                    glow = 3
-                px((x, y), fl[glow])
-    if elvish:
-        for x, y in ((5, 6), (10, 6), (5, 12), (10, 12)):
-            px((x, y), ramp[3])
-        for y in range(6, 13):
-            px((7 if y % 2 else 8, y), ramp[6] if y in (6, 12) else fl[3])
-    for x in range(4, 12):
-        px((x, 14), ramp[1])
-    return img
-
-
-def pedestal_top(ramp_name):
-    """A velvet-free display plate: bevelled metal with an inset ring where the trophy floats."""
-    g = grid()
-    bevel_box(g, 0, 0, 15, 15)
-    for y in range(3, 13):
-        for x in range(3, 13):
-            d = min(x - 3, y - 3, 12 - x, 12 - y)
-            g[y][x] = [2, 3, 4, 4, 5][min(d, 4)]
-    return paint(g, RAMPS[ramp_name])
-
-
 # ---------------------------------------------------------------- output
 
-STYLES_VANILLA = {
-    "plating": plating, "tiles": tiles, "cut": cut, "pillar": pillar_side, "pillar_top": pillar_end, "grate": grate,
-}
-STYLES_ELVISH = {
-    "plating": filigree, "tiles": leaf_tiles, "cut": arches, "pillar": vine_pillar_side, "pillar_top": rosette,
-    "grate": lattice,
-}
+# Frame colours of the vanilla lanterns, chain and bars, darkest first.
+LANTERN_FRAME = ["#252c3d", "#3e4453", "#424a5e", "#495065", "#814023", "#8b5230"]
+LANTERN_FLAME = ["#c36322", "#f09149", "#f9c966", "#fdfd8b", "#ffffd5"]
+GOLD_FRAME = ["#6e3f0f", "#ae6d26", "#b8761f", "#c98c1c", "#a8641c", "#d99a20"]
+DIAMOND_FRAME = ["#0a5f63", "#0ebabd", "#15c2c6", "#3de0e5", "#1a9aa0", "#4bede6"]
+ELVISH_FLAME = ["#5fd8e0", "#9ff3f0", "#d8fffa", "#f0fffd", "#ffffff"]
+CHAIN = ["#252c3d", "#3e4453", "#495065"]
+BARS = ["#686868", "#72796e", "#9c9c9c", "#abacab", "#c5c5c5"]
+
+
+def save(img, path, made, label):
+    img.save(path)
+    made.append((label, img))
 
 
 def main():
@@ -508,29 +346,33 @@ def main():
     block.mkdir(parents=True, exist_ok=True)
     item.mkdir(parents=True, exist_ok=True)
     made = []
-    for metal in ("iron", "gold", "diamond"):
-        styles = STYLES_ELVISH if metal == "diamond" else STYLES_VANILLA
-        for style, fn in styles.items():
-            img = paint(fn(), RAMPS[metal])
-            img.save(block / f"{metal}_{style}.png")
-            made.append((f"{metal}_{style}", img))
-        img = pedestal_top(metal)
-        img.save(block / f"{metal}_pedestal_top.png")
-        made.append((f"{metal}_pedestal_top", img))
-    for name, fn in (("gold_chain", chain), ("gold_bars", bars)):
-        img = paint(fn(), RAMPS["gold"])
-        img.save(block / f"{name}.png")
-        made.append((name, img))
-    paint(chain_item(), RAMPS["gold"]).save(item / "gold_chain.png")
-    paint(bars_item(), RAMPS["gold"]).save(item / "gold_bars.png")
-    for name, ramp, flame, elvish in (("gold_lantern", "gold", "gold", False),
-                                      ("gold_soul_lantern", "gold", "soul_gold", False),
-                                      ("diamond_lantern", "diamond", "diamond", True)):
-        sheet = lantern_sheet(ramp, flame, elvish)
-        sheet.save(block / f"{name}.png")
-        icon = lantern_item(ramp, flame, elvish)
-        icon.save(item / f"{name}.png")
-        made.append((name + " (item)", icon))
+    for metal in ("iron", "gold"):
+        save(from_copper("copper_block", metal), block / f"{metal}_plating.png", made, f"{metal}_plating")
+        save(paint(tiles(), metal), block / f"{metal}_tiles.png", made, f"{metal}_tiles")
+        save(from_copper("cut_copper", metal), block / f"{metal}_cut.png", made, f"{metal}_cut")
+        save(paint(pillar_side(), metal), block / f"{metal}_pillar.png", made, f"{metal}_pillar")
+        save(paint(pillar_end(), metal), block / f"{metal}_pillar_top.png", made, f"{metal}_pillar_top")
+        save(from_copper("copper_grate", metal), block / f"{metal}_grate.png", made, f"{metal}_grate")
+        save(from_copper("chiseled_copper", metal), block / f"{metal}_pedestal_top.png", made, f"{metal}_pedestal_top")
+    for style, fn in (("plating", filigree), ("tiles", leaf_tiles), ("cut", arches), ("pillar", vine_pillar_side),
+                      ("pillar_top", rosette), ("grate", lattice), ("pedestal_top", rosette)):
+        save(paint(fn(), "diamond"), block / f"diamond_{style}.png", made, f"diamond_{style}")
+
+    gold_frame = dict(zip(LANTERN_FRAME, GOLD_FRAME))
+    diamond_lantern = {**dict(zip(LANTERN_FRAME, DIAMOND_FRAME)), **dict(zip(LANTERN_FLAME, ELVISH_FLAME))}
+    for name, source, mapping in (("gold_lantern", "lantern", gold_frame),
+                                  ("gold_soul_lantern", "soul_lantern", gold_frame),
+                                  ("diamond_lantern", "lantern", diamond_lantern)):
+        save(recolor(source, mapping), block / f"{name}.png", made, name)
+        # Three flicker frames, like the vanilla lantern.
+        (block / f"{name}.png.mcmeta").write_text('{"animation": {"interpolate": true, "frametime": 8}}\n')
+        save(recolor("item_" + source, mapping), item / f"{name}.png", made, name + " (item)")
+    gold_chain = dict(zip(CHAIN, ["#8a5314", "#d39632", "#f9bd23"]))
+    save(recolor("iron_chain", gold_chain), block / "gold_chain.png", made, "gold_chain")
+    save(recolor("item_iron_chain", gold_chain), item / "gold_chain.png", made, "gold_chain (item)")
+    gold_bars = dict(zip(BARS, ["#a8641c", "#c98c1c", "#eea41a", "#f7c431", "#ffec4f"]))
+    save(recolor("iron_bars", gold_bars), block / "gold_bars.png", made, "gold_bars")
+    save(recolor("iron_bars", gold_bars), item / "gold_bars.png", made, "gold_bars (item)")
 
     if len(sys.argv) > 1:
         preview(made, sys.argv[1])
@@ -546,7 +388,7 @@ def preview(made, path):
         tile = Image.new("RGBA", (32, 32))
         for ox in (0, 16):
             for oy in (0, 16):
-                tile.paste(img, (ox, oy))
+                tile.paste(img.crop((0, 0, 16, 16)), (ox, oy))
         tile = tile.resize((32 * scale, 32 * scale), Image.NEAREST)
         sheet.alpha_composite(tile, ((i % cols) * cell + 6, (i // cols) * cell + 6))
     sheet.save(path)
