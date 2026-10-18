@@ -160,7 +160,8 @@
       "miningdim:underground_lake",
       "miningdim:dig_site",
       "miningdim:hanging_roots_ceiling",
-      "miningdim:glowcap_floor"
+      "miningdim:glowcap_floor",
+      "miningdim:pebblins"
     ],
     []
   ],

@@ -122,6 +122,7 @@ public class MiningDimension implements ModInitializer {
     public static final MapCodec<GlowwormFeature> GLOWWORM_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("glowworms"), GlowwormFeature.CODEC);
     public static final MapCodec<UndergroundLakeFeature> UNDERGROUND_LAKE_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("underground_lake"), UndergroundLakeFeature.CODEC);
     public static final MapCodec<DigSiteFeature> DIG_SITE_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("dig_site"), DigSiteFeature.CODEC);
+    public static final MapCodec<PebblinFeature> PEBBLIN_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("pebblins"), PebblinFeature.CODEC);
     public static final MapCodec<KnockerDenFeature> KNOCKER_DEN_FEATURE = Registry.register(BuiltInRegistries.FEATURE_TYPE, id("knocker_den"),
             KnockerDenFeature.CODEC);
 
