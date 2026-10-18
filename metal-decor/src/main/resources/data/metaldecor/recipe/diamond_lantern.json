@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NDN",
+    "DGD",
+    "NDN"
+  ],
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "D": "minecraft:diamond",
+    "G": "minecraft:glowstone_dust"
+  },
+  "result": {
+    "id": "metaldecor:diamond_lantern",
+    "count": 1
+  }
+}

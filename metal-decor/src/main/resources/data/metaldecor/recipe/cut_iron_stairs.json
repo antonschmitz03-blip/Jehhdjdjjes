@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:cut_iron"
+  },
+  "result": {
+    "id": "metaldecor:cut_iron_stairs",
+    "count": 4
+  }
+}

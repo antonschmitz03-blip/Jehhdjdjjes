@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "metaldecor:block/gold_chain"
+    },
+    "axis=z": {
+      "model": "metaldecor:block/gold_chain",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "metaldecor:block/gold_chain",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

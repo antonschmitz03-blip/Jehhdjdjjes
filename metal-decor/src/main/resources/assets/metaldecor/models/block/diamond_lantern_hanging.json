@@ -1,0 +1,6 @@
+{
+  "parent": "metaldecor:block/template_hanging_lantern",
+  "textures": {
+    "lantern": "metaldecor:block/diamond_lantern"
+  }
+}

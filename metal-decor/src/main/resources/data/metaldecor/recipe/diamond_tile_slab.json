@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:diamond_tiles"
+  },
+  "result": {
+    "id": "metaldecor:diamond_tile_slab",
+    "count": 6
+  }
+}

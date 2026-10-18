@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    " B ",
+    "III"
+  ],
+  "key": {
+    "I": "minecraft:diamond",
+    "B": "minecraft:diamond_block"
+  },
+  "result": {
+    "id": "metaldecor:diamond_pedestal",
+    "count": 1
+  }
+}

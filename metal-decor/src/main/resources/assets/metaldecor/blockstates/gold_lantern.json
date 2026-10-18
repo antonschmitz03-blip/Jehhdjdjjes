@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "metaldecor:block/gold_lantern"
+    },
+    "hanging=true": {
+      "model": "metaldecor:block/gold_lantern_hanging"
+    }
+  }
+}

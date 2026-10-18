@@ -1,0 +1,9 @@
+{
+  "parent": "metaldecor:block/template_pedestal",
+  "textures": {
+    "base": "metaldecor:block/diamond_cut",
+    "column": "metaldecor:block/diamond_pillar",
+    "top": "metaldecor:block/diamond_pedestal_top",
+    "particle": "metaldecor:block/diamond_cut"
+  }
+}

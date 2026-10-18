@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "metaldecor:gold_tiles",
+  "result": {
+    "id": "metaldecor:gold_tile_stairs",
+    "count": 1
+  }
+}

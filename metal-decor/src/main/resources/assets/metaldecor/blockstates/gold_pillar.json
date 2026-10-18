@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "metaldecor:block/gold_pillar"
+    },
+    "axis=z": {
+      "model": "metaldecor:block/gold_pillar_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "metaldecor:block/gold_pillar_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

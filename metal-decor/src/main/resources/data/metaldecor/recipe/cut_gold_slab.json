@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:cut_gold"
+  },
+  "result": {
+    "id": "metaldecor:cut_gold_slab",
+    "count": 6
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:diamond_tiles"
+  },
+  "result": {
+    "id": "metaldecor:diamond_tile_stairs",
+    "count": 4
+  }
+}

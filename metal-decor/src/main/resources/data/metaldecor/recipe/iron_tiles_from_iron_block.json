@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:iron_block",
+  "result": {
+    "id": "metaldecor:iron_tiles",
+    "count": 1
+  }
+}

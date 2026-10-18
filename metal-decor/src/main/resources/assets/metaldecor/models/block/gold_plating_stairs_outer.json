@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "metaldecor:block/gold_plating",
+    "top": "metaldecor:block/gold_plating",
+    "side": "metaldecor:block/gold_plating"
+  }
+}

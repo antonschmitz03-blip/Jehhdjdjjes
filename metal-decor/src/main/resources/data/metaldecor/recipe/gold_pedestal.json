@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    " B ",
+    "III"
+  ],
+  "key": {
+    "I": "minecraft:gold_ingot",
+    "B": "minecraft:gold_block"
+  },
+  "result": {
+    "id": "metaldecor:gold_pedestal",
+    "count": 1
+  }
+}

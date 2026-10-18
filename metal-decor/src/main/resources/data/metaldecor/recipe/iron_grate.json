@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " # ",
+    "# #",
+    " # "
+  ],
+  "key": {
+    "#": "minecraft:iron_block"
+  },
+  "result": {
+    "id": "metaldecor:iron_grate",
+    "count": 4
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "metaldecor",
+  "version": "${version}",
+  "name": "Metal Decor",
+  "description": "Decorative blocks that use up spare iron, gold and diamonds: plating, tiles, cut blocks, pillars, grates, gold lanterns, chains and bars, and pedestals that show off an item. The diamond set has an elvish look.",
+  "authors": ["antonschmitz03-blip"],
+  "license": "CC0-1.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.antonschmitz.metaldecor.MetalDecor"],
+    "client": ["io.github.antonschmitz.metaldecor.client.MetalDecorClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  }
+}

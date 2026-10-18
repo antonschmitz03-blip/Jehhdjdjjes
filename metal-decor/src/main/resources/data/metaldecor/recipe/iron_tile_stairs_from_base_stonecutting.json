@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "metaldecor:iron_tiles",
+  "result": {
+    "id": "metaldecor:iron_tile_stairs",
+    "count": 1
+  }
+}

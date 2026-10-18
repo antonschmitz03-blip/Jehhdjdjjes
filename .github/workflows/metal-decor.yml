@@ -1,0 +1,53 @@
+name: Metal Decor
+
+on:
+  push:
+    paths:
+      - 'metal-decor/**'
+      - '.github/workflows/metal-decor.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: metal-decor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew build --console=plain > build.log 2>&1 || status=$?
+          grep -E -A2 'error:|What went wrong' build.log | head -80 || true
+          exit ${status:-0}
+      # Only on a failed build: print the signatures of the vanilla classes the pedestal renderer and blocks use.
+      - name: API signatures
+        if: failure()
+        shell: bash
+        run: |
+          JAR=$(find ~/.gradle -name 'minecraft-merged*.jar' | head -1)
+          [ -z "$JAR" ] && JAR=$(find ~/.gradle .gradle -name 'minecraft-client*.jar' 2>/dev/null | head -1)
+          for c in net.minecraft.client.renderer.blockentity.BlockEntityRenderer \
+                   net.minecraft.client.renderer.blockentity.BlockEntityRenderers \
+                   'net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider$Context' \
+                   net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState \
+                   net.minecraft.client.renderer.item.ItemModelResolver \
+                   net.minecraft.world.level.block.WaterloggedTransparentBlock \
+                   net.minecraft.world.level.block.ChainBlock \
+                   net.minecraft.world.level.block.IronBarsBlock \
+                   net.minecraft.world.level.block.LanternBlock \
+                   net.minecraft.world.level.block.StairBlock \
+                   net.minecraft.world.item.Items; do
+            echo "== $c"; javap -cp "$JAR" "$c" 2>&1 | grep -vE 'public static final net.minecraft.world.item.Item ' | head -40
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: metal-decor
+          path: metal-decor/build/libs/metal-decor-*.jar

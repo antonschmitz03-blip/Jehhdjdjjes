@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NNN",
+    "NTN",
+    "NNN"
+  ],
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "T": "minecraft:torch"
+  },
+  "result": {
+    "id": "metaldecor:gold_lantern",
+    "count": 1
+  }
+}

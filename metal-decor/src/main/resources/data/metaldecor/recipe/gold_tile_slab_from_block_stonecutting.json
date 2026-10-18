@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:gold_block",
+  "result": {
+    "id": "metaldecor:gold_tile_slab",
+    "count": 2
+  }
+}

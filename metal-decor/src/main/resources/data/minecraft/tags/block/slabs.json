@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "metaldecor:iron_plating_slab",
+    "metaldecor:iron_tile_slab",
+    "metaldecor:cut_iron_slab",
+    "metaldecor:gold_plating_slab",
+    "metaldecor:gold_tile_slab",
+    "metaldecor:cut_gold_slab",
+    "metaldecor:diamond_plating_slab",
+    "metaldecor:diamond_tile_slab",
+    "metaldecor:cut_diamond_slab"
+  ]
+}

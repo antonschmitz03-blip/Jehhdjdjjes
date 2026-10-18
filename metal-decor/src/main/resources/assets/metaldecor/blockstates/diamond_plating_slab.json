@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "metaldecor:block/diamond_plating_slab"
+    },
+    "type=top": {
+      "model": "metaldecor:block/diamond_plating_slab_top"
+    },
+    "type=double": {
+      "model": "metaldecor:block/diamond_plating"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "metaldecor:block/cut_diamond_slab"
+    },
+    "type=top": {
+      "model": "metaldecor:block/cut_diamond_slab_top"
+    },
+    "type=double": {
+      "model": "metaldecor:block/cut_diamond"
+    }
+  }
+}

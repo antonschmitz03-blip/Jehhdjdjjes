@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:gold_plating"
+  },
+  "result": {
+    "id": "metaldecor:gold_plating_stairs",
+    "count": 4
+  }
+}

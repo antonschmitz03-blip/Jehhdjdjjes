@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "metaldecor:iron_plating_stairs",
+    "metaldecor:iron_tile_stairs",
+    "metaldecor:cut_iron_stairs",
+    "metaldecor:gold_plating_stairs",
+    "metaldecor:gold_tile_stairs",
+    "metaldecor:cut_gold_stairs",
+    "metaldecor:diamond_plating_stairs",
+    "metaldecor:diamond_tile_stairs",
+    "metaldecor:cut_diamond_stairs"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:gold_tiles"
+  },
+  "result": {
+    "id": "metaldecor:gold_tile_stairs",
+    "count": 4
+  }
+}

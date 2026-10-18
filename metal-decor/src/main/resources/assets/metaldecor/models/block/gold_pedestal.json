@@ -1,0 +1,9 @@
+{
+  "parent": "metaldecor:block/template_pedestal",
+  "textures": {
+    "base": "metaldecor:block/gold_cut",
+    "column": "metaldecor:block/gold_pillar",
+    "top": "metaldecor:block/gold_pedestal_top",
+    "particle": "metaldecor:block/gold_cut"
+  }
+}

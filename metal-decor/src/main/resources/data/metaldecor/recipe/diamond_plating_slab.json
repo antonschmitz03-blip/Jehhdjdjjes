@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "metaldecor:diamond_plating"
+  },
+  "result": {
+    "id": "metaldecor:diamond_plating_slab",
+    "count": 6
+  }
+}

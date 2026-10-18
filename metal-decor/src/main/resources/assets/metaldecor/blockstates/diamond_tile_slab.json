@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "metaldecor:block/diamond_tile_slab"
+    },
+    "type=top": {
+      "model": "metaldecor:block/diamond_tile_slab_top"
+    },
+    "type=double": {
+      "model": "metaldecor:block/diamond_tiles"
+    }
+  }
+}

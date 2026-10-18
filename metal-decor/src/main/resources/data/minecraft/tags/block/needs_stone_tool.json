@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "metaldecor:iron_plating",
+    "metaldecor:iron_plating_stairs",
+    "metaldecor:iron_plating_slab",
+    "metaldecor:iron_tiles",
+    "metaldecor:iron_tile_stairs",
+    "metaldecor:iron_tile_slab",
+    "metaldecor:cut_iron",
+    "metaldecor:cut_iron_stairs",
+    "metaldecor:cut_iron_slab",
+    "metaldecor:iron_pillar",
+    "metaldecor:iron_grate",
+    "metaldecor:iron_pedestal"
+  ]
+}
