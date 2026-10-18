@@ -37,7 +37,7 @@ jobs:
       # and lets Simple Graves kill a fake player to check the grave round trip.
       - name: Server smoke test
         run: |
-          trap 'echo "--- server.log problems"; grep -nE "ERROR|Exception|Caused by|FAILED|Crash|crash|exit " server.log | grep -v server.properties | head -80 || true' EXIT
+          trap 'echo "--- server.log problems"; grep -nE "ERROR|Exception|Caused by|FAILED|Crash|crash|exit " server.log | grep -v server.properties | head -80 || true; grep -n -A14 "Incompatible mods" server.log | head -40 || true' EXIT
           mkdir -p run/mods
           cp libs/*.jar run/mods/
           cp vanilla-tweaks/build/libs/vanilla-plus-tweaks-*.jar run/mods/
@@ -55,7 +55,7 @@ jobs:
           (./gradlew runServer --console=plain < stdin.pipe > server.log 2>&1; echo "exit $?" >> server.log) &
           exec 3>stdin.pipe
           for i in $(seq 1 120); do
-            if grep -q 'Done (' server.log || grep -q '^exit ' server.log; then break; fi
+            if grep -q 'Done (' server.log || grep -q '^exit ' server.log || grep -q 'BUILD FAILED' server.log; then break; fi
             sleep 5
           done
           echo stop >&3
