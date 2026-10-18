@@ -47,6 +47,27 @@ jobs:
                    net.minecraft.world.item.Items; do
             echo "== $c"; javap -cp "$JAR" "$c" 2>&1 | grep -vE 'public static final net.minecraft.world.item.Item ' | head -40
           done
+      # Prints a few vanilla textures as base64 so the texture script can sample their colours and noise.
+      - name: Vanilla texture samples
+        if: always()
+        shell: bash
+        run: |
+          JAR=""
+          for j in $(find ~/.gradle -name '*.jar' -size +5M 2>/dev/null); do
+            if unzip -l "$j" 2>/dev/null | grep -q 'textures/block/iron_block.png'; then JAR=$j; break; fi
+          done
+          echo "jar: $JAR"
+          mkdir -p /tmp/vt && cd /tmp/vt && unzip -q -o "$JAR" 'assets/minecraft/textures/block/*' 'assets/minecraft/textures/item/*' || true
+          for n in iron_block gold_block diamond_block cut_copper copper_grate chiseled_copper copper_block \
+                   iron_bars iron_chain chain copper_chain lantern soul_lantern copper_lantern \
+                   quartz_pillar quartz_pillar_top chiseled_quartz_block quartz_bricks iron_door_top iron_trapdoor \
+                   heavy_core raw_gold_block raw_iron_block; do
+            for kind in block item; do
+              f=assets/minecraft/textures/$kind/$n.png
+              [ -f "$f" ] && echo "TEX $kind/$n $(base64 -w0 "$f")"
+            done
+          done
+          ls assets/minecraft/textures/block | grep -iE 'chain|lantern|bars|grate' | tr '\n' ' '
       - uses: actions/upload-artifact@v4
         with:
           name: metal-decor
