@@ -1,157 +1,142 @@
-"""Draws the Shrine Core textures (16x16, vanilla palette style). Run from ore-shrines/: python3 tools/make_textures.py"""
-import json, os, random
+"""Draws the Shrine Core textures from vanilla samples, so they match the vanilla look.
+
+Usage (from ore-shrines/): python3 tools/make_textures.py <folder with vanilla block textures>
+The vanilla folder is assets/minecraft/textures/block from the game jar; it is only read, never shipped.
+"""
+import colorsys, json, os, random, sys
 from PIL import Image
 
+VANILLA = sys.argv[1]
 OUT = "src/main/resources/assets/oreshrines/textures/block"
 os.makedirs(OUT, exist_ok=True)
 
-STONE = [(30, 30, 32), (40, 40, 42), (52, 51, 52), (63, 63, 65), (74, 75, 78), (88, 88, 90), (108, 108, 110)]
-GOLD = [(150, 96, 22), (204, 142, 39), (226, 168, 40), (245, 204, 39), (255, 222, 70), (255, 240, 110), (255, 253, 170)]
-IRON = [(120, 120, 124), (160, 160, 162), (185, 185, 185), (206, 206, 206), (222, 222, 222), (236, 236, 236), (248, 248, 248)]
-CRYSTALS = {
-    "dormant": [(46, 54, 58), (74, 84, 88), (108, 120, 124), (146, 158, 160), (188, 198, 198), (232, 240, 240)],
-    "harvest": [(14, 70, 34), (24, 116, 54), (38, 166, 78), (78, 208, 116), (148, 238, 166), (224, 255, 230)],
-    "ward": [(28, 36, 112), (46, 66, 170), (76, 104, 218), (116, 148, 246), (168, 194, 255), (230, 238, 255)],
-    "mending": [(104, 22, 56), (164, 38, 86), (218, 70, 124), (246, 122, 164), (255, 182, 204), (255, 236, 242)],
-    "hearth": [(114, 36, 8), (180, 70, 12), (230, 114, 24), (255, 160, 50), (255, 208, 118), (255, 246, 214)],
-    "pasture": [(102, 76, 18), (160, 122, 32), (208, 172, 54), (238, 210, 88), (250, 236, 156), (255, 252, 226)],
-    "wisdom": [(52, 104, 14), (96, 160, 22), (150, 214, 40), (198, 246, 82), (230, 255, 156), (250, 255, 228)],
+# Dark to light, six steps per effect; the grey one is the dormant crystal.
+RAMPS = {
+    "dormant": [(38, 40, 44), (62, 66, 70), (92, 96, 100), (128, 132, 134), (170, 172, 172), (214, 214, 210)],
+    "harvest": [(10, 58, 30), (20, 98, 46), (36, 146, 68), (74, 194, 104), (140, 232, 152), (214, 255, 214)],
+    "ward": [(24, 30, 96), (40, 56, 150), (66, 94, 204), (106, 138, 238), (160, 186, 255), (222, 232, 255)],
+    "mending": [(90, 18, 50), (148, 32, 78), (204, 62, 114), (238, 112, 156), (252, 172, 198), (255, 228, 236)],
+    "hearth": [(96, 30, 6), (160, 62, 10), (216, 104, 20), (250, 150, 44), (255, 200, 108), (255, 240, 200)],
+    "pasture": [(90, 66, 14), (146, 110, 28), (196, 158, 48), (230, 200, 80), (246, 230, 146), (255, 250, 214)],
+    "wisdom": [(40, 90, 10), (78, 142, 18), (130, 196, 34), (182, 236, 72), (220, 252, 146), (246, 255, 220)],
 }
+GOLD = [(118, 72, 14), (176, 112, 22), (222, 156, 30), (248, 196, 40), (255, 226, 80), (255, 248, 160)]
 
 
-def img(pixels):
-    im = Image.new("RGBA", (16, 16))
+def load(name):
+    return Image.open(f"{VANILLA}/{name}.png").convert("RGBA").crop((0, 0, 16, 16))
+
+
+def lum(c):
+    return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+
+
+def recolor(src, ramp, lift=0.0):
+    """Maps each pixel's brightness rank onto `ramp`, keeping vanilla's shading pattern and alpha."""
+    colors = sorted({px[:3] for px in src.getdata() if px[3] > 0}, key=lum)
+    lo, hi = lum(colors[0]), lum(colors[-1])
+    out = Image.new("RGBA", src.size)
+    for y in range(src.height):
+        for x in range(src.width):
+            r, g, b, a = src.getpixel((x, y))
+            if a == 0:
+                continue
+            t = (lum((r, g, b)) - lo) / max(1, hi - lo)
+            t = min(1.0, t + lift)
+            f = t * (len(ramp) - 1)
+            i = min(len(ramp) - 2, int(f))
+            k = f - i
+            c = tuple(int(ramp[i][j] * (1 - k) + ramp[i + 1][j] * k) for j in range(3))
+            out.putpixel((x, y), c + (a,))
+    return out
+
+
+def gold_at(t):
+    return GOLD[max(0, min(len(GOLD) - 1, t))] + (255,)
+
+
+def shell_side():
+    """Polished blackstone with gilded corners and a window into the glowing heart, like a respawn anchor."""
+    base = load("polished_blackstone").copy()
+    gild = load("gilded_blackstone")
+    r = random.Random(21)
     for y in range(16):
         for x in range(16):
-            im.putpixel((x, y), pixels[y][x] + (255,))
-    return im
+            # Gold edging along the top and bottom rows and the corners, uneven like gilded blackstone.
+            edge = y in (0, 15) or (x in (0, 15) and (y < 4 or y > 11))
+            if edge and r.random() < 0.8:
+                base.putpixel((x, y), gold_at(r.choice([2, 3, 3, 4]) if y == 0 else r.choice([1, 2, 3])))
+            elif (y in (1, 14) or x in (1, 14)) and r.random() < 0.12:
+                base.putpixel((x, y), gild.getpixel((x, y)))
+    # Window: 6x6 hole with a dark inner lip and a gold frame around it.
+    for y in range(3, 13):
+        for x in range(4, 12):
+            ring = y in (3, 12) or x in (4, 11)
+            if ring:
+                # Worn gilding: lit on the top/left, shaded on the bottom/right, with the odd dark gap.
+                lit = y == 3 or x == 4
+                if r.random() < 0.1:
+                    continue
+                base.putpixel((x, y), gold_at(r.choice([3, 4, 4, 5]) if lit else r.choice([0, 1, 1, 2])))
+            elif y in (4, 11) or x in (5, 10):
+                base.putpixel((x, y), (24, 20, 26, 255))
+            else:
+                base.putpixel((x, y), (0, 0, 0, 0))
+    return base
 
 
-def grid(fn):
-    return [[fn(x, y) for x in range(16)] for y in range(16)]
+def shell_top():
+    base = load("polished_blackstone").copy()
+    r = random.Random(22)
+    for y in range(16):
+        for x in range(16):
+            edge = min(x, y, 15 - x, 15 - y)
+            if edge == 0 and r.random() < 0.85:
+                base.putpixel((x, y), gold_at(r.choice([1, 2, 3])))
+            elif edge == 3:
+                lit = x == 3 or y == 3
+                if r.random() < 0.1:
+                    continue
+                base.putpixel((x, y), gold_at(r.choice([3, 4, 4, 5]) if lit else r.choice([0, 1, 1, 2])))
+            elif edge >= 4:
+                base.putpixel((x, y), (0, 0, 0, 0))
+    return base
 
 
-def stone_noise(r):
-    return STONE[r.choice([3, 3, 4, 4, 4, 5, 5, 2])]
+def shell_bottom():
+    base = load("polished_blackstone").copy()
+    r = random.Random(23)
+    for y in range(16):
+        for x in range(16):
+            if min(x, y, 15 - x, 15 - y) == 0 and r.random() < 0.6:
+                base.putpixel((x, y), gold_at(r.choice([0, 1, 2])))
+    return base
 
 
-def stone_side():
-    r = random.Random(11)
-    def px(x, y):
-        if y == 0:
-            return STONE[6]
-        if y == 15:
-            return STONE[0]
-        if y == 1:
-            return STONE[5]
-        # engraved band with gold inlay, rows 6-8 (used by the plinth)
-        if y == 6:
-            return STONE[1]
-        if y == 7:
-            return GOLD[4] if x % 4 in (1, 2) else STONE[0]
-        if y == 8:
-            return GOLD[1] if x % 4 in (1, 2) else STONE[2]
-        if y == 9:
-            return STONE[5]
-        # carved bricks below the band (used by the base slab, rows 13-15)
-        if y == 12:
-            return STONE[2]
-        if y in (13, 14) and x in (0, 8):
-            return STONE[1]
-        return stone_noise(r)
-    return img(grid(px))
+def pulse(frames_src, ramp):
+    """Two frames, the second a little brighter; interpolated, so the crystal slowly breathes."""
+    a = recolor(frames_src, ramp)
+    b = recolor(frames_src, ramp, lift=0.12)
+    sheet = Image.new("RGBA", (16, 32))
+    sheet.paste(a, (0, 0))
+    sheet.paste(b, (0, 16))
+    return sheet
 
 
-def stone_top():
-    r = random.Random(12)
-    def px(x, y):
-        edge = min(x, y, 15 - x, 15 - y)
-        if edge == 0:
-            return STONE[1] if (x == 15 or y == 15) else STONE[5]
-        if edge == 3:
-            return GOLD[3] if (x + y) % 2 else GOLD[5]
-        if edge == 4:
-            return STONE[1]
-        if edge >= 5:
-            return STONE[r.choice([1, 2, 2, 3])]
-        return stone_noise(r)
-    return img(grid(px))
+for old in os.listdir(OUT):
+    os.remove(os.path.join(OUT, old))
 
-
-def gilding():
-    r = random.Random(13)
-    def px(x, y):
-        if y == 0 or x == 0:
-            return GOLD[6]
-        if y == 15 or x == 15:
-            return GOLD[0]
-        for cx, cy in ((3, 3), (12, 3), (3, 12), (12, 12)):
-            if (x, y) == (cx, cy):
-                return GOLD[6]
-            if (x, y) in ((cx + 1, cy), (cx, cy + 1), (cx + 1, cy + 1)):
-                return GOLD[1]
-        band = (y // 2) % 2
-        return GOLD[r.choice([3, 4] if band else [4, 5])]
-    return img(grid(px))
-
-
-def pillar():
-    r = random.Random(14)
-    flute = [1, 3, 5, 6, 4, 2, 4, 6, 5, 3, 1, 3, 5, 6, 4, 2]
-    def px(x, y):
-        if y == 0:
-            return IRON[6]
-        if y == 15:
-            return IRON[0]
-        v = flute[x] + (1 if r.random() < 0.08 else 0) - (1 if r.random() < 0.08 else 0)
-        return IRON[max(0, min(6, v))]
-    return img(grid(px))
-
-
-def crystal_frame(ramp, shift):
-    """Faceted gem: four facets lit from the top left, a dark rim, and a glint that travels with `shift`."""
-    def px(x, y):
-        cx, cy = x - 7.5, y - 7.5
-        edge = min(x, y, 15 - x, 15 - y)
-        if edge == 0:
-            return ramp[0]
-        if abs(cx) - abs(cy) in (-0.0, 0.0) or abs(abs(cx) - abs(cy)) < 0.6:
-            v = 4
-        elif cy < 0 and abs(cx) < abs(cy):
-            v = 4  # top facet
-        elif cx < 0 and abs(cy) < abs(cx):
-            v = 3  # left facet
-        elif cx > 0 and abs(cy) < abs(cx):
-            v = 2  # right facet
-        else:
-            v = 1  # bottom facet
-        if edge == 1:
-            v = max(1, v - 1)
-        d = (x + y - shift) % 32
-        if d in (0, 1):
-            v = min(5, v + 2)
-        if (x, y) in ((4, 4), (5, 3), (3, 5)):
-            v = 5
-        return ramp[v]
-    return img(grid(px))
-
-
-def save(name, im):
-    im.save(f"{OUT}/{name}.png")
-
-
-save("shrine_stone_side", stone_side())
-save("shrine_stone_top", stone_top())
-save("shrine_gilding", gilding())
-save("shrine_pillar", pillar())
-for name, ramp in CRYSTALS.items():
+shell_side().save(f"{OUT}/shrine_core_side.png")
+shell_top().save(f"{OUT}/shrine_core_top.png")
+shell_bottom().save(f"{OUT}/shrine_core_bottom.png")
+heart = load("amethyst_block")
+cluster = load("amethyst_cluster")
+for name, ramp in RAMPS.items():
     if name == "dormant":
-        save("shrine_crystal_dormant", crystal_frame(ramp, 100))
+        recolor(heart, ramp).save(f"{OUT}/shrine_heart_dormant.png")
+        recolor(cluster, ramp).save(f"{OUT}/shrine_cluster_dormant.png")
         continue
-    frames = [crystal_frame(ramp, s) for s in range(0, 32, 4)]
-    sheet = Image.new("RGBA", (16, 16 * len(frames)))
-    for i, f in enumerate(frames):
-        sheet.paste(f, (0, 16 * i))
-    save(f"shrine_crystal_{name}", sheet)
-    with open(f"{OUT}/shrine_crystal_{name}.png.mcmeta", "w") as f:
-        json.dump({"animation": {"frametime": 4, "interpolate": True}}, f, indent=2)
+    for kind, src in (("heart", heart), ("cluster", cluster)):
+        pulse(src, ramp).save(f"{OUT}/shrine_{kind}_{name}.png")
+        with open(f"{OUT}/shrine_{kind}_{name}.png.mcmeta", "w") as f:
+            json.dump({"animation": {"frametime": 30, "interpolate": True}}, f, indent=2)

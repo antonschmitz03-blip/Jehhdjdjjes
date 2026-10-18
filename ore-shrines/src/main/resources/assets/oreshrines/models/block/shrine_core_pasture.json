@@ -1,10 +1,10 @@
 {
   "parent": "oreshrines:block/shrine_core_template",
   "textures": {
-    "side": "oreshrines:block/shrine_stone_side",
-    "top": "oreshrines:block/shrine_stone_top",
-    "gilding": "oreshrines:block/shrine_gilding",
-    "pillar": "oreshrines:block/shrine_pillar",
-    "crystal": "oreshrines:block/shrine_crystal_pasture"
+    "side": "oreshrines:block/shrine_core_side",
+    "top": "oreshrines:block/shrine_core_top",
+    "bottom": "oreshrines:block/shrine_core_bottom",
+    "heart": "oreshrines:block/shrine_heart_pasture",
+    "cluster": "oreshrines:block/shrine_cluster_pasture"
   }
 }

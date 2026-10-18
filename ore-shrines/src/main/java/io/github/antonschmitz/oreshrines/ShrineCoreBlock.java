@@ -42,15 +42,8 @@ public class ShrineCoreBlock extends BaseEntityBlock {
     /** Has an effect and a pyramid: the crystal glows in the effect's colour instead of dull grey. */
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    /** Stone base, plinth and dish, four corner posts and the floating crystal. */
-    private static final VoxelShape SHAPE = Shapes.or(
-            Block.box(0, 0, 0, 16, 4, 16),
-            Block.box(3, 4, 3, 13, 8, 13),
-            Block.box(0.5, 4, 0.5, 3, 13, 3),
-            Block.box(13, 4, 0.5, 15.5, 13, 3),
-            Block.box(0.5, 4, 13, 3, 13, 15.5),
-            Block.box(13, 4, 13, 15.5, 13, 15.5),
-            Block.box(6, 8, 6, 10, 16, 10));
+    /** The full block; the crystal cluster on top is only decoration and has no hitbox. */
+    private static final VoxelShape SHAPE = Shapes.block();
 
     public ShrineCoreBlock(Properties properties) {
         super(properties);
