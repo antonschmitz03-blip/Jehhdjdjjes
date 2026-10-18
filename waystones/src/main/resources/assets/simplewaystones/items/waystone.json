@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "simplewaystones:block/waystone_item"
+  }
+}
