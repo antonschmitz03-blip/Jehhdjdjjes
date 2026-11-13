@@ -1,0 +1,27 @@
+name: Research
+on:
+  push:
+    paths: ['.github/workflows/research.yml']
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - run: chmod +x gradlew && ./gradlew :vanilla-tweaks:compileJava --no-daemon -q || true
+      - run: |
+          jars=$(find ~/.gradle -name '*.jar' -path '*minecraft*' -size +5M | grep -v sources | head -5)
+          echo "$jars"
+          for j in $jars; do
+            if unzip -l "$j" | grep -q 'animal/equine/Horse.class'; then
+              echo "=== using $j"
+              for c in Horse AbstractHorse ZombieHorse SkeletonHorse; do
+                echo "=== $c"
+                javap -p -cp "$j" net.minecraft.world.entity.animal.equine.$c | head -80
+              done
+              break
+            fi
+          done
