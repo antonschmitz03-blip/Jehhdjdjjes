@@ -24,6 +24,7 @@ Install on the server too when playing multiplayer.
   while sneaking), no matter how long it is.
 - **Floating ladders:** ladders can be placed anywhere, with no block behind them.
 - **No podzol from large trees:** growing a 2x2 spruce (or jungle) tree from saplings no longer turns the grass under it into podzol (or dirt). World generation is unchanged.
+- **Open elytra key:** a new key in Controls (unbound by default). Once bound, only that key opens the elytra and jumping in the air no longer does; set `elytra_jump_also_opens` to `true` to keep jump working too. Works with an elytra in a modded slot as well.
 
 The happy ghast features (chest, speed upgrade, whistle, rope ladder, protection) now live in their own mod, [Happy Ghast+](../happy-ghast/README.md). The two work alone or together.
 
@@ -32,7 +33,7 @@ The happy ghast features (chest, speed upgrade, whistle, rope ladder, protection
 `config/vplustweaks.json` is created on first launch with one on/off switch per feature, all on by default
 (`double_doors`, `no_crop_trampling`, `no_anvil_too_expensive_limit`, `cheaper_enchanting_table`,
 `cheaper_enchanting_infuser`, `free_enchantment_combining`, `safe_tamed_pets`, `max_stat_horses`,
-`fast_ladder_placement`, `floating_ladders`, `no_podzol_from_large_trees`, and `recipe_*` switches for the extra recipes). Set one to `false`
+`fast_ladder_placement`, `floating_ladders`, `no_podzol_from_large_trees`, `open_elytra_keybind`, `elytra_jump_also_opens` (off by default), and `recipe_*` switches for the extra recipes). Set one to `false`
 and restart the game to turn that feature off. New switches are added to the file when the mod gets new
 features. In multiplayer, set them on the server and on the clients.
 

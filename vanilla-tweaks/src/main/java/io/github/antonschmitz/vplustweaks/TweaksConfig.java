@@ -36,6 +36,9 @@ public final class TweaksConfig {
     public static final String FAST_LADDERS = "fast_ladder_placement";
     public static final String FLOATING_LADDERS = "floating_ladders";
     public static final String NO_PODZOL_FROM_SAPLINGS = "no_podzol_from_large_trees";
+    public static final String OPEN_ELYTRA_KEY = "open_elytra_keybind";
+    /** Off by default: once the key is bound, only it opens the elytra. */
+    public static final String ELYTRA_JUMP_ALSO_OPENS = "elytra_jump_also_opens";
     /** Recipe switches are named in the recipes' "fabric:load_conditions". */
     public static final String RECIPES_GUNPOWDER = "recipe_gunpowder";
     public static final String RECIPES_LEATHER = "recipe_leather_from_rotten_flesh";
@@ -51,11 +54,12 @@ public final class TweaksConfig {
         for (String key : new String[] {
                 DOUBLE_DOORS, NO_CROP_TRAMPLING, NO_ANVIL_LIMIT, CHEAPER_ENCHANTING_TABLE, CHEAPER_INFUSER,
                 FREE_ENCHANTMENT_COMBINING, SAFE_PETS, BEST_HORSES, FAST_LADDERS, FLOATING_LADDERS,
-                NO_PODZOL_FROM_SAPLINGS,
+                NO_PODZOL_FROM_SAPLINGS, OPEN_ELYTRA_KEY,
                 RECIPES_GUNPOWDER, RECIPES_LEATHER, RECIPES_SADDLE, RECIPES_NAME_TAG, RECIPES_HORSE_ARMOR,
                 RECIPES_CHAINMAIL, RECIPES_STICKS, RECIPES_UNDYE, RECIPES_TRIDENT}) {
             DEFAULTS.put(key, true);
         }
+        DEFAULTS.put(ELYTRA_JUMP_ALSO_OPENS, false);
     }
 
     private static volatile Map<String, Boolean> values;

@@ -14,7 +14,8 @@
   ],
   "client": [
     "client.AnvilScreenMixin",
-    "client.EnchantmentScreenMixin"
+    "client.EnchantmentScreenMixin",
+    "client.LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
