@@ -1,6 +1,5 @@
 package io.github.antonschmitz.vplustweaks.client;
 
-import org.lwjgl.glfw.GLFW;
 import io.github.antonschmitz.vplustweaks.TweaksConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -11,8 +10,11 @@ import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 
 /** An "Open elytra" key (Left Alt by default). Once it is bound, jumping in the air no longer opens the elytra. */
 public final class ElytraKey implements ClientModInitializer {
+    /** GLFW.GLFW_KEY_LEFT_ALT, written out because GLFW is not on this module's compile classpath. */
+    private static final int GLFW_KEY_LEFT_ALT = 342;
+
     public static final KeyMapping OPEN_ELYTRA = new KeyMapping(
-            "key.vplustweaks.open_elytra", GLFW.GLFW_KEY_LEFT_ALT, KeyMapping.Category.MOVEMENT);
+            "key.vplustweaks.open_elytra", GLFW_KEY_LEFT_ALT, KeyMapping.Category.MOVEMENT);
 
     /** True when the key is in use, so the jump key should leave the elytra alone. */
     public static boolean replacesJump() {
