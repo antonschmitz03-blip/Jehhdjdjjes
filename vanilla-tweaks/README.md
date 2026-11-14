@@ -24,7 +24,7 @@ Install on the server too when playing multiplayer.
   while sneaking), no matter how long it is.
 - **Floating ladders:** ladders can be placed anywhere, with no block behind them.
 - **No podzol from large trees:** growing a 2x2 spruce (or jungle) tree from saplings no longer turns the grass under it into podzol (or dirt). World generation is unchanged.
-- **Open elytra key:** a new key in Controls (unbound by default). Once bound, only that key opens the elytra and jumping in the air no longer does; set `elytra_jump_also_opens` to `true` to keep jump working too. Works with an elytra in a modded slot as well.
+- **Open elytra key:** a new key in Controls (Left Alt by default). Once bound, only that key opens the elytra and jumping in the air no longer does; set `elytra_jump_also_opens` to `true` to keep jump working too. Works with an elytra in a modded slot as well.
 
 The happy ghast features (chest, speed upgrade, whistle, rope ladder, protection) now live in their own mod, [Happy Ghast+](../happy-ghast/README.md). The two work alone or together.
 
